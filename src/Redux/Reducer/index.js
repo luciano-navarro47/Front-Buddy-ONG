@@ -3,11 +3,16 @@ import {
   GET_ADOPTION_PETS,
   GET_PET_ID,
   GET_LOST_PETS,
+  GET_CHECK_USERNAME,
   UPDATE_PET,
   DELETE_PET,
   DELETE_PRODUCT,
   POST_PET,
   POST_USER,
+  GET_ALL_USERS,
+  GET_USER_ID,
+  SET_STATUS_USER,
+  UPDATE_USER,
   POST_PRODUCT,
   POST_VET,
   FILTER_ADOPTION_VALUES,
@@ -21,11 +26,7 @@ import {
   ACTUAL_PAGE, // se pueden sacar
   GET_VETERINARIES,
   GET_DETAILS_VETERINARIES,
-  GET_ALL_USERS,
-  GET_USER_ID,
-  SET_STATUS_USER,
   UPDATE_PRODUCT,
-  UPDATE_USER,
 } from "../ActionTypes";
 
 const initialState = {
@@ -78,6 +79,11 @@ const RootReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload,
+      };
+    case GET_CHECK_USERNAME:
+      return {
+        ...state,
+        usernameAvailable: action.payload,
       };
     case GET_PET_ID:
       return {
