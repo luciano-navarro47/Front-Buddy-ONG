@@ -3,6 +3,7 @@ import {
   GET_PET_ID,
   GET_ALL_USERS,
   GET_USER_ID,
+  GET_CHECK_USERNAME,
   GET_ALL_PRODUCTS,
   GET_PRODUCT_DETAIL,
   GET_VETERINARIES,
@@ -24,6 +25,7 @@ import {
 import { HOST, header } from "../../utils";
 import axios from "axios";
 
+// USERS
 export function getAllUsers() {
   return async function (dispatch) {
     try {
@@ -38,6 +40,81 @@ export function getAllUsers() {
   };
 }
 
+export function postUser(formInput) {
+  return async function (dispatch) {
+    try {
+      const newUser = await axios.post(`${HOST}/users`, formInput);
+      return dispatch({
+        type: POST_USER,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function updateUser(userID, formInput) {
+  return async function (dispatch) {
+    try {
+      console.log("Action updateUSER", userID);
+      await axios.put(`${HOST}/users/${userID}`, formInput);
+
+      dispatch({
+        type: UPDATE_USER,
+      });
+    } catch (error) {
+      console.log("Action updateUSER", userID, formInput);
+    }
+  };
+}
+
+export function getUserId(id) {
+  return async function (dispatch) {
+    try {
+      const json = await axios.get(`http://localhost:3001/users/${id}`);
+      return dispatch({ type: GET_USER_ID, payload: json.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function setStatusUser(id) {
+  return async function (dispatch) {
+    try {
+      await axios.put(`${HOST}/users/setStatusUser/${id}`);
+      const updatedUsers = await axios.get(`${HOST}/users`);
+      dispatch({
+        type: GET_ALL_USERS,
+        payload: updatedUsers.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function checkUsernameAvailability(username) {
+  return async function (dispatch) {
+    try {
+      const response = await axios.get(
+        `${HOST}/users/check-username?username=${username}`, {
+          headers: { 'Cache-control': 'no-cache' }
+        }
+      );
+      
+      dispatch({
+        type: GET_CHECK_USERNAME,
+        payload: response.data.available,
+      });
+      return response.data.available;
+    } catch (error) {
+      return null;
+    }
+  };
+}
+
+// PETS
 export function getPets(value) {
   return async function (dispatch) {
     try {
@@ -84,17 +161,6 @@ export function getPets(value) {
   };
 }
 
-export function getUserId(id) {
-  return async function (dispatch) {
-    try {
-      const json = await axios.get(`http://localhost:3001/users/${id}`);
-      return dispatch({ type: GET_USER_ID, payload: json.data });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
 export const getPetDetails = (id) => async (dispatch) => {
   try {
     const getID = await axios.get(`${HOST}/pets/${id}`);
@@ -114,223 +180,6 @@ export function postPet(formInput, token) {
       const json = await axios.post(`${HOST}/pets`, formInput, config);
       return dispatch({
         type: POST_PET,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function postUser(formInput) {
-  return async function (dispatch) {
-    try {
-      const newUser = await axios.post(`${HOST}/users`, formInput);
-      return dispatch({
-        type: POST_USER,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function updateUser(userID, formInput) {
-  return async function (dispatch) {
-    try {
-      console.log("Action updateUSER", userID);
-      await axios.put(`${HOST}/users/${userID}`, formInput);
-
-      dispatch({
-        type: UPDATE_USER,
-      });
-    } catch (error) {
-      console.log("Action updateUSER", userID, formInput);
-    }
-  };
-}
-
-export function postOrUpdateProduct(formInput, value, id) {
-  console.log("FORMINPUT", formInput);
-  return async function (dispatch) {
-    try {
-      if (value === undefined) {
-        const newProduct = await axios.post(`${HOST}/products`, formInput);
-        return dispatch({
-          type: POST_PRODUCT,
-        });
-      } else {
-        // console.log("UPDATEPRODUCT INPUT", formInput);
-        await axios.put(`${HOST}/products/${id}`, formInput);
-        dispatch({
-          type: UPDATE_PRODUCT,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function postOrUpdateVet(formInput, value, id) {
-  console.log("VALUE", value);
-  console.log("FORMINPUT", formInput);
-  return async function (dispatch) {
-    try {
-      if (value === undefined) {
-        const newVet = await axios.post(`${HOST}/veterinary`, formInput);
-        return dispatch({
-          type: POST_VET,
-        });
-      } else {
-        await axios.put(`${HOST}/veterinary/${id}`, formInput);
-        dispatch({
-          type: UPDATE_VET,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function filterAdoptionPets(arrayFilterValues, value) {
-  return async function (dispatch) {
-    try {
-      const payload = {
-        arrayFilterValues,
-        value,
-      };
-      dispatch({
-        type: FILTER_ADOPTION_VALUES,
-        payload: payload,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function filterBySearchArea(inputValue, value) {
-  return async function (dispatch) {
-    try {
-      let payload = {
-        inputValue,
-        value,
-      };
-      return dispatch({
-        type: FILTER_BY_SEARCH_AREA,
-        payload: payload,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function getAllProducts() {
-  return async function (dispatch) {
-    try {
-      const allProducts = await axios.get(`${HOST}/products`);
-      return dispatch({
-        type: GET_ALL_PRODUCTS,
-        payload: allProducts.data,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function getProductDetail(obj) {
-  return async function (dispatch) {
-    try {
-      const productDetail = await axios.get(`${HOST}/products/${obj.id}`);
-      productDetail.data[0].handlerSetCart = obj.handlerSetCart;
-      productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
-      return dispatch({
-        type: GET_PRODUCT_DETAIL,
-        payload: productDetail.data,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function getProductDetailAdmin(id) {
-  return async function (dispatch) {
-    try {
-      const productDetail = await axios.get(`${HOST}/products/${id}`);
-      return dispatch({
-        type: GET_PRODUCT_DETAIL,
-        payload: productDetail.data,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function shopSearchInputName(input) {
-  return async function (dispatch) {
-    try {
-      return dispatch({
-        type: SHOP_SEARCH_INPUT_NAME,
-        payload: input,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function shopFilterValue(value) {
-  return async function (dispatch) {
-    try {
-      dispatch({
-        type: SHOP_FILTER_VALUE,
-        payload: value,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function getAllVeterinaries() {
-  return async function (dispatch) {
-    try {
-      const json = await axios.get("http://localhost:3001/veterinary");
-      return dispatch({
-        type: GET_VETERINARIES,
-        payload: json.data,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export const VeterinaryDetails = (id) => async (dispatch) => {
-  try {
-    const getID = await axios.get(`${HOST}/veterinary/${id}`);
-    return dispatch({
-      type: GET_DETAILS_VETERINARIES,
-      payload: getID.data,
-    });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-export function setStatusUser(id) {
-  return async function (dispatch) {
-    try {
-      await axios.put(`${HOST}/users/setStatusUser/${id}`);
-      const updatedUsers = await axios.get(`${HOST}/users`);
-      dispatch({
-        type: GET_ALL_USERS,
-        payload: updatedUsers.data,
       });
     } catch (error) {
       console.log(error);
@@ -402,6 +251,106 @@ export function deletePetAdmin(id) {
   };
 }
 
+export function filterAdoptionPets(arrayFilterValues, value) {
+  return async function (dispatch) {
+    try {
+      const payload = {
+        arrayFilterValues,
+        value,
+      };
+      dispatch({
+        type: FILTER_ADOPTION_VALUES,
+        payload: payload,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function filterBySearchArea(inputValue, value) {
+  return async function (dispatch) {
+    try {
+      let payload = {
+        inputValue,
+        value,
+      };
+      return dispatch({
+        type: FILTER_BY_SEARCH_AREA,
+        payload: payload,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+// PRODUCTS
+export function getAllProducts() {
+  return async function (dispatch) {
+    try {
+      const allProducts = await axios.get(`${HOST}/products`);
+      return dispatch({
+        type: GET_ALL_PRODUCTS,
+        payload: allProducts.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+export function postOrUpdateProduct(formInput, value, id) {
+  console.log("FORMINPUT", formInput);
+  return async function (dispatch) {
+    try {
+      if (value === undefined) {
+        const newProduct = await axios.post(`${HOST}/products`, formInput);
+        return dispatch({
+          type: POST_PRODUCT,
+        });
+      } else {
+        // console.log("UPDATEPRODUCT INPUT", formInput);
+        await axios.put(`${HOST}/products/${id}`, formInput);
+        dispatch({
+          type: UPDATE_PRODUCT,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function getProductDetail(obj) {
+  return async function (dispatch) {
+    try {
+      const productDetail = await axios.get(`${HOST}/products/${obj.id}`);
+      productDetail.data[0].handlerSetCart = obj.handlerSetCart;
+      productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
+      return dispatch({
+        type: GET_PRODUCT_DETAIL,
+        payload: productDetail.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function getProductDetailAdmin(id) {
+  return async function (dispatch) {
+    try {
+      const productDetail = await axios.get(`${HOST}/products/${id}`);
+      return dispatch({
+        type: GET_PRODUCT_DETAIL,
+        payload: productDetail.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export function deleteProductAdmin(id) {
   return async function (dispatch) {
     try {
@@ -413,6 +362,82 @@ export function deleteProductAdmin(id) {
       });
     } catch (error) {
       console.log(error.message);
+    }
+  };
+}
+
+// VETERINARIES
+export function getAllVeterinaries() {
+  return async function (dispatch) {
+    try {
+      const json = await axios.get("http://localhost:3001/veterinary");
+      return dispatch({
+        type: GET_VETERINARIES,
+        payload: json.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function postOrUpdateVet(formInput, value, id) {
+  console.log("VALUE", value);
+  console.log("FORMINPUT", formInput);
+  return async function (dispatch) {
+    try {
+      if (value === undefined) {
+        const newVet = await axios.post(`${HOST}/veterinary`, formInput);
+        return dispatch({
+          type: POST_VET,
+        });
+      } else {
+        await axios.put(`${HOST}/veterinary/${id}`, formInput);
+        dispatch({
+          type: UPDATE_VET,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export const VeterinaryDetails = (id) => async (dispatch) => {
+  try {
+    const getID = await axios.get(`${HOST}/veterinary/${id}`);
+    return dispatch({
+      type: GET_DETAILS_VETERINARIES,
+      payload: getID.data,
+    });
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+// E-COMMERCE
+export function shopSearchInputName(input) {
+  return async function (dispatch) {
+    try {
+      return dispatch({
+        type: SHOP_SEARCH_INPUT_NAME,
+        payload: input,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function shopFilterValue(value) {
+  return async function (dispatch) {
+    try {
+      dispatch({
+        type: SHOP_FILTER_VALUE,
+        payload: value,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 }
