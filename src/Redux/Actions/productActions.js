@@ -21,7 +21,6 @@ export function getAllProducts() {
   };
 }
 export function postOrUpdateProduct(formInput, value, id) {
-  console.log("FORMINPUT", formInput);
   return async function (dispatch) {
     try {
       if (value === undefined) {
@@ -30,7 +29,7 @@ export function postOrUpdateProduct(formInput, value, id) {
           type: POST_PRODUCT,
         });
       } else {
-        // console.log("UPDATEPRODUCT INPUT", formInput);
+        console.log("FORM INPUT: ", formInput);
         await axios.put(`${HOST}/products/${id}`, formInput);
         dispatch({
           type: UPDATE_PRODUCT,
