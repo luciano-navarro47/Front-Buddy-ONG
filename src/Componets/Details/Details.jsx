@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import { useParams } from "react-router-dom";
-import { getPetDetails } from "../../Redux/Actions/index";
+import { getPetDetails } from "../../Redux/Actions/petActions";
 // import { extendTheme } from "@chakra-ui/react";
 import {
 	Box,

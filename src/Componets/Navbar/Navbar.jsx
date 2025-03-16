@@ -6,7 +6,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { getUserId } from "../../Redux/Actions";
+import { getUserId } from "../../Redux/Actions/userActions";
 import {
 	Box,
 	Flex,

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import VetCard from "../VetsCards/VetsCards";
-import { getAllVeterinaries } from "../../Redux/Actions/index";
+import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
 import MapView from "../Map/MapView";
 import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
 import logo from "../../assets/imagenes/logo_amarillo.png";

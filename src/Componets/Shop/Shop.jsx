@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, redirect } from "react-router-dom";
-import { getAllProducts } from "../../Redux/Actions";
+import { getAllProducts } from "../../Redux/Actions/productActions";
 
 import CardsProduct from "./CardsProducts/CardsProduct";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";

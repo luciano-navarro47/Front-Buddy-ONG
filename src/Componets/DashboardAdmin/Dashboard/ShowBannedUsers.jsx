@@ -1,7 +1,7 @@
 import { SimpleGrid, Stack, Text, useBreakpointValue, Box } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import UserCard from "./Cards/UserCard";
-import { getAllUsers } from "../../../Redux/Actions";
+import { getAllUsers } from "../../../Redux/Actions/userActions";
 import { useDispatch } from "react-redux";
 
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProductDetailAdmin,
   postOrUpdateProduct,
-} from "../../../Redux/Actions";
+} from "../../../Redux/Actions/productActions";
 import UploadImage from "./UploadImage";
 import { ErrorForm, SuccedForm } from "../../FormPostPet/AlertForm/AlertForm";
 import {

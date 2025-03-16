@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
-import { VeterinaryDetails } from "../../Redux/Actions/index";
+import { VeterinaryDetails } from "../../Redux/Actions/veterinaryActions";
 import {
   Box,
   SimpleGrid,

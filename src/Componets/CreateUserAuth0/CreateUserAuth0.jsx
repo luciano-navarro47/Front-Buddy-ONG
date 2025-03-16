@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { postUser } from "../../Redux/Actions";
+import { postUser } from "../../Redux/Actions/userActions";
 import { useAuth0 } from "@auth0/auth0-react";
 import logo from "../../assets/imagenes/logo_negro.png";
 import notfound from "../../assets/imagenes/notfound.png";

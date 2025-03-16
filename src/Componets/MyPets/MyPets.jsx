@@ -4,7 +4,7 @@ import NavBar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import Card from "../Card/Card"
 import { SimpleGrid, Heading, Container, Text, Center, Box } from "@chakra-ui/react";
-import { getUserId } from "../../Redux/Actions"; //dispatch getUserId(aca le paso el id (del localStorage)y me trae toda la info del user, y a esa info la guardo en una variable/ Dsp uso esa variable para sacar los pets de ahi y recorrerlos
+import { getUserId } from "../../Redux/Actions/userActions"; //dispatch getUserId(aca le paso el id (del localStorage)y me trae toda la info del user, y a esa info la guardo en una variable/ Dsp uso esa variable para sacar los pets de ahi y recorrerlos
 import s from "./MyPets.module.css"
 
 export const MyPets = ({ handleSetUserFlag }) => {

@@ -1,10 +1,15 @@
 import React, { useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import {
+  // shopSearchInputName,
+  // shopFilterValue,
+  getAllProducts,
+} from "../../../Redux/Actions/productActions";
+
+import {
   shopSearchInputName,
   shopFilterValue,
-  getAllProducts,
-} from "../../../Redux/Actions";
+} from "../../../Redux/Actions/veterinaryActions";
 
 import {
   Box,
@@ -18,7 +23,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
-export default function ShopNavbar({ handlerSetCart, handleRemoveItemCart, paginate }) {
+export default function ShopNavbar({
+  handlerSetCart,
+  handleRemoveItemCart,
+  paginate,
+}) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
@@ -32,7 +41,7 @@ export default function ShopNavbar({ handlerSetCart, handleRemoveItemCart, pagin
     e.preventDefault(e);
     if (input.trim() !== "") {
       dispatch(shopSearchInputName(input.trim()));
-      paginate(1)
+      paginate(1);
       inputSearch.value = "";
     } else {
       inputSearch.value = "";
@@ -44,7 +53,7 @@ export default function ShopNavbar({ handlerSetCart, handleRemoveItemCart, pagin
     e.target.value !== "todos"
       ? dispatch(shopFilterValue(e.target.value))
       : dispatch(getAllProducts());
-      paginate(1)
+    paginate(1);
   };
 
   function handlerClick(e) {
@@ -52,10 +61,8 @@ export default function ShopNavbar({ handlerSetCart, handleRemoveItemCart, pagin
     setTimeout(() => navigate("/shop/cart"), 500);
   }
 
-
-
   return (
-    <div >
+    <div>
       <Box bg={"brand.green.200"} pt="1rem">
         <Center>
           <Heading>Productos Solidarios</Heading>

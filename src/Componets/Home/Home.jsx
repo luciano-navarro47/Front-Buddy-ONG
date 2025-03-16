@@ -24,7 +24,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllVeterinaries } from "../../Redux/Actions";
+import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
 
 function StatsCard({ icon, title, stat }) {
   return (

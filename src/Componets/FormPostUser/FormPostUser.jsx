@@ -23,7 +23,7 @@ import { ErrorForm, SuccedForm } from "../FormPostPet/AlertForm/AlertForm";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { postUser, updateUser, getUserId, checkUsernameAvailability } from "../../Redux/Actions";
+import { postUser, updateUser, getUserId, checkUsernameAvailability } from "../../Redux/Actions/userActions";
 
 
 

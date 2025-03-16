@@ -4,7 +4,7 @@ import Navbar from "../Navbar/Navbar";
 import FilterBar from "./FilterBar";
 import Footer from "../Footer/Footer";
 import Card from "../Card/Card";
-import { getPets } from "../../Redux/Actions/index";
+import { getPets } from "../../Redux/Actions/petActions";
 import { Link } from "react-router-dom";
 import { SimpleGrid, Box, Stack, Center, Icon, Text } from "@chakra-ui/react";
 import { SiDatadog } from "react-icons/si";

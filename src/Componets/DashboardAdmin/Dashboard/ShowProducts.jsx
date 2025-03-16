@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import ProductCard from "./Cards/ProductCard";
 import { SimpleGrid, Stack, Text, useBreakpointValue, Box } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts } from "../../../Redux/Actions";
+import { getAllProducts } from "../../../Redux/Actions/productActions";
 
 export default function ShowProduct({ products }) {
   const dispatch = useDispatch()

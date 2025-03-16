@@ -2,7 +2,7 @@ import React from "react";
 
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getProductDetail } from "../../../Redux/Actions";
+import { getProductDetail } from "../../../Redux/Actions/productActions";
 import "./CardProduct.css"
 import {
   Box,

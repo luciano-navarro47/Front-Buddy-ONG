@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { postOrUpdateVet, VeterinaryDetails } from "../../../Redux/Actions";
+import { postOrUpdateVet, VeterinaryDetails } from "../../../Redux/Actions/veterinaryActions";
 import UploadImage from "./UploadImage";
 import { ErrorForm, SuccedForm } from "../../FormPostPet/AlertForm/AlertForm";
 import {

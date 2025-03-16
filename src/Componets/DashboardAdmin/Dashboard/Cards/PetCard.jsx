@@ -11,7 +11,7 @@ import {
   Button
 
 } from "@chakra-ui/react";
-import { deletePetAdmin } from "../../../../Redux/Actions";
+import { deletePetAdmin } from "../../../../Redux/Actions/petActions";
 import { useDispatch} from "react-redux";
 // import { getPets } from "../../../../Redux/Actions";
 import {

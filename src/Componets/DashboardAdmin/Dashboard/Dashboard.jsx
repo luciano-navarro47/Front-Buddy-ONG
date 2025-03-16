@@ -1,5 +1,8 @@
 import React from "react";
-import { getAllProducts, getAllUsers, getPets, getAllVeterinaries } from "../../../Redux/Actions";
+import { getAllProducts } from "../../../Redux/Actions/productActions";
+import { getAllUsers } from "../../../Redux/Actions/userActions";
+import { getPets} from "../../../Redux/Actions/petActions";
+import { getAllVeterinaries } from "../../../Redux/Actions/veterinaryActions";
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
