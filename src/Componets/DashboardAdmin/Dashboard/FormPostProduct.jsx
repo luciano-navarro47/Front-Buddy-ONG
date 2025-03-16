@@ -28,43 +28,44 @@ import { useEffect } from "react";
 import { MdArrowBackIosNew } from "react-icons/md";
 
 export default function FormPostProduct({ value }) {
-  // console.log("VALUEE", value)
   const dispatch = useDispatch();
   const paramsId = useParams("id");
 
-  const product2 = useSelector((state) => state.productDetail);
-  const productInfo = product2[0];
+  const product = useSelector((state) => state.productDetail);
+
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [image, setImage] = useState("");
   const [input, setInput] = useState({
     name: "",
     description: "",
-    Category: "",
+    category: "",
     image: "",
     price: "",
     stock: "",
   });
-  console.log("INPUT", input);
 
+  console.log("IS INCOMPLETE ? ", isIncomplete);
   const errors = {
     name: "",
     description: "",
-    Category: "",
+    category: "",
     image: "",
-    price: 0,
-    stock: 0,
+    price: "",
+    stock: "",
   };
 
   function completeProductData() {
-    setInput({
-      name: productInfo?.name || "",
-      description: productInfo?.description || "",
-      Category: productInfo?.Category || "",
-      image: productInfo?.image || "",
-      price: productInfo?.price || 0,
-      stock: productInfo?.stock || 0,
-    });
+    if (product) {
+      setInput({
+        name: product?.name || "",
+        description: product?.description || "",
+        category: product?.category || "",
+        image: product?.image || "",
+        price: product?.price || 0,
+        stock: product?.stock || 0,
+      });
+    }
   }
 
   function handlerErrors(e) {
@@ -76,8 +77,8 @@ export default function FormPostProduct({ value }) {
     if (input.description === "") {
       errors.description = "¡Se debe agregar una descripcion del producto!";
     }
-    if (input.Category === "") {
-      errors.Category = "Falta elegir la categoría.";
+    if (input.category === "") {
+      errors.category = "Falta elegir la categoría.";
     }
     if (input.image === "") {
       errors.image = "Selecciona una imagen.";
@@ -91,7 +92,7 @@ export default function FormPostProduct({ value }) {
     if (
       !errors.name &&
       !errors.description &&
-      !errors.Category &&
+      !errors.category &&
       !errors.image &&
       !errors.price &&
       !errors.stock
@@ -102,8 +103,6 @@ export default function FormPostProduct({ value }) {
     } else {
       setIsIncomplete(true);
       setInfoSend(false);
-      console.log(errors);
-      alert("Falta rellenar algun campo");
     }
   }
 
@@ -112,8 +111,6 @@ export default function FormPostProduct({ value }) {
       ...input,
       [e.target.name]: e.target.value,
     });
-    console.log("input", input);
-    // console.log("error", errors);
   }
 
   function handlerSubmit(e) {
@@ -122,7 +119,7 @@ export default function FormPostProduct({ value }) {
     if (
       input.name &&
       input.description &&
-      input.Category &&
+      input.category &&
       input.image &&
       input.price &&
       input.stock
@@ -134,7 +131,7 @@ export default function FormPostProduct({ value }) {
         setInput({
           name: "",
           description: "",
-          Category: "",
+          category: "",
           image: "",
           price: "",
           stock: "",
@@ -144,19 +141,21 @@ export default function FormPostProduct({ value }) {
         dispatch(postOrUpdateProduct(input, value, paramsId.id));
         setIsIncomplete(false);
         setInfoSend(true);
-        // document.getElementById("myForm").reset();
       }
+    } else {
+      setIsIncomplete(true);
     }
   }
+  
   useEffect(() => {
     dispatch(getProductDetailAdmin(paramsId.id));
   }, [dispatch]);
 
   useEffect(() => {
-    if (value === "update") {
+    if (value === "updateProduct") {
       completeProductData();
     }
-  }, [product2, value]);
+  }, [product, value]);
 
   useEffect(() => {
     setInput({
@@ -164,10 +163,11 @@ export default function FormPostProduct({ value }) {
       image: image,
     });
   }, [image]);
+
   return (
     <Box>
       {isIncomplete ? <ErrorForm /> : null}
-      {infoSend ? <SuccedForm /> : null}
+      {infoSend && isIncomplete === false ? <SuccedForm /> : null}
       <form id="myForm">
         <Flex
           minH={"100vh"}
@@ -176,7 +176,7 @@ export default function FormPostProduct({ value }) {
           bg={"brand.green.100"}
         >
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-                        <Link to={"/dashboard"}>
+            <Link to={"/dashboard"}>
               <Icon
                 as={MdArrowBackIosNew}
                 color="orange.400"
@@ -233,7 +233,7 @@ export default function FormPostProduct({ value }) {
                 <HStack>
                   <Box>
                     <FormControl id="name" isRequired>
-                      <FormLabel>Nombre: </FormLabel>
+                      <FormLabel>Nombre</FormLabel>
                       <Input
                         placeholder="¿Que vas a vender?"
                         type="text"
@@ -247,7 +247,7 @@ export default function FormPostProduct({ value }) {
 
                   <Box>
                     <FormControl id="price" isRequired>
-                      <FormLabel>Precio: $</FormLabel>
+                      <FormLabel>Precio (ARS)</FormLabel>
                       <Input
                         placeholder="¿Cuanto cuesta?"
                         name="price"
@@ -260,16 +260,14 @@ export default function FormPostProduct({ value }) {
                   </Box>
                 </HStack>
 
-                <FormControl id="Category" isRequired>
+                <FormControl id="category" isRequired>
+                  <FormLabel> Categoría</FormLabel>
                   <Select
-                    name="Category"
-                    key="Category"
-                    value={input.Category}
+                    name="category"
+                    key="category"
+                    value={input.category || ""}
                     onChange={(e) => handlerChange(e)}
                   >
-                    <option value="default" key="defaultCategory">
-                      Categoria del producto
-                    </option>
                     <option value="indumentaria" key="indumentaria">
                       Indumentaria
                     </option>
@@ -286,7 +284,7 @@ export default function FormPostProduct({ value }) {
                 </FormControl>
 
                 <FormControl id="stock" isRequired>
-                  <FormLabel>Stock: </FormLabel>
+                  <FormLabel>Stock</FormLabel>
                   <Input
                     placeholder="Cantidad disponible"
                     name="stock"
@@ -298,7 +296,7 @@ export default function FormPostProduct({ value }) {
                 </FormControl>
 
                 <FormControl id="description">
-                  <FormLabel>Descripcion: </FormLabel>
+                  <FormLabel>Descripcion</FormLabel>
                   <Input
                     placeholder="Algún comentario sobre el producto"
                     name="description"
@@ -344,7 +342,7 @@ export default function FormPostProduct({ value }) {
                         bg: "orange.400",
                       }}
                     >
-                      Guardar
+                      Actualizar
                     </Button>
                   )}
                 </Stack>

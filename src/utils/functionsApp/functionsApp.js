@@ -366,8 +366,8 @@ export function isAdm(handleSetUserFlag, setUsuario, usuario, token) {
         ></Route>
         <Route
           exact
-          path="/dashboard/updateProduct"
-          element={<FormPostProduct />}
+          path="/dashboard/updateProduct/:id"
+          element={<FormPostProduct value={"updateProduct"}/>}
         ></Route>
         <Route
           path="*"
