@@ -24,8 +24,8 @@ import {
 const validateForm = (input) => {
 	let inputError = {};
 
-	if (input.species === "" || !input.species.length) {
-		inputError.species = "Selecciona gato o perro";
+	if (input.specie === "" || !input.specie.length) {
+		inputError.specie = "Selecciona gato o perro";
 	}
 	if (input.sex === "" || !input.sex.length) {
 		inputError.sex = `Selecciona macho o hembra`;
@@ -63,7 +63,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 	const paramsId = useParams().id;
 	const petData = useSelector((state) => state.petDetails);
 	const [input, setInput] = useState({
-		species: "",
+		specie: "",
 		sex: "",
 		age: "",
 		size: "",
@@ -75,7 +75,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 	
 	function dataEmptied() {
 	setInput({
-		species: "",
+		specie: "",
 		sex: "",
 		age: "",
 		size: "",
@@ -90,7 +90,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 		if(petData) {
 			console.log("SETEANDO INPUT CON FN");
 			setInput({
-				species: petData.species || "",
+				specie: petData.specie || "",
 				sex: petData.sex || "",
 				age: petData.age || "",
 				size: petData.size || "",
@@ -117,7 +117,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 	const handlerSubmit = (e) => {
 		e.preventDefault();
 		if (
-			input.species &&
+			input.specie &&
 			input.sex &&
 			input.age &&
 			input.size &&
@@ -194,12 +194,12 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 							<Stack spacing={4}>
 								<HStack>
 									<Box>
-									  <FormControl id="species" isRequired>
+									  <FormControl id="specie" isRequired>
 									    <Select
 									    	focusBorderColor={"brand.green.300"}
 									    	fontFamily={"body"}
-									    	name="species"
-									    	value={input.species}
+									    	name="specie"
+									    	value={input.specie}
 									    	onChange={(e) => handlerChange(e)}>
 									    	<option
 									    		value=""
@@ -214,9 +214,9 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 									    		Perrx
 									    	</option>
 									    </Select>
-									    {inputError.species && (
+									    {inputError.specie && (
 									    	<Text className="text_inputError">
-									    		{inputError.species}
+									    		{inputError.specie}
 									    	</Text>
 									    )}
 									  </FormControl>
