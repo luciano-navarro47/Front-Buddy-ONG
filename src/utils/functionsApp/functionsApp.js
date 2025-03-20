@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "../../Componets/LandingPage/LandingPage";
-import Donate from "../../Componets/Donate/Donate";
+import Donation from "../../Componets/Donation/Donation";
 import Veterinaries from "../../Componets/Veterinaries/Veterinaries";
 import AboutUs from "../../Componets/AboutUs/AboutUs";
 import Pets from "../../Componets/Adoption/Pets";
@@ -42,7 +42,7 @@ export function isNotLogged(handleSetUserFlag, setUsuario) {
         <Route
           exact
           path="/donate"
-          element={<Donate handleSetUserFlag={handleSetUserFlag} />}
+          element={<Donation handleSetUserFlag={handleSetUserFlag} />}
         ></Route>
         <Route
           exact
@@ -126,7 +126,7 @@ export function isUser(handleSetUserFlag, setUsuario, usuario, token) {
         <Route
           exact
           path="/donate"
-          element={<Donate handleSetUserFlag={handleSetUserFlag} />}
+          element={<Donation handleSetUserFlag={handleSetUserFlag} />}
         ></Route>
         <Route
           exact
@@ -268,7 +268,7 @@ export function isAdm(handleSetUserFlag, setUsuario, usuario, token) {
         <Route
           exact
           path="/donate"
-          element={<Donate handleSetUserFlag={handleSetUserFlag} />}
+          element={<Donation handleSetUserFlag={handleSetUserFlag} />}
         ></Route>
         <Route
           exact

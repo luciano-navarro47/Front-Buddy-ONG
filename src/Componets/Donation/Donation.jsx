@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import mercadoPago from "../../assets/imagenes/mercadoPago.png";
@@ -17,49 +17,46 @@ import {
 
 import axios from "axios";
 import { HOST } from "../../utils";
-const Donate = ({ handleSetUserFlag }) => {
+
+const Donation = ({ handleSetUserFlag }) => {
   const url = `${HOST}`;
 
-
-  const payMp = async (e) => {
-    const value = e.target.value;
-    const unit_price = parseInt(value);
-    const donation ={
-      unit_price: unit_price,
-      title: "Gracias por su colaboración"
-   }
-    axios
-      .post(`${url}/donation`, {
-        donation,
-      })
-      .then((response) => {
-        window.open(response.data, "_blank");
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handlePayment = async (value) => {
+    const donation = {
+      unit_price: parseInt(value),
+      title: "Gracias por su colaboración",
+    };
+    try {
+      const response = await axios.post(`${url}/donation`, { donation });
+      window.open(response.data, "_blank");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const subscription = async () => {
-    // const user = JSON.parse(window.localStorage.getItem("loggedUser"));
-    // const email = user.map((e) => e.email);
-    axios
-      .post(`${url}/donation/subscription`, {
-        email: "test_user_1305654611@testuser.com",
-      })
-      .then((response) => {
-        console.log("LINK" + response.data);
-        window.open(response.data, "_blank");
-      })
-      .catch((error) => {
-        console.log(error);
+  const handleSubscription = async () => {
+    const user = JSON.parse(localStorage.getItem("loggedUser"));
+    const email = user[0].email;
+
+    if (!email) {
+      console.error("The email was not found in localStorage");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${url}/donation/subscription`, {
+        email,
       });
+      window.open(response.data, "_blank");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
-      <Box minHeight={"100vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
+      <Navbar handleSetUserFlag={handleSetUserFlag} />
+      <Box minHeight={"100vh"} bg="brand.background" paddingBottom={"3rem"}>
         <Box maxW="7xl" mx={"auto"} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
           <chakra.h1
             textAlign={"center"}
@@ -98,7 +95,7 @@ const Donate = ({ handleSetUserFlag }) => {
           </Text>
           <Center>
             {" "}
-            <Image src={mercadoPago}></Image>
+            <Image src={mercadoPago} />
           </Center>
 
           <chakra.h1
@@ -109,43 +106,23 @@ const Donate = ({ handleSetUserFlag }) => {
             color={"brand.darkBlue"}
             fontFamily={"heading"}
           >
-            Aporte unico
+            Aporte único
           </chakra.h1>
 
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={{ base: 5, lg: 8 }}>
-            <Button
-              bg={"brand.orange"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "brand.darkBlue" }}
-              fontFamily={"body"}
-              onClick={(e) => payMp(e)}
-              value="500"
-            >
-              $500
-            </Button>
-            <Button
-              bg={"brand.orange"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "brand.darkBlue" }}
-              fontFamily={"body"}
-              onClick={(e) => payMp(e)}
-              value="1000"
-            >
-              $1000
-            </Button>
-            <Button
-              bg={"brand.orange"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "brand.darkBlue" }}
-              fontFamily={"body"}
-              onClick={(e) => payMp(e)}
-              value="2000"
-            >
-              $2000
-            </Button>
+            {[500, 1000, 2000].map((value) => (
+              <Button
+                key={value}
+                bg={"brand.orange"}
+                rounded={"full"}
+                color={"white"}
+                _hover={{ bg: "brand.darkBlue" }}
+                fontFamily={"body"}
+                onClick={() => handlePayment(value)}
+              >
+                ${value}
+              </Button>
+            ))}
           </SimpleGrid>
           <Box py={20}>
             <Button
@@ -154,7 +131,7 @@ const Donate = ({ handleSetUserFlag }) => {
               color={"white"}
               _hover={{ bg: "brand.orange" }}
               fontFamily={"body"}
-              onClick={() => subscription()}
+              onClick={handleSubscription}
               size={"lg"}
             >
               Suscribite para ayudarnos mensualmente
@@ -167,4 +144,4 @@ const Donate = ({ handleSetUserFlag }) => {
   );
 };
 
-export default Donate;
+export default Donation;
