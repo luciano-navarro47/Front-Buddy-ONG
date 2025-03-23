@@ -36,10 +36,8 @@ const Login = ({ loggedUser, handleSetUserFlag }) => {
 
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("loggedUser")) || null
-  );
-
+  const [user, setUser] = useState("");
+  console.log("USERR LOGIN: ", user);
   const handleChange = (e) => {
     const { name, value } = e.target;
     const updatedInput = { ...input, [name]: value };
@@ -51,6 +49,7 @@ const Login = ({ loggedUser, handleSetUserFlag }) => {
 
   const closeSession = () => {
     localStorage.removeItem("loggedUser");
+    setUser(null);
     handleSetUserFlag();
     logout({ returnTo: window.location.origin });
     navigate("/");

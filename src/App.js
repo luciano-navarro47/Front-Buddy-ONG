@@ -9,18 +9,18 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
 
 function App() {
+  // const loggedUser = localStorage.getItem("loggedUser");
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState("");
-  const loggedUser = localStorage.getItem("loggedUser");
   const [userFlag, setUserFlag] = useState(false);
-  const [usuario, setUsuario] = useState([]);
+  const [usuario, setUsuario] = useState("");
+
+  console.log("USER IN APP: ", usuario);
 
   function handleSetUserFlag() {
     if (userFlag) {
-      console.log("Seteando userFlag false");
       setUserFlag(false);
     } else {
-      console.log("Seteando userFlag true");
       setUserFlag(true);
     }
   }
@@ -34,18 +34,11 @@ function App() {
   }, [getAccessTokenSilently]);
 
   useEffect(() => {
-    console.log("LoggedUser: ", JSON.parse(localStorage.getItem("loggedUser")));
-    if (loggedUser) {
-      const logged = JSON.parse(loggedUser);
-      setUsuario(logged);
-    } else {
-      console.log("Seteando usuario en [] useEffect App.js");
-      setUsuario([]);
-    }
-  }, [loggedUser]);
+    const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    setUsuario(storedUser || []);
+  }, [userFlag]);
 
   useEffect(() => {
-    console.log("USUARIO APP", usuario);
   }, [userFlag, usuario]);
 
   if (usuario[0]?.status === "banned") {
