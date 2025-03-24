@@ -9,8 +9,7 @@ import {
 import { HOST } from "../../utils";
 import axios from "axios";
 
-// USERS
-export function getAllUsers() {
+export const getAllUsers = () => {
   return async function (dispatch) {
     try {
       const json = await axios.get("http://localhost:3001/users");
@@ -22,9 +21,9 @@ export function getAllUsers() {
       console.log(error);
     }
   };
-}
+};
 
-export function postUser(formInput) {
+export const postUser = (formInput) => {
   return async function (dispatch) {
     try {
       await axios.post(`${HOST}/users`, formInput);
@@ -35,9 +34,9 @@ export function postUser(formInput) {
       console.log(error);
     }
   };
-}
+};
 
-export function updateUser(userID, formInput) {
+export const updateUser = (userID, formInput) => {
   return async function (dispatch) {
     try {
       console.log("Action updateUSER", userID);
@@ -50,9 +49,9 @@ export function updateUser(userID, formInput) {
       console.log("Action updateUSER", userID, formInput);
     }
   };
-}
+};
 
-export function getUserId(id) {
+export const getUserId = (id) => {
   return async function (dispatch) {
     try {
       const json = await axios.get(`http://localhost:3001/users/${id}`);
@@ -61,7 +60,7 @@ export function getUserId(id) {
       console.log(error);
     }
   };
-}
+};
 
 export const setUserState = (userData) => {
   return function (dispatch) {
@@ -111,3 +110,46 @@ export function checkUsernameAvailability(username) {
     }
   };
 }
+
+export const loginUser = async (
+  userData,
+  dispatch,
+  setUser,
+  setInputErrors,
+  navigate
+) => {
+  try {
+    const response = await axios.post("http://localhost:3001/login", userData, {
+      withCredentials: true,
+    });
+
+    if (response.data.token) {
+      handleSuccessfulLogin(response.data, dispatch, setUser, navigate);
+    }
+  } catch (error) {
+    handleLoginError(error, setInputErrors);
+  }
+};
+
+const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
+  dispatch(setUserState(data.user));
+  setUser(data.user);
+  localStorage.setItem("authToken", data.token);
+  localStorage.setItem("loggedUser", JSON.stringify(data.user));
+  navigate("/home");
+};
+
+const handleLoginError = (error, setInputErrors) => {
+  const errorMessages = {
+    "Wrong Email": { email: "Correo electrónico incorrecto" },
+    "Wrong password": { password: "Contraseña incorrecta" },
+  };
+
+  const errorMessage = error.response?.data?.error;
+  if (errorMessage && errorMessages[errorMessage]) {
+    setInputErrors((prevErrors) => ({
+      ...prevErrors,
+      ...errorMessages[errorMessage],
+    }));
+  }
+};

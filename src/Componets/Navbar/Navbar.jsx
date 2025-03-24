@@ -40,7 +40,10 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
   const navigate = useNavigate();
   const userInfo = useSelector((state) => state.dbUser);
 
+  
   console.log("USER NAV: ", dbUser);
+  console.log("STORED USER: ", localStorage.getItem("loggedUser"));
+
   // console.log("TOKEN SETTED: ", localStorage.getItem("authToken"));
   // console.log("IS AUTH?: ", isAuthenticated);
 
@@ -311,7 +314,7 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
               </NavLink>
               <MenuDivider />
               <MenuList>
-                {dbUser ? (
+                {Object.keys(dbUser) > 0 ? (
                   <>
                     <NavLink to="/updateUser">
                       <MenuItem>Modifica tus datos</MenuItem>

@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -13,23 +12,8 @@ import {
   Center,
 } from "@chakra-ui/react";
 
-import { setUserState } from "../../Redux/Actions/userActions";
-
-function validateForm(input) {
-  const errors = {};
-
-  if (!input.email) {
-    errors.email = "Ingresa tu correo electrónico";
-  } else if (!/\S+@\S+\.\S+/.test(input.email)) {
-    errors.email = "El correo eletrónico no es válido";
-  }
-
-  if (!input.password) {
-    errors.password = "Ingresa tu contraseña";
-  }
-
-  return errors;
-}
+import { loginUser } from "../../Redux/Actions/userActions";
+import { validateLoginForm } from "../../utils/formValidations/loginForm";
 
 const Login = ({ handleSetUserFlag }) => {
   const dispatch = useDispatch();
@@ -37,53 +21,21 @@ const Login = ({ handleSetUserFlag }) => {
   const {
     isAuthenticated,
     loginWithRedirect,
-    user: auth0User,
+    // user: auth0User,
     // logout,
   } = useAuth0();
 
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
   const [user, setUser] = useState({});
-  const [
-    // auth0UserState,
-    setAuth0userState,
-  ] = useState(auth0User);
+  // const [auth0UserState, setAuth0userState] = useState(auth0User);
 
-  const loginPost = async (formData) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/login",
-        formData,
-        { withCredentials: true }
-      );
-      if (
-        response.data.error &&
-        response.data.error === "Correo electrónico incorrecto"
-      ) {
-        setInputErrors((prevErrors) => ({
-          ...prevErrors,
-          email: "Correo eletrónico incorrecto",
-        }));
-      } else if (response.data.error === "Contraseña incorrecta") {
-        setInputErrors((prevErrors) => ({
-          ...prevErrors,
-          password: "Contraseña incorrecta",
-        }));
-      }
-
-      if (response.data.token) {
-        dispatch(setUserState(response.data.user));
-        setUser(response.data.user);
-        localStorage.setItem("authToken", response.data.token);
-        localStorage.setItem("loggedUser", JSON.stringify(response.data.user));
-        navigate("/home");
-      }
-    } catch (error) {
-      const errorMessage =
-        "Error inesperado: " + error.response?.data.error || error.message;
-      alert(errorMessage);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (storedUser) {
+      setUser(storedUser);
     }
-  };
+  }, []);
 
   const closeSession = () => {
     // logout({ returnTo: window.location.origin });
@@ -97,30 +49,21 @@ const Login = ({ handleSetUserFlag }) => {
     const { name, value } = e.target;
     const updatedInput = { ...input, [name]: value };
     setInput(updatedInput);
-
-    const errors = validateForm(updatedInput);
-    setInputErrors(errors);
+    setInputErrors(validateLoginForm(updatedInput));
   };
 
-  const handlerSubmit = (e) => {
+  const handlerSubmit = async (e) => {
     e.preventDefault();
-    const errors = validateForm(input);
+    const errors = validateLoginForm(input);
+
     if (Object.keys(errors).length === 0) {
-      loginPost(input);
+      await loginUser(input, dispatch, setUser, setInputErrors, navigate);
     } else {
       setInputErrors(errors);
     }
   };
 
-  useEffect(() => {
-    if (auth0User) {
-      // navigate("/home");
-      setAuth0userState(auth0User);
-    }
-  }, [auth0User, setAuth0userState]);
-
   if (isAuthenticated || Object.keys(user).length > 0) {
-    console.log("USER EMPTY? ", Object.keys(user).length > 0);
     return (
       <Box display="flex" flexDirection="column">
         <Button
@@ -139,7 +82,6 @@ const Login = ({ handleSetUserFlag }) => {
 
   return (
     <div>
-      {/* {" "} */}
       <div>
         <form>
           <Box as={"form"} mt={1}>
@@ -276,8 +218,6 @@ const Login = ({ handleSetUserFlag }) => {
         </Box>
       </Center>
     </div>
-    // )}
-    // </>
   );
 };
 
