@@ -1,34 +1,36 @@
-import { Route, Routes } from "react-router-dom";
-import LandingPage from "../../Componets/LandingPage/LandingPage";
-import Donation from "../../Componets/Donation/Donation";
-import Veterinaries from "../../Componets/Veterinaries/Veterinaries";
+import { Route, Routes, Navigate } from "react-router-dom";
+
 import AboutUs from "../../Componets/AboutUs/AboutUs";
-import Pets from "../../Componets/Adoption/Pets";
-import CreateUserAuth0 from "../../Componets/CreateUserAuth0/CreateUserAuth0";
-import NotFound from "../../Componets/NotFound/NotFound";
-import Home from "../../Componets/Home/Home";
-import FormPostUser from "../../Componets/FormPostUser/FormPostUser";
 import Banned from "../../Componets/Banned/Banned";
-import ProductDetail from "../../Componets/Shop/ProductDetail/ProductDetail";
 import Cart from "../../Componets/Shop/Cart/Cart";
-import Shop from "../../Componets/Shop/Shop";
-import FormPostPet from "../../Componets/FormPostPet/FormPostPet";
+import CreateUserAuth0 from "../../Componets/CreateUserAuth0/CreateUserAuth0";
+import DashboardAdmin from "../../Componets/DashboardAdmin/DashboardAdmin/DashboardAdmin";
 import Details from "../../Componets/Details/Details";
-import { MyPets } from "../../Componets/MyPets/MyPets";
-import VetsDetails from "../../Componets/VetsDetail/VetsDetail";
+import Donation from "../../Componets/Donation/Donation";
 import FormAffiliateVets from "../../Componets/DashboardAdmin/Dashboard/FormAffiliateVets";
 import FormPostProduct from "../../Componets/DashboardAdmin/Dashboard/FormPostProduct";
-import DashboardAdmin from "../../Componets/DashboardAdmin/DashboardAdmin/DashboardAdmin";
+import FormPostPet from "../../Componets/FormPostPet/FormPostPet";
+import FormPostUser from "../../Componets/FormPostUser/FormPostUser";
+import Home from "../../Componets/Home/Home";
+import LandingPage from "../../Componets/LandingPage/LandingPage";
+import NotFound from "../../Componets/NotFound/NotFound";
+import Pets from "../../Componets/Adoption/Pets";
+import ProductDetail from "../../Componets/Shop/ProductDetail/ProductDetail";
+import Shop from "../../Componets/Shop/Shop";
+import Veterinaries from "../../Componets/Veterinaries/Veterinaries";
+import VetsDetails from "../../Componets/VetsDetail/VetsDetail";
+import { MyPets } from "../../Componets/MyPets/MyPets";
 
 export function isNotLogged(handleSetUserFlag, setUsuario) {
   return (
     <div>
       <Routes>
+        <Route path="/" element={<Navigate to="/home" />} />
         <Route
           exact
-          path="/"
+          path="/login"
           element={<LandingPage handleSetUserFlag={handleSetUserFlag} />}
-        ></Route>
+        />
         <Route
           exact
           path="/home"
@@ -149,7 +151,7 @@ export function isUser(handleSetUserFlag, setUsuario, usuario, token) {
         <Route exact path="/createAuth0" element={<CreateUserAuth0 />}></Route>
         <Route
           exact
-          path="/"
+          path="/login"
           element={<LandingPage handleSetUserFlag={handleSetUserFlag} />}
         ></Route>
         <Route exact path="/createUser" element={<FormPostUser />}></Route>
@@ -367,7 +369,7 @@ export function isAdm(handleSetUserFlag, setUsuario, usuario, token) {
         <Route
           exact
           path="/dashboard/updateProduct/:id"
-          element={<FormPostProduct value={"updateProduct"}/>}
+          element={<FormPostProduct value={"updateProduct"} />}
         ></Route>
         <Route
           path="*"

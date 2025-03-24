@@ -13,9 +13,9 @@ function App() {
   const { getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState("");
   const [userFlag, setUserFlag] = useState(false);
-  const [usuario, setUsuario] = useState("");
+  const [usuario, setUsuario] = useState({});
 
-  console.log("USER IN APP: ", usuario);
+  // console.log("USER IN APP: ", usuario);
 
   function handleSetUserFlag() {
     if (userFlag) {
@@ -35,6 +35,7 @@ function App() {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    // console.log("TRIGGER STORE USER",storedUser);
     setUsuario(storedUser || []);
   }, [userFlag]);
 

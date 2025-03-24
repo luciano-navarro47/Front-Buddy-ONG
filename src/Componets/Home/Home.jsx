@@ -23,7 +23,10 @@ import {
   StatNumber,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
+import { 
+  useDispatch, 
+  // useSelector 
+} from "react-redux";
 import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
 
 function StatsCard({ icon, title, stat }) {
@@ -59,13 +62,14 @@ function StatsCard({ icon, title, stat }) {
 const Home = ({ setUsuario2, handleSetUserFlag }) => {
   // console.log("HOME: handleSetUserFlag: ", handleSetUserFlag);
   // const { user } = useAuth0();
+  // const veterinaries = useSelector((state) => state.allVets);
   const dispatch = useDispatch();
-  const veterinaries = useSelector((state) => state.allVets);
+  const [usuario, setUsuario] = useState([]);
+  const navigate = useNavigate();
+  
   useEffect(() => {
     dispatch(getAllVeterinaries());
   }, [dispatch]);
-  const [usuario, setUsuario] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const loggedUser = localStorage.getItem("loggedUser");
@@ -74,6 +78,7 @@ const Home = ({ setUsuario2, handleSetUserFlag }) => {
       setUsuario(logged);
     }
   }, []);
+
   if (usuario[0]?.status === "banned") {
     navigate("/banned");
   }

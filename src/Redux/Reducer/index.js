@@ -1,8 +1,8 @@
 import {
   GET_PETS,
-  GET_ADOPTION_PETS,
+  // GET_ADOPTION_PETS,
   GET_PET_ID,
-  GET_LOST_PETS,
+  // GET_LOST_PETS,
   GET_CHECK_USERNAME,
   UPDATE_PET,
   DELETE_PET,
@@ -12,6 +12,7 @@ import {
   GET_ALL_USERS,
   GET_USER_ID,
   SET_STATUS_USER,
+  SET_USER,
   UPDATE_USER,
   POST_PRODUCT,
   POST_VET,
@@ -21,9 +22,9 @@ import {
   GET_PRODUCT_DETAIL,
   SHOP_SEARCH_INPUT_NAME,
   SHOP_FILTER_VALUE,
-  NEXT_PAGE, // se pueden sacar
-  PREV_PAGE, // se pueden sacar
-  ACTUAL_PAGE, // se pueden sacar
+  // NEXT_PAGE, // se pueden sacar
+  // PREV_PAGE, // se pueden sacar
+  // ACTUAL_PAGE, // se pueden sacar
   GET_VETERINARIES,
   GET_DETAILS_VETERINARIES,
   UPDATE_PRODUCT,
@@ -42,7 +43,7 @@ const initialState = {
   allVets: [],
   vetsDetail: {},
   allUsers: [],
-  user: [],
+  user: {},
   cart: [],
   functions: {},
 };
@@ -75,10 +76,11 @@ const RootReducer = (state = initialState, action) => {
           pets: action.payload.adoptionPets,
         };
       }
+      break;
     case GET_USER_ID:
       return {
         ...state,
-        user: action.payload,
+        dbUser: action.payload,
       };
     case GET_CHECK_USERNAME:
       return {
@@ -101,7 +103,7 @@ const RootReducer = (state = initialState, action) => {
     case POST_USER:
       return {
         ...state,
-        user: action.payload,
+        dbUser: action.payload,
       };
     case POST_PRODUCT:
       return {
@@ -118,7 +120,6 @@ const RootReducer = (state = initialState, action) => {
       } else {
         all = state.lostPets;
       }
-
       action.payload.arrayFilterValues.forEach((filterValue) => {
         if (filterValue === "macho" || filterValue === "hembra") {
           all = all.filter((pet) => pet.sex === filterValue);
@@ -200,6 +201,11 @@ const RootReducer = (state = initialState, action) => {
       return {
         ...state,
         vetsDetail: action.payload,
+      };
+    case SET_USER:
+      return {
+        ...state,
+        dbUser: action.payload,
       };
     case SET_STATUS_USER:
       return {

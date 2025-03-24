@@ -4,8 +4,9 @@ import {
   GET_CHECK_USERNAME,
   POST_USER,
   UPDATE_USER,
+  SET_USER,
 } from "../ActionTypes";
-import { HOST, header } from "../../utils";
+import { HOST } from "../../utils";
 import axios from "axios";
 
 // USERS
@@ -26,7 +27,7 @@ export function getAllUsers() {
 export function postUser(formInput) {
   return async function (dispatch) {
     try {
-      const newUser = await axios.post(`${HOST}/users`, formInput);
+      await axios.post(`${HOST}/users`, formInput);
       return dispatch({
         type: POST_USER,
       });
@@ -61,6 +62,19 @@ export function getUserId(id) {
     }
   };
 }
+
+export const setUserState = (userData) => {
+  return function (dispatch) {
+    try {
+      dispatch({
+        type: SET_USER,
+        payload: userData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 
 export function setStatusUser(id) {
   return async function (dispatch) {
