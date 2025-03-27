@@ -41,8 +41,8 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
   const userInfo = useSelector((state) => state.dbUser);
 
   
-  console.log("USER NAV: ", dbUser);
-  console.log("STORED USER: ", localStorage.getItem("loggedUser"));
+  // console.log("USER NAV: ", dbUser);
+  // console.log("STORED USER: ", localStorage.getItem("loggedUser"));
 
   // console.log("TOKEN SETTED: ", localStorage.getItem("authToken"));
   // console.log("IS AUTH?: ", isAuthenticated);
@@ -81,7 +81,7 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
 
   useEffect(() => {
     if (isAuthenticated && dbUser) {
-      console.log("ENTRE AL 2do TRIGGER");
+      // console.log("ENTRE AL 2do TRIGGER");
       localStorage.setItem("loggedUser", JSON.stringify(dbUser));
       setDbUser(dbUser);
       dispatch(getUserId(dbUser.sub));

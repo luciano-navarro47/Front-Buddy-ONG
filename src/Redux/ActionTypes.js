@@ -1,3 +1,6 @@
+// AUTH
+export const SET_TOKEN = "SET_TOKEN";
+
 // PET
 export const GET_PETS = "GET_PETS";
 export const GET_PET_ID = "GET_PET_ID";

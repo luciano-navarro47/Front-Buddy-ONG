@@ -14,19 +14,23 @@ import { store } from "../src/Redux/Store/Index";
 
 import { Auth0Provider } from "@auth0/auth0-react";
 
-const domain = process.env.AUTH0_ISSUER_BASE_URL;
-const clientID = process.env.AUTH0_CLIENT_ID;
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   // <React.StrictMode>
   <Auth0Provider
     domain={domain}
-    clientId={clientID}
+    clientId={clientId}
     authorizationParams={{
-      redirect_uri: "http://localhost:3000/createAuth0",
-      // audience: "http://animales.com",
+      redirect_uri: window.location.origin + "/home",
+      audience: "https://dev-oad6u8oyio8a678i.us.auth0.com/api/v2/",
     }}
-  >
+    cacheLocation="localstorage"
+    useRefreshTokens={true}
+    >
     <Provider store={store}>
       <BrowserRouter>
         <ChakraProvider theme={theme}>

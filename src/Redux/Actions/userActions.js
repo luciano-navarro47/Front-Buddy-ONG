@@ -53,6 +53,10 @@ export const updateUser = (userID, formInput) => {
 
 export const getUserId = (id) => {
   return async function (dispatch) {
+    if(!id){
+      console.warn("getUserId was called without an valid Id");
+      return;
+    }
     try {
       const json = await axios.get(`http://localhost:3001/users/${id}`);
       return dispatch({ type: GET_USER_ID, payload: json.data });

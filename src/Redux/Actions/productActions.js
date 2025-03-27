@@ -3,6 +3,8 @@ import {
   GET_PRODUCT_DETAIL,
   POST_PRODUCT,
   UPDATE_PRODUCT,
+  SHOP_FILTER_VALUE,
+  SHOP_SEARCH_INPUT_NAME
 } from "../ActionTypes";
 import { HOST, header } from "../../utils";
 import axios from "axios";
@@ -82,6 +84,32 @@ export function deleteProductAdmin(id) {
       });
     } catch (error) {
       console.log(error.message);
+    }
+  };
+}
+
+export function shopSearchInputName(input) {
+  return async function (dispatch) {
+    try {
+      return dispatch({
+        type: SHOP_SEARCH_INPUT_NAME,
+        payload: input,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
+export function shopFilterValue(value) {
+  return async function (dispatch) {
+    try {
+      dispatch({
+        type: SHOP_FILTER_VALUE,
+        payload: value,
+      });
+    } catch (error) {
+      console.log(error);
     }
   };
 }

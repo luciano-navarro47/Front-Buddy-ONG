@@ -79,7 +79,6 @@ export function isNotLogged(handleSetUserFlag, setUsuario) {
           path="*"
           element={<NotFound handleSetUserFlag={handleSetUserFlag} />}
         ></Route>
-        <Route exact path="/createAuth0" element={<CreateUserAuth0 />}></Route>
         <Route exact path="/createUser" element={<FormPostUser />}></Route>
         <Route
           exact
@@ -148,7 +147,7 @@ export function isUser(handleSetUserFlag, setUsuario, usuario, token) {
             />
           }
         ></Route>
-        <Route exact path="/createAuth0" element={<CreateUserAuth0 />}></Route>
+        {/* <Route exact path="/createAuth0" element={<CreateUserAuth0 />}></Route> */}
         <Route
           exact
           path="/login"

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useAuth0 } from "@auth0/auth0-react";
 import {
   Box,
   Stack,
@@ -11,34 +10,47 @@ import {
   Divider,
   Center,
 } from "@chakra-ui/react";
-
+import { useAuth0 } from "@auth0/auth0-react";
 import { loginUser } from "../../Redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
+// import { setAccessToken } from "../../Redux/Actions/auth";
 
 const Login = ({ handleSetUserFlag }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
+    user: auth0User,
     isAuthenticated,
+    // getAccessTokenSilently,
     loginWithRedirect,
-    // user: auth0User,
-    // logout,
+    logout,
   } = useAuth0();
 
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
   const [user, setUser] = useState({});
-  // const [auth0UserState, setAuth0userState] = useState(auth0User);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
-    if (storedUser) {
-      setUser(storedUser);
-    }
+
+    setUser(storedUser);
   }, []);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (isAuthenticated && auth0User) {
+  //       const accessToken = await getAccessTokenSilently();
+  //       console.log("LOGIN TOKEN: ", accessToken);
+  //       setAccessToken(accessToken);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [isAuthenticated, auth0User, getAccessTokenSilently]);
+
   const closeSession = () => {
-    // logout({ returnTo: window.location.origin });
+    if (auth0User) {
+      return logout({ returnTo: window.location.origin + "/home" });
+    }
     setUser({});
     localStorage.removeItem("loggedUser");
     handleSetUserFlag();
@@ -63,7 +75,7 @@ const Login = ({ handleSetUserFlag }) => {
     }
   };
 
-  if (isAuthenticated || Object.keys(user).length > 0) {
+  if (isAuthenticated || (user && Object.keys(user).length > 0)) {
     return (
       <Box display="flex" flexDirection="column">
         <Button
@@ -140,11 +152,11 @@ const Login = ({ handleSetUserFlag }) => {
               bg: "orange.400",
             }}
           >
-            Ingresar
+            Iniciar sesión
           </Button>
         </Box>
         <Box py="1rem">
-          <Text fontFamily={"body"}>No estás registrado?</Text>
+          <Text fontFamily={"body"}></Text>
           <Link to={`/createUser`}>
             <Text
               _hover={{
@@ -152,7 +164,7 @@ const Login = ({ handleSetUserFlag }) => {
                 fontWeight: "bold",
               }}
             >
-              hazlo aquí
+              ¿No estás registrado?
             </Text>
           </Link>
         </Box>
@@ -179,7 +191,7 @@ const Login = ({ handleSetUserFlag }) => {
           onClick={() => loginWithRedirect()}
         >
           <Text fontSize={{ base: "16px", sm: "16px", md: "16px", lg: "1rem" }}>
-            Ingresar Con Google{" "}
+            Ingresar con Google{" "}
           </Text>
         </Button>
       </Box>
