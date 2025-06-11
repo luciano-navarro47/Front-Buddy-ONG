@@ -53,7 +53,7 @@ export const updateUser = (userID, formInput) => {
 
 export const getUserId = (id) => {
   return async function (dispatch) {
-    if(!id){
+    if (!id) {
       console.warn("getUserId was called without an valid Id");
       return;
     }
@@ -120,26 +120,22 @@ export const loginUser = async (
   dispatch,
   setUser,
   setInputErrors,
-  navigate
+  navigate,
 ) => {
   try {
-    const response = await axios.post("http://localhost:3001/login", userData, {
+    const response = await axios.post(`${HOST}/login`, userData, {
       withCredentials: true,
     });
-
-    if (response.data.token) {
-      handleSuccessfulLogin(response.data, dispatch, setUser, navigate);
-    }
+    handleSuccessfulLogin(response.data, dispatch, setUser, navigate);
   } catch (error) {
     handleLoginError(error, setInputErrors);
   }
 };
 
-const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
+const handleSuccessfulLogin = (data, dispatch, setUser, navigate, ) => {
   dispatch(setUserState(data.user));
-  setUser(data.user);
-  localStorage.setItem("authToken", data.token);
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
+  setUser(data.user);
   navigate("/home");
 };
 

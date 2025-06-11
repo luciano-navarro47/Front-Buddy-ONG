@@ -205,7 +205,7 @@ const RootReducer = (state = initialState, action) => {
     case SET_USER:
       return {
         ...state,
-        dbUser: action.payload,
+        user: action.payload,
       };
     case SET_STATUS_USER:
       return {

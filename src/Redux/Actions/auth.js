@@ -9,7 +9,7 @@ export const setAccessToken = (token) => {
         return;
       }
       const decoded = jwtDecode(token);
-    //   console.log("DECODED: ", decoded);
+      // console.log("DECO: ", decoded);
       const payload = {
         token: token,
         exp: decoded.exp,

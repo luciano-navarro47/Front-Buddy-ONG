@@ -4,12 +4,7 @@ import { BsPerson } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { GoLocation } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
-import {
-  useDispatch,
-  useSelector,
-  // useSelector
-} from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   Box,
   Stack,
@@ -29,53 +24,14 @@ import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
 
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
-import { setAccessToken } from "../../Redux/Actions/auth";
 
-const Home = ({ setUsuario2, handleSetUserFlag }) => {
+const Home = ({ user, setUser, closeSession, isAuthenticated }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const veterinaries = useSelector((state) => state.allVets);
-  const {
-    user: auth0user,
-    getAccessTokenSilently,
-    isAuthenticated,
-    isLoading
-  } = useAuth0();
-  const expiresAt = useSelector((state) => state.auth.expiresAt);
-  const [user, setUser] = useState({});
-
-  console.log("EXP: ", expiresAt);
-  useEffect(() => {
-    if(isLoading) return;
-    async function fetchAcessToken() {
-      try {
-        if (!isAuthenticated) {
-          console.warn("The user is not authenticated");
-          return;
-        }
-        const token = await getAccessTokenSilently();
-        dispatch(setAccessToken(token));
-
-        localStorage.setItem("loggedUser", JSON.stringify(auth0user));
-      } catch (error) {
-        console.error("Error getting token: ", error);
-      }
-    }
-
-    fetchAcessToken();
-  }, [isAuthenticated, getAccessTokenSilently, dispatch]);
 
   useEffect(() => {
     dispatch(getAllVeterinaries());
   }, [dispatch]);
-
-  useEffect(() => {
-    const loggedUser = localStorage.getItem("loggedUser");
-    if (loggedUser) {
-      const logged = JSON.parse(loggedUser);
-      setUser(logged);
-    }
-  }, []);
 
   useEffect(() => {
     const safeuser =
@@ -118,7 +74,12 @@ const Home = ({ setUsuario2, handleSetUserFlag }) => {
 
   return (
     <>
-      <Navbar setUsuario2={setUser} handleSetUserFlag={handleSetUserFlag} />
+      <Navbar
+        user={user}
+        setUser={setUser}
+        closeSession={closeSession}
+        isAuthenticated={isAuthenticated}
+      />
       <Box minHeight={"100vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Flex
           w={"full"}

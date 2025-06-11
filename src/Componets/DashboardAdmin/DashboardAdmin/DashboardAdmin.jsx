@@ -8,7 +8,7 @@ const DashboardAdmin = () => {
     return(
         <Box bg="brand.green.200" vW="100%" vH='100%'>
             <TopNav/>
-            <Divider  />
+            <Divider />
             <Dashboard/>
         </Box>
     )

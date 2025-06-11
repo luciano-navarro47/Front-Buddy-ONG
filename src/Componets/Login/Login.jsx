@@ -10,52 +10,23 @@ import {
   Divider,
   Center,
 } from "@chakra-ui/react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { loginUser } from "../../Redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
-// import { setAccessToken } from "../../Redux/Actions/auth";
 
-const Login = ({ handleSetUserFlag }) => {
+const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    user: auth0User,
-    isAuthenticated,
-    // getAccessTokenSilently,
-    loginWithRedirect,
-    logout,
-  } = useAuth0();
+
+  const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
 
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
-  const [user, setUser] = useState({});
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
-
-    setUser(storedUser);
-  }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (isAuthenticated && auth0User) {
-  //       const accessToken = await getAccessTokenSilently();
-  //       console.log("LOGIN TOKEN: ", accessToken);
-  //       setAccessToken(accessToken);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [isAuthenticated, auth0User, getAccessTokenSilently]);
-
-  const closeSession = () => {
-    if (auth0User) {
-      return logout({ returnTo: window.location.origin + "/home" });
+    if(storedUser) {
+      setUser(storedUser);
     }
-    setUser({});
-    localStorage.removeItem("loggedUser");
-    handleSetUserFlag();
-    navigate("/home");
-  };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

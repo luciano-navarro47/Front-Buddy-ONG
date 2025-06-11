@@ -1,17 +1,12 @@
 import logo from "../../assets/imagenes/logo_negro.png";
-import { useAuth0 } from "@auth0/auth0-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-// import { GiSittingDog } from "react-icons/gi";
 
-import { useDispatch, useSelector } from "react-redux";
-import { getUserId } from "../../Redux/Actions/userActions";
 import {
   Box,
   Flex,
   Avatar,
   HStack,
-  // Link,
   IconButton,
   Button,
   Menu,
@@ -26,39 +21,21 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { useState } from "react";
 
-export default function Navbar({ setUser2, handleSetUserFlag }) {
-  const dispatch = useDispatch();
+export default function Navbar({
+  user,
+  setUser,
+  closeSession,
+  isAuthenticated,
+}) {
+  console.log("USER NAV: ", user);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { 
-    isAuthenticated, 
-    // authUser, 
-    // logout 
-  } = useAuth0();
-  const [dbUser, setDbUser] = useState({});
+
   const navigate = useNavigate();
-  const userInfo = useSelector((state) => state.dbUser);
-
-  
-  // console.log("USER NAV: ", dbUser);
-  // console.log("STORED USER: ", localStorage.getItem("loggedUser"));
-
-  // console.log("TOKEN SETTED: ", localStorage.getItem("authToken"));
-  // console.log("IS AUTH?: ", isAuthenticated);
-
-  const closeSession = () => {
-    localStorage.removeItem("loggedUser");
-    localStorage.removeItem("authToken");
-    setDbUser(null);
-    handleSetUserFlag();
-    // logout({ returnTo: window.location.origin });
-    // navigate("/login");
-  };
 
   const userPhone = (e) => {
     e.preventDefault();
-    if (userInfo[0]?.phone === "123456789") {
+    if (user?.phone === "123456789") {
       navigate("/updateUser");
       alert("Actualiza tu telefono para publicar");
     } else {
@@ -71,22 +48,6 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
     alert("Para publicar una mascota ingresa a tu cuenta");
     navigate("/");
   };
-  
-  useEffect(() => {
-    const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-    if (loggedUser) {
-      setDbUser(loggedUser);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isAuthenticated && dbUser) {
-      // console.log("ENTRE AL 2do TRIGGER");
-      localStorage.setItem("loggedUser", JSON.stringify(dbUser));
-      setDbUser(dbUser);
-      dispatch(getUserId(dbUser.sub));
-    }
-  }, [isAuthenticated, dbUser, dispatch]);
 
   return (
     <>
@@ -187,7 +148,7 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
                   Tienda
                 </Text>
               </NavLink>
-              {!dbUser ? (
+              {!user ? (
                 <NavLink
                   onClick={(e) => userAuth(e)}
                   px={2}
@@ -302,19 +263,20 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
                   borderBlockEndColor={"brand.orange"}
                   src={
                     isAuthenticated
-                      ? dbUser?.picture
+                      ? user?.picture
                       : "https://st2.depositphotos.com/19428878/44645/v/450/depositphotos_446453832-stock-illustration-default-avatar-profile-icon-social.jpg"
                   }
                 />
               </MenuButton>
               <NavLink to="/dashboard">
-                <MenuItem hidden={dbUser?.role === "admin" ? false : true}>
+                <MenuItem hidden={user?.role === "admin" ? false : true}>
                   Administrar cuenta
+                  {/* WORK HERE */}
                 </MenuItem>
               </NavLink>
               <MenuDivider />
               <MenuList>
-                {Object.keys(dbUser) > 0 ? (
+                {user && Object.keys(user).length > 0 ? (
                   <>
                     <NavLink to="/updateUser">
                       <MenuItem>Modifica tus datos</MenuItem>
@@ -327,7 +289,7 @@ export default function Navbar({ setUser2, handleSetUserFlag }) {
                     </MenuItem>
                   </>
                 ) : (
-                  <NavLink onClick={handleSetUserFlag} to="/login">
+                  <NavLink to="/login">
                     <MenuItem>Ingresar</MenuItem>
                   </NavLink>
                 )}
