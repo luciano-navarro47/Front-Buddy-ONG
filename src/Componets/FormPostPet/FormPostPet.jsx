@@ -410,7 +410,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 								</Stack>
 							</Stack>
 					  </Box>
-					  <Link to={"/home"}>
+					  <Link to={"/"}>
 							<Icon
 								as={MdArrowBackIosNew}
 								color="orange.400"

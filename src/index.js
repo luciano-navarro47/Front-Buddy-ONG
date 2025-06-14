@@ -24,7 +24,7 @@ root.render(
     domain={domain}
     clientId={clientId}
     authorizationParams={{
-      redirect_uri: window.location.origin + "/home",
+      redirect_uri: window.location.origin + "/",
       audience: "https://dev-oad6u8oyio8a678i.us.auth0.com/api/v2/",
     }}
     cacheLocation="localstorage"

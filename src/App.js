@@ -2,14 +2,15 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
-import { setAccessToken } from "./Redux/Actions/auth";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { setAccessToken } from "./Redux/Actions/auth";
+import { fetchAuth0User, postUser } from "./Redux/Actions/userActions";
+import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 
 import Home from "./Componets/Home/Home";
-import FormPostPet from "./Componets/FormPostPet/FormPostPet"
+import FormPostPet from "./Componets/FormPostPet/FormPostPet";
 import DashboardAdmin from "./Componets/DashboardAdmin/DashboardAdmin/DashboardAdmin";
 import NotFound from "./Componets/NotFound/NotFound";
-import { isBanned } from "./utils/functionsApp/functionsApp";
 import { PrivateRoute } from "./Componets/PrivateRoute/PrivateRoute";
 import LandingPage from "./Componets/LandingPage/LandingPage";
 
@@ -28,13 +29,16 @@ export const App = () => {
     loginWithRedirect,
   } = useAuth0();
 
+  // console.log("USER: ", user);
+
   const closeSession = () => {
     if (auth0User) {
-      logout({ returnTo: window.location.origin + "/home" });
+      logout({ returnTo: window.location.origin + "/" });
     }
     setUser(null);
     localStorage.removeItem("loggedUser");
-    navigate("/home");
+    localStorage.removeItem("alreadyUpserted");
+    navigate("/");
   };
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
@@ -42,33 +46,49 @@ export const App = () => {
       setUser(storedUser);
       setIsUserLoading(false);
     } else if (auth0User) {
-      setUser(auth0User);
-      localStorage.setItem("loggedUser", JSON.stringify(auth0User));
-      (async () => {
-        try {
-          const token = await getAccessTokenSilently();
-          if (token) {
-            dispatch(setAccessToken(token));
-          }
-        } catch (error) {
-          console.error("Error getting token: ", error);
-        } finally {
-          setIsUserLoading(false);
-        }
-      })();
+      const normalizedUser = normalizeAuth0User(auth0User);
+      // const alreadyUpserted = localStorage.getItem("alreadyUpserted");
+      let userExists;
+      dispatch(fetchAuth0User(normalizedUser.auth0Sub))
+        .then((userDb) => {
+          setUser(userDb);
+          userExists = true;
+          localStorage.setItem("loggedUser", JSON.stringify(userDb));
+        })
+        .catch((err) => console.error("Error fetching oauth user: ", err))
+        .finally(() => setIsUserLoading(false));
+
+      if (!userExists) {
+        dispatch(postUser(normalizedUser))
+          .then((userDb) => {
+            setUser(userDb);
+            localStorage.setItem("loggedUser", JSON.stringify(userDb));
+            localStorage.setItem("alreadyUpserted", "true");
+          })
+          .catch((err) => {
+            console.error("Error saving OAuth user: ", err);
+          })
+          .finally(() => {
+            setIsUserLoading(false);
+          });
+      }
+
+      getAccessTokenSilently()
+        .then((token) => setAccessToken(token))
+        .catch(console.error);
     } else {
       setIsUserLoading(false);
     }
   }, [auth0User, dispatch, getAccessTokenSilently]);
 
   if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
-  if (user?.status === "banned") return isBanned();
+  if (user?.status === "banned") return <p>User was banned from the app</p>;
 
   return (
     <Routes>
       {/* Pública */}
       <Route
-        path="/home"
+        path="/"
         element={
           <Home
             user={user}
@@ -97,19 +117,21 @@ export const App = () => {
       <Route
         path="/dashboard"
         element={
-          <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/home">
+          <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
             <DashboardAdmin />
           </PrivateRoute>
         }
       />
 
       {/* Registered Users */}
-      <Route path="/createPet" element={
-        <PrivateRoute isAllowed={!!user} redirectPath="/login">
-          <FormPostPet />
-        </PrivateRoute>
-      
-      }/>
+      <Route
+        path="/createPet"
+        element={
+          <PrivateRoute isAllowed={!!user} redirectPath="/login">
+            <FormPostPet />
+          </PrivateRoute>
+        }
+      />
 
       {/* fallbacks */}
       <Route path="*" element={<NotFound />} />

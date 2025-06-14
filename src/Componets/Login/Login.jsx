@@ -14,19 +14,12 @@ import { loginUser } from "../../Redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
 
 const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}) => {
+  // console.log("IS AUTH?: ", isAuthenticated);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
-
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
-
-  useEffect(() => {
-    if(storedUser) {
-      setUser(storedUser);
-    }
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +27,7 @@ const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}
     setInput(updatedInput);
     setInputErrors(validateLoginForm(updatedInput));
   };
-
+  
   const handlerSubmit = async (e) => {
     e.preventDefault();
     const errors = validateLoginForm(input);
@@ -50,7 +43,7 @@ const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}
     return (
       <Box display="flex" flexDirection="column">
         <Button
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
           colorScheme="teal"
           marginBottom="1rem"
         >
@@ -67,7 +60,7 @@ const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}
     <div>
       <div>
         <form>
-          <Box as={"form"} mt={1}>
+          <Box mt={1}>
             <Stack spacing={4}>
               <Input
                 type="email"
@@ -187,7 +180,7 @@ const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}
             fontWeight: "bold",
           }}
         >
-          <Link to={`/home`}>
+          <Link to={`/`}>
             <Text
               fontFamily={"body"}
               fontSize="1.2rem"

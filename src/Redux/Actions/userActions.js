@@ -23,15 +23,42 @@ export const getAllUsers = () => {
   };
 };
 
-export const postUser = (formInput) => {
+export const fetchAuth0User = (auth0Sub) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `${HOST}/user/oauth-user?id=${auth0Sub}`
+      );
+      const existingUser = response.data.user;
+      dispatch({
+        type: SET_USER,
+        payload: existingUser,
+      });
+      return existingUser;
+    } catch (error) {
+      throw error;
+    }
+  };
+};
+
+export const postUser = (user) => {
   return async function (dispatch) {
     try {
-      await axios.post(`${HOST}/users`, formInput);
-      return dispatch({
+      let response;
+      // Verified by OAuth
+      if (user.email_verified) {
+        response = await axios.post(`${HOST}/user/oauth-upsert`, user);
+      } else {
+        response = await axios.post(`${HOST}/user/register`, user);
+      }
+      const savedUser = response.data;
+      dispatch({
         type: POST_USER,
       });
+      return savedUser;
     } catch (error) {
       console.log(error);
+      throw error;
     }
   };
 };
@@ -39,7 +66,6 @@ export const postUser = (formInput) => {
 export const updateUser = (userID, formInput) => {
   return async function (dispatch) {
     try {
-      console.log("Action updateUSER", userID);
       await axios.put(`${HOST}/users/${userID}`, formInput);
 
       dispatch({
@@ -120,7 +146,7 @@ export const loginUser = async (
   dispatch,
   setUser,
   setInputErrors,
-  navigate,
+  navigate
 ) => {
   try {
     const response = await axios.post(`${HOST}/login`, userData, {
@@ -132,11 +158,11 @@ export const loginUser = async (
   }
 };
 
-const handleSuccessfulLogin = (data, dispatch, setUser, navigate, ) => {
+const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
   dispatch(setUserState(data.user));
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
   setUser(data.user);
-  navigate("/home");
+  navigate("/");
 };
 
 const handleLoginError = (error, setInputErrors) => {

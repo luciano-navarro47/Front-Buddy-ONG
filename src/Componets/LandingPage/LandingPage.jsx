@@ -209,7 +209,7 @@ const LandingPage = ({
               </Center>
             </Stack>
 
-            <Box as={"form"} mt={2}>
+            <Box mt={2}>
               <Stack spacing={1}>
                 <Login
                   name="Login"

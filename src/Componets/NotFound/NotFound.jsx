@@ -39,7 +39,7 @@ const NotFound = ({ handleSetUserFlag }) => {
           colorScheme="red"
           mb="5%"
           size="sm"
-          onClick={() => navigate("/home")}
+          onClick={() => navigate("/")}
         >
           Volver atras
         </Button>

@@ -192,7 +192,7 @@ export default function FormPostUser({ id, value }) {
           bg="brand.green.200"
         >
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-            <Link to={value === "update" ? "/home" : "/"}>
+            <Link to={value === "update" ? "/" : "/"}>
               <Icon
                 as={MdArrowBackIosNew}
                 color="orange.400"

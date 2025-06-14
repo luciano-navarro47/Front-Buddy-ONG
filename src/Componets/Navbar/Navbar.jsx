@@ -28,7 +28,6 @@ export default function Navbar({
   closeSession,
   isAuthenticated,
 }) {
-  console.log("USER NAV: ", user);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const navigate = useNavigate();
@@ -62,10 +61,9 @@ export default function Navbar({
           />
           <HStack spacing={8} alignItems={"center"}>
             <Box>
-              <NavLink to="/home">
+              <NavLink to="/">
                 <Image
                   src={logo}
-                  // alt="Dan Abramov"
                   boxSize="6rem"
                   mx="2rem"
                   my="1rem"
