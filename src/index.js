@@ -1,29 +1,35 @@
+import "./index.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { ChakraProvider } from "@chakra-ui/react";
+
+import reportWebVitals from "./reportWebVitals";
+import App from "./App";
+import { theme } from "./Componets/Theme";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "../src/Redux/Store/Index";
+
 import { Auth0Provider } from "@auth0/auth0-react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./Componets/Theme";
+
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
-const clientID = process.env.REACT_APP_AUTH0_CLIENT_ID;
-console.log("INDEX", process.env);
+const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
-  // <React.StrictMode>
   <Auth0Provider
     domain={domain}
-    clientId={clientID}
+    clientId={clientId}
     authorizationParams={{
-      redirect_uri: "http://localhost:3000/createAuth0",
-      // audience: "http://animales.com",
+      redirect_uri: window.location.origin + "/",
+      audience: "https://dev-oad6u8oyio8a678i.us.auth0.com/api/v2/",
     }}
-  >
+    cacheLocation="localstorage"
+    useRefreshTokens={true}
+    >
     <Provider store={store}>
       <BrowserRouter>
         <ChakraProvider theme={theme}>
@@ -32,10 +38,6 @@ root.render(
       </BrowserRouter>
     </Provider>
   </Auth0Provider>
-  // </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

@@ -1,58 +1,142 @@
 import "./App.css";
-import {
-  isNotLogged,
-  isBanned,
-  isUser,
-  isAdm,
-} from "./utils/functionsApp/functionsApp";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useAuth0 } from "@auth0/auth0-react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { setAccessToken } from "./Redux/Actions/auth";
+import { fetchAuth0User, postUser } from "./Redux/Actions/userActions";
+import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 
-function App() {
-  // const loggedUser = localStorage.getItem("loggedUser");
-  const { getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState("");
-  const [userFlag, setUserFlag] = useState(false);
-  const [usuario, setUsuario] = useState("");
+import Home from "./Componets/Home/Home";
+import FormPostPet from "./Componets/FormPostPet/FormPostPet";
+import DashboardAdmin from "./Componets/DashboardAdmin/DashboardAdmin/DashboardAdmin";
+import NotFound from "./Componets/NotFound/NotFound";
+import { PrivateRoute } from "./Componets/PrivateRoute/PrivateRoute";
+import LandingPage from "./Componets/LandingPage/LandingPage";
 
-  console.log("USER IN APP: ", usuario);
+export const App = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [isUserLoading, setIsUserLoading] = useState(true);
 
-  function handleSetUserFlag() {
-    if (userFlag) {
-      setUserFlag(false);
-    } else {
-      setUserFlag(true);
+  const {
+    isLoading,
+    isAuthenticated,
+    user: auth0User,
+    getAccessTokenSilently,
+    logout,
+    loginWithRedirect,
+  } = useAuth0();
+
+  // console.log("USER: ", user);
+
+  const closeSession = () => {
+    if (auth0User) {
+      logout({ returnTo: window.location.origin + "/" });
     }
-  }
-
-  useEffect(() => {
-    const validator = async () => {
-      const isVerify = await getAccessTokenSilently();
-      setToken(isVerify);
-    };
-    validator();
-  }, [getAccessTokenSilently]);
-
+    setUser(null);
+    localStorage.removeItem("loggedUser");
+    localStorage.removeItem("alreadyUpserted");
+    navigate("/");
+  };
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
-    setUsuario(storedUser || []);
-  }, [userFlag]);
+    if (storedUser) {
+      setUser(storedUser);
+      setIsUserLoading(false);
+    } else if (auth0User) {
+      const normalizedUser = normalizeAuth0User(auth0User);
+      // const alreadyUpserted = localStorage.getItem("alreadyUpserted");
+      let userExists;
+      dispatch(fetchAuth0User(normalizedUser.auth0Sub))
+        .then((userDb) => {
+          setUser(userDb);
+          userExists = true;
+          localStorage.setItem("loggedUser", JSON.stringify(userDb));
+        })
+        .catch((err) => console.error("Error fetching oauth user: ", err))
+        .finally(() => setIsUserLoading(false));
 
-  useEffect(() => {
-  }, [userFlag, usuario]);
+      if (!userExists) {
+        dispatch(postUser(normalizedUser))
+          .then((userDb) => {
+            setUser(userDb);
+            localStorage.setItem("loggedUser", JSON.stringify(userDb));
+            localStorage.setItem("alreadyUpserted", "true");
+          })
+          .catch((err) => {
+            console.error("Error saving OAuth user: ", err);
+          })
+          .finally(() => {
+            setIsUserLoading(false);
+          });
+      }
 
-  if (usuario[0]?.status === "banned") {
-    return isBanned();
-  }
-  if (usuario[0] === undefined) {
-    return isNotLogged(handleSetUserFlag, setUsuario);
-  }
-  if (usuario[0]?.role === "admin") {
-    return isAdm(handleSetUserFlag, setUsuario, usuario[0], token);
-  }
-  if (usuario[0]?.role === "user") {
-    return isUser(handleSetUserFlag, setUsuario, usuario[0], token);
-  }
-}
+      getAccessTokenSilently()
+        .then((token) => setAccessToken(token))
+        .catch(console.error);
+    } else {
+      setIsUserLoading(false);
+    }
+  }, [auth0User, dispatch, getAccessTokenSilently]);
+
+  if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
+  if (user?.status === "banned") return <p>User was banned from the app</p>;
+
+  return (
+    <Routes>
+      {/* Pública */}
+      <Route
+        path="/"
+        element={
+          <Home
+            user={user}
+            setUser={setUser}
+            closeSession={closeSession}
+            isAuthenticated={isAuthenticated}
+          />
+        }
+      />
+
+      {/* Login */}
+      <Route
+        path="/login"
+        element={
+          <LandingPage
+            user={user}
+            setUser={setUser}
+            closeSession={closeSession}
+            isAuthenticated={isAuthenticated}
+            loginWithRedirect={loginWithRedirect}
+          />
+        }
+      />
+
+      {/* Admins */}
+      <Route
+        path="/dashboard"
+        element={
+          <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
+            <DashboardAdmin />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Registered Users */}
+      <Route
+        path="/createPet"
+        element={
+          <PrivateRoute isAllowed={!!user} redirectPath="/login">
+            <FormPostPet />
+          </PrivateRoute>
+        }
+      />
+
+      {/* fallbacks */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 export default App;

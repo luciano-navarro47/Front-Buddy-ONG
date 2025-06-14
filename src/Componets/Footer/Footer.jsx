@@ -198,6 +198,7 @@ export default function LargeWithNewsletter() {
 									<Center w="16rem" p={"20px"}>
 										{profiles1?.map((photos) => (
 											<Avatar
+												key={photos}
 												size={"lg"}
 												borderBlockEndColor={"brand.orange"}
 												src={photos}
@@ -209,6 +210,7 @@ export default function LargeWithNewsletter() {
 									<Center w="16rem">
 										{profiles2?.map((photos) => (
 											<Avatar
+												key={photos}
 												size={"lg"}
 												borderBlockEndColor={"brand.orange"}
 												src={photos}

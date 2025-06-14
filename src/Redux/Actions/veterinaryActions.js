@@ -2,8 +2,6 @@ import {
   GET_VETERINARIES,
   GET_DETAILS_VETERINARIES,
   POST_VET,
-  SHOP_SEARCH_INPUT_NAME,
-  SHOP_FILTER_VALUE,
   UPDATE_VET,
 } from "../ActionTypes";
 import { HOST, header } from "../../utils";
@@ -56,30 +54,3 @@ export const VeterinaryDetails = (id) => async (dispatch) => {
     console.log(err.message);
   }
 };
-
-// E-COMMERCE
-export function shopSearchInputName(input) {
-  return async function (dispatch) {
-    try {
-      return dispatch({
-        type: SHOP_SEARCH_INPUT_NAME,
-        payload: input,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function shopFilterValue(value) {
-  return async function (dispatch) {
-    try {
-      dispatch({
-        type: SHOP_FILTER_VALUE,
-        payload: value,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-}

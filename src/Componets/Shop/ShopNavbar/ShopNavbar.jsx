@@ -1,15 +1,10 @@
 import React, { useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 import {
-  // shopSearchInputName,
-  // shopFilterValue,
-  getAllProducts,
-} from "../../../Redux/Actions/productActions";
-
-import {
   shopSearchInputName,
   shopFilterValue,
-} from "../../../Redux/Actions/veterinaryActions";
+  getAllProducts,
+} from "../../../Redux/Actions/productActions";
 
 import {
   Box,

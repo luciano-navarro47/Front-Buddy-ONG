@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
-// import { useAuth0 } from "@auth0/auth0-react";
 import { BsPerson } from "react-icons/bs";
 import { MdOutlinePets } from "react-icons/md";
 import { GoLocation } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch } from "react-redux";
 import {
   Box,
   Stack,
@@ -23,64 +20,66 @@ import {
   StatNumber,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useDispatch, useSelector } from "react-redux";
 import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
 
-function StatsCard({ icon, title, stat }) {
-  return (
-    <Stat
-      px={{ base: 2, md: 4 }}
-      py={"5"}
-      shadow={"xl"}
-      border={"1px solid"}
-      borderColor={useColorModeValue("gray.800", "gray.500")}
-      rounded={"lg"}
-    >
-      <Flex justifyContent={"space-between"}>
-        <Box pl={{ base: 2, md: 4 }}>
-          <StatLabel fontWeight={"medium"} isTruncated>
-            {title}
-          </StatLabel>
-          <StatNumber fontSize={"2xl"} fontWeight={"medium"}>
-            {stat}
-          </StatNumber>
-        </Box>
-        <Box
-          my={"auto"}
-          color={useColorModeValue("gray.800", "gray.200")}
-          alignContent={"center"}
-        >
-          {icon}
-        </Box>
-      </Flex>
-    </Stat>
-  );
-}
-const Home = ({ setUsuario2, handleSetUserFlag }) => {
-  // console.log("HOME: handleSetUserFlag: ", handleSetUserFlag);
-  // const { user } = useAuth0();
+import Navbar from "../Navbar/Navbar";
+import Footer from "../Footer/Footer";
+
+const Home = ({ user, setUser, closeSession, isAuthenticated }) => {
   const dispatch = useDispatch();
-  const veterinaries = useSelector((state) => state.allVets);
-  useEffect(() => {
-    dispatch(getAllVeterinaries());
-  }, [dispatch]);
-  const [usuario, setUsuario] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const loggedUser = localStorage.getItem("loggedUser");
-    if (loggedUser) {
-      const logged = JSON.parse(loggedUser);
-      setUsuario(logged);
+    dispatch(getAllVeterinaries());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const safeuser =
+      user && Object.keys(user).length > 0 ? user : { status: "guest" };
+    if (safeuser.status === "banned") {
+      navigate("/banned");
     }
-  }, []);
-  if (usuario[0]?.status === "banned") {
-    navigate("/banned");
+  }, [user, navigate]);
+
+  function StatsCard({ icon, title, stat }) {
+    return (
+      <Stat
+        px={{ base: 2, md: 4 }}
+        py={"5"}
+        shadow={"xl"}
+        border={"1px solid"}
+        borderColor={useColorModeValue("gray.800", "gray.500")}
+        rounded={"lg"}
+      >
+        <Flex justifyContent={"space-between"}>
+          <Box pl={{ base: 2, md: 4 }}>
+            <StatLabel fontWeight={"medium"} isTruncated>
+              {title}
+            </StatLabel>
+            <StatNumber fontSize={"2xl"} fontWeight={"medium"}>
+              {stat}
+            </StatNumber>
+          </Box>
+          <Box
+            my={"auto"}
+            color={useColorModeValue("gray.800", "gray.200")}
+            alignContent={"center"}
+          >
+            {icon}
+          </Box>
+        </Flex>
+      </Stat>
+    );
   }
 
   return (
     <>
-      <Navbar setUsuario2={setUsuario} handleSetUserFlag={handleSetUserFlag}/>
+      <Navbar
+        user={user}
+        setUser={setUser}
+        closeSession={closeSession}
+        isAuthenticated={isAuthenticated}
+      />
       <Box minHeight={"100vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Flex
           w={"full"}
