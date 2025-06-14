@@ -98,57 +98,6 @@ export const App = () => {
       ))}
       <Route path="*" element={<NotFound />} />
     </Routes>
-    //   <Routes>
-    //     {/* Pública */}
-    //     <Route
-    //       path="/"
-    //       element={
-    //         <Home
-    //           user={user}
-    //           setUser={setUser}
-    //           closeSession={closeSession}
-    //           isAuthenticated={isAuthenticated}
-    //         />
-    //       }
-    //     />
-
-    //     {/* Login */}
-    //     <Route
-    //       path="/login"
-    //       element={
-    //         <LandingPage
-    //           user={user}
-    //           setUser={setUser}
-    //           closeSession={closeSession}
-    //           isAuthenticated={isAuthenticated}
-    //           loginWithRedirect={loginWithRedirect}
-    //         />
-    //       }
-    //     />
-
-    //     {/* Admins */}
-    //     <Route
-    //       path="/dashboard"
-    //       element={
-    //         <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
-    //           <DashboardAdmin />
-    //         </PrivateRoute>
-    //       }
-    //     />
-
-    //     {/* Registered Users */}
-    //     <Route
-    //       path="/createPet"
-    //       element={
-    //         <PrivateRoute isAllowed={!!user} redirectPath="/login">
-    //           <FormPostPet />
-    //         </PrivateRoute>
-    //       }
-    //     />
-
-    //     {/* fallbacks */}
-    //     <Route path="*" element={<NotFound />} />
-    //   </Routes>
   );
 };
 

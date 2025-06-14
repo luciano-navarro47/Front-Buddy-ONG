@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import {
@@ -13,8 +13,13 @@ import {
 import { loginUser } from "../../redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
 
-const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}) => {
-  // console.log("IS AUTH?: ", isAuthenticated);
+const Login = ({
+  user,
+  setUser,
+  closeSession,
+  isAuthenticated,
+  loginWithRedirect,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -27,7 +32,7 @@ const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}
     setInput(updatedInput);
     setInputErrors(validateLoginForm(updatedInput));
   };
-  
+
   const handlerSubmit = async (e) => {
     e.preventDefault();
     const errors = validateLoginForm(input);

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, redirect } from "react-router-dom";
 import { getAllProducts } from "../../redux/Actions/productActions";
 
 import CardsProduct from "./CardsProducts/CardsProduct";
@@ -13,9 +12,7 @@ import Pagination from "../Pagination/Pagination";
 export default function Shop({ handleSetUserFlag }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  // let reduxCart = useSelector((state) => state.cart)
-  const [cart, setCart] = useState();
-  console.log("PRODD: ", products);
+  // const [cart, setCart] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
@@ -91,7 +88,7 @@ export default function Shop({ handleSetUserFlag }) {
             oldCart[index].amount += 1;
 
             oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            let newCart = window.localStorage.setItem(
+            window.localStorage.setItem(
               "cart",
               JSON.stringify([...oldCart])
             );
@@ -100,12 +97,11 @@ export default function Shop({ handleSetUserFlag }) {
               "CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",
               JSON.parse(localStorage.getItem("cart"))
             );
-            // return alert(`Agregaste de nuevo el producto ${name}`);
           }
         } else {
           if (stock !== 0) {
             product.total = product.price;
-            let newCart = window.localStorage.setItem(
+            window.localStorage.setItem(
               "cart",
               JSON.stringify([...oldCart, product])
             );
@@ -114,7 +110,6 @@ export default function Shop({ handleSetUserFlag }) {
               "CASO SI EXISTE CARRITO Y NOOOOO TENGO INDEX",
               JSON.parse(localStorage.getItem("cart"))
             );
-            // return alert(`Agregaste el producto ${name}`);
           } else {
             return alert("El producto no tiene stock");
           }
@@ -122,7 +117,7 @@ export default function Shop({ handleSetUserFlag }) {
       } else {
         if (stock !== 0) {
           product.total = product.price;
-          let newCart = window.localStorage.setItem(
+          window.localStorage.setItem(
             "cart",
             JSON.stringify([product])
           );
@@ -131,7 +126,6 @@ export default function Shop({ handleSetUserFlag }) {
             "CASO NO EXISTE CARRITO",
             JSON.parse(localStorage.getItem("cart"))
           );
-          // return alert(`Agregaste el producto ${name}`);
         } else {
           return alert("El producto no tiene stock");
         }

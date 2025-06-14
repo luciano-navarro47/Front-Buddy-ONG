@@ -4,7 +4,10 @@ import {
   POST_VET,
   UPDATE_VET,
 } from "../ActionTypes";
-import { HOST, header } from "../../utils";
+import { 
+  HOST,
+  // header
+} from "../../utils";
 import axios from "axios";
 
 export function getAllVeterinaries() {
@@ -27,7 +30,7 @@ export function postOrUpdateVet(formInput, value, id) {
   return async function (dispatch) {
     try {
       if (value === undefined) {
-        const newVet = await axios.post(`${HOST}/veterinary`, formInput);
+        await axios.post(`${HOST}/veterinary`, formInput);
         return dispatch({
           type: POST_VET,
         });

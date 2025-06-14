@@ -72,7 +72,7 @@ export function postPet(formInput, token) {
   return async function (dispatch) {
     try {
       const config = header(token);
-      const json = await axios.post(`${HOST}/pets`, formInput, config);
+      await axios.post(`${HOST}/pets`, formInput, config);
       return dispatch({
         type: POST_PET,
       });
@@ -86,29 +86,17 @@ export function postOrUpdatePet(formInput, value, petId) {
   return async function (dispatch) {
     try {
       if (value === "update") {
-        // console.log("ACTION CASO UPDATE");
-        // console.log("FORM INPUT", formInput);
-        // console.log("VALUE", value);
-        // console.log("PETID", petId);
-        // const userLocalstorage = JSON.parse(
-        // 	localStorage.getItem("loggedUser")
-        // )[0];
-        // console.log("USERLOCALSTORAGE: ", userLocalstorage);
-
-        let json = await axios.put(`${HOST}/pets/${petId}`, formInput);
+        await axios.put(`${HOST}/pets/${petId}`, formInput);
         return dispatch({
           type: UPDATE_PET,
         });
       } else {
         const userId = JSON.parse(localStorage.getItem("loggedUser"))[0].id;
         formInput = { ...formInput, userId };
-        let json = await axios.post(`${HOST}/pets`, formInput);
+        await axios.post(`${HOST}/pets`, formInput);
         return dispatch({
           type: POST_PET,
         });
-        // console.log("USER ID ACTION CASO POST", userId);
-        // console.log("LOG ACTION CASO POST", formInput, value, petId);
-        // console.log(formInput, value, petId);
       }
     } catch (error) {
       console.log(error.message);
@@ -119,11 +107,11 @@ export function postOrUpdatePet(formInput, value, petId) {
 export function deletePet(idPet, idUser) {
   return async function (dispatch) {
     try {
-      const json = await axios.delete(`${HOST}/pets/${idPet}`);
-      const json2 = await axios.get(`http://localhost:3001/users/${idUser}`);
+      await axios.delete(`${HOST}/pets/${idPet}`);
+      const json = await axios.get(`http://localhost:3001/users/${idUser}`);
       return dispatch({
         type: DELETE_PET,
-        payload: json2.data,
+        payload: json.data,
       });
     } catch (error) {
       console.log(error);
@@ -134,11 +122,11 @@ export function deletePet(idPet, idUser) {
 export function deletePetAdmin(id) {
   return async function (dispatch) {
     try {
-      const json = await axios.delete(`${HOST}/pets/${id}`);
-      const json2 = await axios.get(`http://localhost:3001/pets`);
+      await axios.delete(`${HOST}/pets/${id}`);
+      const json = await axios.get(`http://localhost:3001/pets`);
       return dispatch({
         type: GET_PETS,
-        payload: { allPets: json2.data },
+        payload: { allPets: json.data },
       });
     } catch (error) {
       console.log(error);

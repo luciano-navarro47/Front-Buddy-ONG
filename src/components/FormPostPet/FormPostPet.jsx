@@ -151,7 +151,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 		if(paramsId) {
 			dispatch(getPetDetails(paramsId))
 		}
-	}, []);
+	}, [dispatch, paramsId]);
 
 	useEffect(()=>{
 		if(value==="update"){
@@ -159,7 +159,7 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 		} else {
 			dataEmptied()
 		}
-	},[petData])
+	},[petData, value])
 
 	return (
 		<div>

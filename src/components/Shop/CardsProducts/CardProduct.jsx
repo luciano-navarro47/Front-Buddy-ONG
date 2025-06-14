@@ -173,60 +173,6 @@ export default function CardProduct({
                     </AlertDialogOverlay>
                   </AlertDialog>
                 </Box>
-                
-                
-                
-
-//! RESGUARDO BOTON AGREGAR ↓↓↓↓↓↓↓↓↓↓↓↓
-                {/* <Box>
-                  <Button
-                    onClick={onOpen} 
-                    fontFamily={"body"}
-                    borderRadius={"full"}
-                    size="md"
-                    bg={"brand.green.300"}
-                    color={"white"}
-                    _hover={{
-                      transform: "translateY(2px)",
-                      boxShadow: "lg",
-                    }}
-                  >
-                    +
-                  </Button>
-                  <AlertDialog
-                    isOpen={isOpen}
-                    leastDestructiveRef={cancelRef}
-                    onClose={onClose}
-                  >
-                    <AlertDialogOverlay>
-                      <AlertDialogContent>
-                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                          Agregar al carrito
-                        </AlertDialogHeader>
-                        <AlertDialogBody>
-                          ¿Queres agregar este producto al carrito?
-                        </AlertDialogBody>
-                        <AlertDialogFooter>
-                          <Button ref={cancelRef} onClick={onClose}>
-                            Cancelar
-                          </Button>
-                          <Button
-                            color={"white"}
-                            bg={"brand.orange"}
-                            onClick={(e) => {
-                              handlerSetCart(e, id, price, image, name, stock);
-                              onClose();
-                            }}
-                            ml={3}
-                          >
-                            Si, agregar
-                          </Button>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialogOverlay>
-                  </AlertDialog>
-                </Box> */}
-
               </HStack>
             </Center>
           </Box>
