@@ -6,7 +6,6 @@ import {
   GET_CHECK_USERNAME,
   UPDATE_PET,
   DELETE_PET,
-  DELETE_PRODUCT,
   POST_PET,
   POST_USER,
   GET_ALL_USERS,
@@ -14,21 +13,12 @@ import {
   SET_STATUS_USER,
   SET_USER,
   UPDATE_USER,
-  POST_PRODUCT,
   POST_VET,
   FILTER_ADOPTION_VALUES,
   FILTER_BY_SEARCH_AREA,
-  GET_ALL_PRODUCTS,
-  GET_PRODUCT_DETAIL,
-  SHOP_SEARCH_INPUT_NAME,
-  SHOP_FILTER_VALUE,
-  // NEXT_PAGE, // se pueden sacar
-  // PREV_PAGE, // se pueden sacar
-  // ACTUAL_PAGE, // se pueden sacar
   GET_VETERINARIES,
   GET_DETAILS_VETERINARIES,
-  UPDATE_PRODUCT,
-} from "../ActionTypes";
+} from "../../redux/ActionTypes";
 
 const initialState = {
   allPets: [],
@@ -36,9 +26,9 @@ const initialState = {
   lostPets: [],
   pets: [],
   petDetails: {},
-  allProducts: [],
-  products: [],
-  productDetail: {},
+  // allProducts: [],
+  // products: [],
+  // productDetail: {},
   actualPage: 1,
   allVets: [],
   vetsDetail: {},
@@ -105,10 +95,10 @@ const RootReducer = (state = initialState, action) => {
         ...state,
         dbUser: action.payload,
       };
-    case POST_PRODUCT:
-      return {
-        ...state,
-      };
+    // case POST_PRODUCT:
+    //   return {
+    //     ...state,
+    //   };
     case POST_VET:
       return {
         ...state,
@@ -167,31 +157,31 @@ const RootReducer = (state = initialState, action) => {
           ),
         };
       }
-    case GET_ALL_PRODUCTS:
-      return {
-        ...state,
-        allProducts: action.payload,
-        products: action.payload,
-      };
-    case GET_PRODUCT_DETAIL:
-      return {
-        ...state,
-        productDetail: action.payload,
-      };
-    case SHOP_SEARCH_INPUT_NAME:
-      return {
-        ...state,
-        products: state.allProducts.filter((product) =>
-          product.name.toLowerCase().includes(action.payload.toLowerCase())
-        ),
-      };
-    case SHOP_FILTER_VALUE:
-      return {
-        ...state,
-        products: state.allProducts.filter(
-          (p) => p.Category === action.payload
-        ),
-      };
+    // case GET_ALL_PRODUCTS:
+    //   return {
+    //     ...state,
+    //     allProducts: action.payload,
+    //     products: action.payload,
+    //   };
+    // case GET_PRODUCT_DETAIL:
+    //   return {
+    //     ...state,
+    //     productDetail: action.payload,
+    //   };
+    // case SHOP_SEARCH_INPUT_NAME:
+    //   return {
+    //     ...state,
+    //     products: state.allProducts.filter((product) =>
+    //       product.name.toLowerCase().includes(action.payload.toLowerCase())
+    //     ),
+    //   };
+    // case SHOP_FILTER_VALUE:
+    //   return {
+    //     ...state,
+    //     products: state.allProducts.filter(
+    //       (p) => p.Category === action.payload
+    //     ),
+    //   };
     case GET_VETERINARIES:
       return {
         ...state,
@@ -211,10 +201,10 @@ const RootReducer = (state = initialState, action) => {
       return {
         ...state,
       };
-    case UPDATE_PRODUCT:
-      return {
-        ...state,
-      };
+    // case UPDATE_PRODUCT:
+    //   return {
+    //     ...state,
+    //   };
     case UPDATE_USER:
       return {
         ...state,
@@ -224,11 +214,11 @@ const RootReducer = (state = initialState, action) => {
         ...state,
         user: action.payload,
       };
-    case DELETE_PRODUCT:
-      return {
-        ...state,
-        allProducts: action.payload,
-      };
+    // case DELETE_PRODUCT:
+    //   return {
+    //     ...state,
+    //     allProducts: action.payload,
+    //   };
     default:
       return state;
   }

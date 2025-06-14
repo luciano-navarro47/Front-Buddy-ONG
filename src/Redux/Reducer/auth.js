@@ -1,4 +1,4 @@
-import { SET_TOKEN } from "../ActionTypes";
+import { SET_TOKEN } from "../../redux/ActionTypes";
 
 const initialState = {
   token: null,

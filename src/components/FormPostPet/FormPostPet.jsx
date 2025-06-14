@@ -154,7 +154,6 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 	}, []);
 
 	useEffect(()=>{
-		console.log("petData: ",petData)
 		if(value==="update"){
 			completePetData()
 		} else {

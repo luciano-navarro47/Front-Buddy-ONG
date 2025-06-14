@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, redirect } from "react-router-dom";
-import { getAllProducts } from "../../Redux/Actions/productActions";
+import { getAllProducts } from "../../redux/Actions/productActions";
 
 import CardsProduct from "./CardsProducts/CardsProduct";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
@@ -10,22 +10,25 @@ import Footer from "../Footer/Footer";
 import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
 import Pagination from "../Pagination/Pagination";
 
-
 export default function Shop({ handleSetUserFlag }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
   // let reduxCart = useSelector((state) => state.cart)
   const [cart, setCart] = useState();
+  console.log("PRODD: ", products);
 
-	const [currentPage, setCurrentPage] = useState(1);
-	const [productsPerPage, setProductsPerPage] = useState(6);
-	const indexOfLastProduct = currentPage * productsPerPage;
-	const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-	const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-	const paginate = (number) => {
-		setCurrentPage(number);
-	};
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage, setProductsPerPage] = useState(6);
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+  const paginate = (number) => {
+    setCurrentPage(number);
+  };
+
   function handleRemoveItemCart(e, id) {
     e.preventDefault();
     try {
@@ -81,7 +84,8 @@ export default function Shop({ handleSetUserFlag }) {
           }
         });
         if (index !== false) {
-          if (stock === oldCart[index].amount) { //! SAQUÉ "stock === 0 ||..."" del if 
+          if (stock === oldCart[index].amount) {
+            //! SAQUÉ "stock === 0 ||..."" del if
             return alert("Se llegó al limite de stock actual");
           } else {
             oldCart[index].amount += 1;
@@ -92,7 +96,10 @@ export default function Shop({ handleSetUserFlag }) {
               JSON.stringify([...oldCart])
             );
             dispatch(getAllProducts);
-console.log("CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",JSON.parse(localStorage.getItem("cart")));
+            console.log(
+              "CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",
+              JSON.parse(localStorage.getItem("cart"))
+            );
             // return alert(`Agregaste de nuevo el producto ${name}`);
           }
         } else {
@@ -136,48 +143,47 @@ console.log("CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",JSON.parse(localStorag
 
   useEffect(() => {
     dispatch(getAllProducts());
-  }, [cart]);
+  }, []);
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
+      <Navbar handleSetUserFlag={handleSetUserFlag} />
       <Box minHeight={"80vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
-        <ShopNavbar 
+        <ShopNavbar
           handlerSetCart={handlerSetCart}
           handleRemoveItemCart={handleRemoveItemCart}
           paginate={paginate}
         />
-        <Pagination petsPerPage={productsPerPage} allPets={products.length} paginate={paginate} currentPage={currentPage}/>
+        <Pagination
+          petsPerPage={productsPerPage}
+          allPets={products.length}
+          paginate={paginate}
+          currentPage={currentPage}
+        />
         <Center>
-        <Box >
-          <SimpleGrid columns={[1, 1, 2, 3]} w={"90vw"}spacing="40px">
-            {products.length ? (
+          <Box>
+            <SimpleGrid columns={[1, 1, 2, 3]} w={"90vw"} spacing="40px">
+              {products.length ? (
                 <CardsProduct
                   products={currentProducts}
                   handlerSetCart={handlerSetCart}
                   handleRemoveItemCart={handleRemoveItemCart}
-                  />
-         
-
-            ) : (
-              <Center 
-                  w={"99vw"}
-                  display={"flex"} 
-                  alignItems={"center"}>
-                <Text 
-
-                  fontSize={"4xl"}
-                  py={10}
-                  fontWeight={"bold"}
-                  color={"brand.darkBlue"}
-                  fontFamily={"heading"}
-                >
-                  No se econtraron productos
-                </Text>
-              </Center>
-            )}
-          </SimpleGrid>
-        </Box>
+                />
+              ) : (
+                <Center w={"99vw"} display={"flex"} alignItems={"center"}>
+                  <Text
+                    fontSize={"4xl"}
+                    py={10}
+                    fontWeight={"bold"}
+                    color={"brand.darkBlue"}
+                    fontFamily={"heading"}
+                  >
+                    No se econtraron productos
+                  </Text>
+                </Center>
+              )}
+            </SimpleGrid>
+          </Box>
         </Center>
       </Box>
       <Footer />

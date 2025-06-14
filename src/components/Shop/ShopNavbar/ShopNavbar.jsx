@@ -4,7 +4,7 @@ import {
   shopSearchInputName,
   shopFilterValue,
   getAllProducts,
-} from "../../../Redux/Actions/productActions";
+} from "../../../redux/Actions/productActions";
 
 import {
   Box,
