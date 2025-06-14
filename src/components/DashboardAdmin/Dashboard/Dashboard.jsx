@@ -11,7 +11,7 @@ import ShowBannedUsers from "./ShowBannedUsers";
 import ShowPets from "./ShowPets";
 import ShowProducts from "./ShowProducts";
 import ShowVets from "./ShowVets";
-import { Button, Box, Center, SimpleGrid, Stack, Text } from "@chakra-ui/react";
+import { Button, Box, Center, SimpleGrid } from "@chakra-ui/react";
 import logo from '../../../assets/imagenes/logo_negro.png'
 
 
@@ -19,15 +19,13 @@ const Dashboard = () => {
   const dispatch = useDispatch();
 
   const [selection, setSelection] = useState("");
-  const usersArray = useSelector((state) => state.allUsers)
-  const usersArray2 = useSelector((state) => state.allUsers)
-  const productsArray = useSelector((state) => state.allProducts)
+  const usersArray = useSelector((state) => state.users)
+  const productsArray = useSelector((state) => state.products)
   const vetsArray = useSelector((state) => state.allVets)
   const petsArray = useSelector((state) => state.allPets)
 
   const bannedArray = usersArray.filter((user) => user.status === "banned")
   const unbannedArray = usersArray.filter((user) => user.status !== "banned")
-  // console.log("SOMOS USERS",bannedArray)
   
 
   function handlerShowDataUsers(e) {
@@ -57,7 +55,7 @@ const Dashboard = () => {
 
   useEffect(()=>{
       
-  },[usersArray2, petsArray, productsArray])
+  },[usersArray, petsArray, productsArray])
 
   useEffect(() => {
     dispatch(getAllUsers());

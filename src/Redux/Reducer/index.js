@@ -3,16 +3,16 @@ import {
   // GET_ADOPTION_PETS,
   GET_PET_ID,
   // GET_LOST_PETS,
-  GET_CHECK_USERNAME,
+  // GET_CHECK_USERNAME,
   UPDATE_PET,
   DELETE_PET,
   POST_PET,
   POST_USER,
-  GET_ALL_USERS,
-  GET_USER_ID,
-  SET_STATUS_USER,
-  SET_USER,
-  UPDATE_USER,
+  // GET_ALL_USERS,
+  // GET_USER_ID,
+  // SET_STATUS_USER,
+  // SET_USER,
+  // UPDATE_USER,
   POST_VET,
   FILTER_ADOPTION_VALUES,
   FILTER_BY_SEARCH_AREA,
@@ -26,25 +26,22 @@ const initialState = {
   lostPets: [],
   pets: [],
   petDetails: {},
-  // allProducts: [],
-  // products: [],
-  // productDetail: {},
   actualPage: 1,
   allVets: [],
   vetsDetail: {},
-  allUsers: [],
-  user: {},
+  // allUsers: [],
+  // user: {},
   cart: [],
   functions: {},
 };
 
 const RootReducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_ALL_USERS:
-      return {
-        ...state,
-        allUsers: action.payload,
-      };
+    // case GET_ALL_USERS:
+    //   return {
+    //     ...state,
+    //     allUsers: action.payload,
+    //   };
     case GET_PETS:
       if (action.payload.value === undefined) {
         return {
@@ -67,16 +64,16 @@ const RootReducer = (state = initialState, action) => {
         };
       }
       break;
-    case GET_USER_ID:
-      return {
-        ...state,
-        dbUser: action.payload,
-      };
-    case GET_CHECK_USERNAME:
-      return {
-        ...state,
-        usernameAvailable: action.payload,
-      };
+    // case GET_USER_ID:
+    //   return {
+    //     ...state,
+    //     dbUser: action.payload,
+    //   };
+    // case GET_CHECK_USERNAME:
+    //   return {
+    //     ...state,
+    //     usernameAvailable: action.payload,
+    //   };
     case GET_PET_ID:
       return {
         ...state,
@@ -90,11 +87,11 @@ const RootReducer = (state = initialState, action) => {
       return {
         ...state,
       };
-    case POST_USER:
-      return {
-        ...state,
-        dbUser: action.payload,
-      };
+    // case POST_USER:
+    //   return {
+    //     ...state,
+    //     dbUser: action.payload,
+    //   };
     // case POST_PRODUCT:
     //   return {
     //     ...state,
@@ -192,23 +189,23 @@ const RootReducer = (state = initialState, action) => {
         ...state,
         vetsDetail: action.payload,
       };
-    case SET_USER:
-      return {
-        ...state,
-        user: action.payload,
-      };
-    case SET_STATUS_USER:
-      return {
-        ...state,
-      };
+    // case SET_USER:
+    //   return {
+    //     ...state,
+    //     user: action.payload,
+    //   };
+    // case SET_STATUS_USER:
+    //   return {
+    //     ...state,
+    //   };
     // case UPDATE_PRODUCT:
     //   return {
     //     ...state,
     //   };
-    case UPDATE_USER:
-      return {
-        ...state,
-      };
+    // case UPDATE_USER:
+    //   return {
+    //     ...state,
+    //   };
     case DELETE_PET:
       return {
         ...state,

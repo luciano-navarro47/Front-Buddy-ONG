@@ -3,12 +3,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 import RootReducer from "../Reducer/index";
 import authReducer from "../Reducer/auth";
-import productsReducer from "../../redux/Reducer/products";
+import productReducer from "../../redux/Reducer/products";
+import userReducer from "../../redux/Reducer/users";
 
 const rootReducer = combineReducers({
 	root: RootReducer,
 	auth: authReducer,
-	products: productsReducer,
+	products: productReducer,
+	users: userReducer,
 });
 
 export const store = createStore(

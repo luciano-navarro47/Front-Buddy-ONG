@@ -9,12 +9,7 @@ import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import NotFound from "./components/NotFound/NotFound";
-
-// import Home from "./components/Home/Home";
-// import FormPostPet from "./components/FormPostPet/FormPostPet";
-// import DashboardAdmin from "./components/DashboardAdmin/DashboardAdmin/DashboardAdmin";
-// import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
-// import LandingPage from "./components/LandingPage/LandingPage";
+import { adminRoutes } from "./routes/adminRoutes";
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -93,7 +88,11 @@ export const App = () => {
 
   return (
     <Routes>
-      {[...authRoutes(routeProps), ...userRoutes(routeProps)].map(({ path, element }, idx) => (
+      {[
+        ...authRoutes(routeProps),
+        ...userRoutes(routeProps),
+        ...adminRoutes(routeProps),
+      ].map(({ path, element }, idx) => (
         <Route key={idx} path={path} element={element} />
       ))}
       <Route path="*" element={<NotFound />} />
