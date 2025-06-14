@@ -1,11 +1,11 @@
 import { SimpleGrid, Stack, Text, useBreakpointValue, Box } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import UserCard from "./Cards/UserCard";
-import { getAllUsers } from "../../../Redux/Actions/userActions";
+import { getAllUsers } from "../../../redux/Actions/userActions";
 import { useDispatch } from "react-redux";
 
 
-export default function ShowUsers({ users }) {
+export default function ShowBannedUsers({ bannedUsers }) {
   
   const dispatch = useDispatch()
 
@@ -22,23 +22,21 @@ export default function ShowUsers({ users }) {
       lineHeight={1.0}
       fontSize={useBreakpointValue({ base: "3xl", md: "4xl" })}
       textAlign={"center"}
-      justifyContent={"center"}>Usuarios
+      justifyContent={"center"}>Usuarios restringidos
       </Box>
-    
     <SimpleGrid columns={[1, 1,2, 3]} spacing='25px' >
-      {users.map((user) => (
-        
+      {bannedUsers.map((user) => (
+       
         <UserCard
-        id={user.id}
-        name={user.name}
-        surname={user.surname}
-        email={user.email}
-        phone={user.phone}
-        status={user.status}
-        ></UserCard>
-        ))}
+          id={user.id}
+          name={user.name}
+          surname={user.surname}
+          email={user.email}
+          phone={user.phone}
+          status={user.status}
+          ></UserCard>
+          ))}
       </SimpleGrid>
-        </Stack>
-    
+          </Stack>
   );
 }

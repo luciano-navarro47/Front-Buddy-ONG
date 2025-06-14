@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { useDisclosure } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { setStatusUser } from "../../../../Redux/Actions/userActions";
+import { setStatusUser } from "../../../../redux/Actions/userActions";
 
 
 export default function UserCard({ id, name, surname, email, phone, status }) {

@@ -20,7 +20,7 @@ import {
   StatNumber,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
+import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
 
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";

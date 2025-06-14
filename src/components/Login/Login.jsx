@@ -10,7 +10,7 @@ import {
   Divider,
   Center,
 } from "@chakra-ui/react";
-import { loginUser } from "../../Redux/Actions/userActions";
+import { loginUser } from "../../redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
 
 const Login = ({user, setUser, closeSession, isAuthenticated, loginWithRedirect}) => {

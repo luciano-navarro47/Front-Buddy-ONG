@@ -22,7 +22,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deleteProductAdmin } from "../../../../Redux/Actions/productActions";
+import { deleteProductAdmin } from "../../../../redux/Actions/productActions";
 import { useDisclosure } from "@chakra-ui/react";
 
 export default function ProductCard({

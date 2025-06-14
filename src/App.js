@@ -3,16 +3,17 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { setAccessToken } from "./Redux/Actions/auth";
-import { fetchAuth0User, postUser } from "./Redux/Actions/userActions";
+import { setAccessToken } from "./redux/Actions/auth";
+import { fetchAuth0User, postUser } from "./redux/Actions/userActions";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
+import { authRoutes } from "./routes/authRoutes";
 
-import Home from "./Componets/Home/Home";
-import FormPostPet from "./Componets/FormPostPet/FormPostPet";
-import DashboardAdmin from "./Componets/DashboardAdmin/DashboardAdmin/DashboardAdmin";
-import NotFound from "./Componets/NotFound/NotFound";
-import { PrivateRoute } from "./Componets/PrivateRoute/PrivateRoute";
-import LandingPage from "./Componets/LandingPage/LandingPage";
+import Home from "./components/Home/Home";
+import FormPostPet from "./components/FormPostPet/FormPostPet";
+import DashboardAdmin from "./components/DashboardAdmin/DashboardAdmin/DashboardAdmin";
+import NotFound from "./components/NotFound/NotFound";
+import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
+import LandingPage from "./components/LandingPage/LandingPage";
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -28,8 +29,6 @@ export const App = () => {
     logout,
     loginWithRedirect,
   } = useAuth0();
-
-  // console.log("USER: ", user);
 
   const closeSession = () => {
     if (auth0User) {
@@ -47,7 +46,6 @@ export const App = () => {
       setIsUserLoading(false);
     } else if (auth0User) {
       const normalizedUser = normalizeAuth0User(auth0User);
-      // const alreadyUpserted = localStorage.getItem("alreadyUpserted");
       let userExists;
       dispatch(fetchAuth0User(normalizedUser.auth0Sub))
         .then((userDb) => {
@@ -84,58 +82,72 @@ export const App = () => {
   if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
   if (user?.status === "banned") return <p>User was banned from the app</p>;
 
+  const routeProps = {
+    user,
+    setUser,
+    closeSession,
+    isAuthenticated,
+    loginWithRedirect,
+  };
+
   return (
     <Routes>
-      {/* Pública */}
-      <Route
-        path="/"
-        element={
-          <Home
-            user={user}
-            setUser={setUser}
-            closeSession={closeSession}
-            isAuthenticated={isAuthenticated}
-          />
-        }
-      />
-
-      {/* Login */}
-      <Route
-        path="/login"
-        element={
-          <LandingPage
-            user={user}
-            setUser={setUser}
-            closeSession={closeSession}
-            isAuthenticated={isAuthenticated}
-            loginWithRedirect={loginWithRedirect}
-          />
-        }
-      />
-
-      {/* Admins */}
-      <Route
-        path="/dashboard"
-        element={
-          <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
-            <DashboardAdmin />
-          </PrivateRoute>
-        }
-      />
-
-      {/* Registered Users */}
-      <Route
-        path="/createPet"
-        element={
-          <PrivateRoute isAllowed={!!user} redirectPath="/login">
-            <FormPostPet />
-          </PrivateRoute>
-        }
-      />
-
-      {/* fallbacks */}
+      {[...authRoutes(routeProps)].map(({ path, element }, idx) => (
+        <Route key={idx} path={path} element={element} />
+      ))}
       <Route path="*" element={<NotFound />} />
     </Routes>
+    //   <Routes>
+    //     {/* Pública */}
+    //     <Route
+    //       path="/"
+    //       element={
+    //         <Home
+    //           user={user}
+    //           setUser={setUser}
+    //           closeSession={closeSession}
+    //           isAuthenticated={isAuthenticated}
+    //         />
+    //       }
+    //     />
+
+    //     {/* Login */}
+    //     <Route
+    //       path="/login"
+    //       element={
+    //         <LandingPage
+    //           user={user}
+    //           setUser={setUser}
+    //           closeSession={closeSession}
+    //           isAuthenticated={isAuthenticated}
+    //           loginWithRedirect={loginWithRedirect}
+    //         />
+    //       }
+    //     />
+
+    //     {/* Admins */}
+    //     <Route
+    //       path="/dashboard"
+    //       element={
+    //         <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
+    //           <DashboardAdmin />
+    //         </PrivateRoute>
+    //       }
+    //     />
+
+    //     {/* Registered Users */}
+    //     <Route
+    //       path="/createPet"
+    //       element={
+    //         <PrivateRoute isAllowed={!!user} redirectPath="/login">
+    //           <FormPostPet />
+    //         </PrivateRoute>
+    //       }
+    //     />
+
+    //     {/* fallbacks */}
+    //     <Route path="*" element={<NotFound />} />
+    //   </Routes>
   );
 };
 
