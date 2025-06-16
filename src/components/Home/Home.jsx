@@ -26,7 +26,6 @@ import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 
 const Home = ({ user, setUser, closeSession, isAuthenticated }) => {
-  console.log("USER HOME: ", user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

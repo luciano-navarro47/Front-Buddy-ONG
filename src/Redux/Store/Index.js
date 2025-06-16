@@ -4,13 +4,15 @@ import thunk from "redux-thunk";
 import RootReducer from "../Reducer/index";
 import authReducer from "../Reducer/auth";
 import productReducer from "../../redux/Reducer/products";
-import userReducer from "../../redux/Reducer/users";
+import currentUserReducer from "../Reducer/currentUser";
+import usersListReducer from "../Reducer/usersList";
 
 const rootReducer = combineReducers({
 	root: RootReducer,
 	auth: authReducer,
 	products: productReducer,
-	user: userReducer,
+	user: currentUserReducer,
+	users: usersListReducer,
 });
 
 export const store = createStore(

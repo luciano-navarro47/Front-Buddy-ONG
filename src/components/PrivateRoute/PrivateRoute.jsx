@@ -11,19 +11,16 @@ export const PrivateRoute = ({
   const dispatch = useDispatch();
   const { token, expiresAt } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.user.role);
-  console.log("USER ROLE: ", userRole);
 
   const isAuthenticated = Boolean(token && Date.now() / 1000 < expiresAt);
   const isAuthorized = roles.length === 0 || roles.includes(userRole);
 
   if (token && !isAuthenticated) {
-    console.log("ENTRE 1")
     dispatch(clearToken());
     return <Navigate to={redirectPath} replace />;
   }
 
   if (!isAuthenticated || !isAuthorized) {
-    console.log("ENTRE 2")
     return <Navigate to={redirectPath} replace />;
   }
 
