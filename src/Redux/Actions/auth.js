@@ -1,25 +1,19 @@
-import { SET_TOKEN } from "../ActionTypes";
+import { SET_TOKEN, CLEAR_TOKEN } from "../../redux/ActionTypes";
 import { jwtDecode } from "jwt-decode";
 
-export const setAccessToken = (token) => {
-  return async (dispatch) => {
-    try {
-      if (!token) {
-        console.warn("Token not provided");
-        return;
-      }
-      const decoded = jwtDecode(token);
-      // console.log("DECO: ", decoded);
-      const payload = {
-        token: token,
-        exp: decoded.exp,
-      };
-      return dispatch({
-        type: SET_TOKEN,
-        payload: payload,
-      });
-    } catch (error) {
-      console.error({ error: error.message });
+export const setAccessToken = (token) => async (dispatch) => {
+  try {
+    if (!token) {
+      return console.warn("Token not provided");
     }
-  };
+    const decoded = jwtDecode(token);
+    dispatch({
+      type: SET_TOKEN,
+      payload: { token: token, exp: decoded.exp },
+    });
+  } catch (error) {
+    console.error({ error: error.message });
+  }
 };
+
+export const clearToken = () => ({ type: CLEAR_TOKEN });

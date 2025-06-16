@@ -33,7 +33,7 @@ export const userRoutes = ({
   {
     path: "/createPet",
     element: (
-      <PrivateRoute isAllowed={!!user} redirectPath="/login">
+      <PrivateRoute roles={["user", "admin"]}>
         <FormPostPet />
       </PrivateRoute>
     ),

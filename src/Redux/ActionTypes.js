@@ -1,6 +1,3 @@
-// AUTH
-export const SET_TOKEN = "SET_TOKEN";
-
 // PET
 export const GET_PETS = "GET_PETS";
 export const GET_PET_ID = "GET_PET_ID";
@@ -10,8 +7,12 @@ export const POST_PET = "POST_PET";
 export const UPDATE_PET = "UPDATE_PET";
 export const DELETE_PET = "DELETE_PET";
 
-export const FILTER_ADOPTION_VALUES = "FILTER_ADOPTION_VALUES"
-export const FILTER_BY_SEARCH_AREA = "FILTER_BY_SEARCH_AREA"
+export const FILTER_ADOPTION_VALUES = "FILTER_ADOPTION_VALUES";
+export const FILTER_BY_SEARCH_AREA = "FILTER_BY_SEARCH_AREA";
+
+// TOKEN
+export const CLEAR_TOKEN = "CLEAR_TOKEN";
+export const SET_TOKEN = "SET_TOKEN";
 
 // USER
 export const GET_ALL_USERS = "GET_ALL_USERS";

@@ -8,6 +8,7 @@ import {
 } from "../ActionTypes";
 import { HOST } from "../../utils";
 import axios from "axios";
+import { setAccessToken } from "./auth";
 
 export const getAllUsers = () => {
   return async function (dispatch) {
@@ -159,9 +160,10 @@ export const loginUser = async (
 };
 
 const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
+  dispatch(setAccessToken(data.token));
   dispatch(setUserState(data.user));
-  localStorage.setItem("loggedUser", JSON.stringify(data.user));
   setUser(data.user);
+  localStorage.setItem("loggedUser", JSON.stringify(data.user));
   navigate("/");
 };
 

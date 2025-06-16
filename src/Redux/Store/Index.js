@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
 	root: RootReducer,
 	auth: authReducer,
 	products: productReducer,
-	users: userReducer,
+	user: userReducer,
 });
 
 export const store = createStore(
