@@ -11,7 +11,6 @@ export const adminRoutes = ({
   isAuthenticated,
   loginWithRedirect,
 }) => [
-  // To guest and registered users
   {
     path: "/dashboard",
     element: (

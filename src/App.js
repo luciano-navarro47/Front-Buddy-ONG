@@ -9,12 +9,13 @@ import {
   postUser,
   setUserState,
 } from "./redux/Actions/userActions";
-import { normalizeAuth0User } from "./utils/normalizeAuth0User";
+import { logout as logoutAction } from "./redux/Actions/session";
+import NotFound from "./components/NotFound/NotFound";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
-import NotFound from "./components/NotFound/NotFound";
 import { adminRoutes } from "./routes/adminRoutes";
-import { logout as logoutAction } from "./redux/Actions/session";
+import { publicRoutes } from "./routes/publicRoutes";
+import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,6 @@ export const App = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
     const storedToken = localStorage.getItem("token");
-    // console.log("TOKEN STORED: ", storedToken)
     if (storedToken) {
       dispatch(setAccessToken(storedToken));
     }
@@ -100,6 +100,7 @@ export const App = () => {
         ...authRoutes(routeProps),
         ...userRoutes(routeProps),
         ...adminRoutes(routeProps),
+        ...publicRoutes(routeProps),
       ].map(({ path, element }, idx) => (
         <Route key={idx} path={path} element={element} />
       ))}

@@ -12,7 +12,6 @@ import Pagination from "../Pagination/Pagination";
 export default function Shop({ handleSetUserFlag }) {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
-  // const [cart, setCart] = useState();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
@@ -40,19 +39,11 @@ export default function Shop({ handleSetUserFlag }) {
       });
 
       if (flag) {
-        // console.log("CASO FLAG TRUE");
         if (currentCart[index].amount === 1) {
-          // console.log("CASO FLAG TRUE & AMOUNT == 1");
           if (index === 0) {
-            // console.log("CASO FLAG TRUE & AMOUNT == 1 & INDEX === 0");
             currentCart.shift();
-            // console.log(currentCart);
           }
-        } else {
-          // console.log("CASO FLAG TRUE & AMOUNT !== 0");
         }
-      } else {
-        // console.log("CASO FLAG FALSE");
       }
     } catch (error) {
       console.log(error);
@@ -82,16 +73,12 @@ export default function Shop({ handleSetUserFlag }) {
         });
         if (index !== false) {
           if (stock === oldCart[index].amount) {
-            //! SAQUÉ "stock === 0 ||..."" del if
             return alert("Se llegó al limite de stock actual");
           } else {
             oldCart[index].amount += 1;
 
             oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            window.localStorage.setItem(
-              "cart",
-              JSON.stringify([...oldCart])
-            );
+            window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
             dispatch(getAllProducts);
             console.log(
               "CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",
@@ -117,10 +104,7 @@ export default function Shop({ handleSetUserFlag }) {
       } else {
         if (stock !== 0) {
           product.total = product.price;
-          window.localStorage.setItem(
-            "cart",
-            JSON.stringify([product])
-          );
+          window.localStorage.setItem("cart", JSON.stringify([product]));
           dispatch(getAllProducts);
           console.log(
             "CASO NO EXISTE CARRITO",
