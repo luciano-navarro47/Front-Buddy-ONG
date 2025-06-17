@@ -1,39 +1,40 @@
 import logo from "../../assets/imagenes/logo_negro.png";
 import { MdArrowBackIosNew, MdCancel, MdCheckCircle } from "react-icons/md";
 import {
-	Flex,
-	Box,
-	FormControl,
-	FormLabel,
-	Input,
-	HStack,
-	Stack,
-	Button,
-	Heading,
-	Text,
-	InputGroup,
-	InputRightElement,
-	InputLeftAddon,
-	Icon,
-	Image,
-  } from "@chakra-ui/react";
+  Flex,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  HStack,
+  Stack,
+  Button,
+  Heading,
+  Text,
+  InputGroup,
+  InputRightElement,
+  InputLeftAddon,
+  Icon,
+  Image,
+} from "@chakra-ui/react";
 
 import { ErrorForm, SuccedForm } from "../FormPostPet/AlertForm/AlertForm";
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { postUser, updateUser, getUserId, checkUsernameAvailability } from "../../Redux/Actions/userActions";
+import {
+  postUser,
+  updateUser,
+  getUserId,
+  checkUsernameAvailability,
+} from "../../redux/Actions/userActions";
 
-
-
-// REGEXP for email
 let isEmail = new RegExp("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
 
 const validateForm = (input) => {
   let inputError = {};
 
-  // We us default values to prevent them from being undefined
   const name = input.name || "";
   const surname = input.surname || "";
   const email = input.email || "";
@@ -74,36 +75,34 @@ export default function FormPostUser({ id, value }) {
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [input, setInput] = useState({
-	  name: "",
-	  surname: "",
-	  email: "",
-	  username: "",
-	  phone: ""
-	});
-
-  // console.log("USER INFO: ", input);
-  // const loggedUser = localStorage.getItem("loggedUser");
-
+    name: "",
+    surname: "",
+    email: "",
+    username: "",
+    phone: "",
+  });
 
   const handleChange = (e) => {
-	  const { name, value } = e.target;
-	  const trimmedValue = value.trim();
+    const { name, value } = e.target;
+    const trimmedValue = value.trim();
 
     setInput((prevInput) => {
-      const updatedInput = {...prevInput, [name]: trimmedValue}
+      const updatedInput = { ...prevInput, [name]: trimmedValue };
       setInputError(validateForm(updatedInput));
       return updatedInput;
     });
 
-	  if (name === "username") {
-	  	if (typingTimeout) {
+    if (name === "username") {
+      if (typingTimeout) {
         clearTimeout(typingTimeout);
       }
-      setTypingTimeout(setTimeout(() => {
-        checkUserName(trimmedValue);
-      }, 500));
-	  }
-  }
+      setTypingTimeout(
+        setTimeout(() => {
+          checkUserName(trimmedValue);
+        }, 500)
+      );
+    }
+  };
 
   const handlerSubmit = (e, value) => {
     e.preventDefault();
@@ -130,20 +129,20 @@ export default function FormPostUser({ id, value }) {
   };
 
   const checkUserName = async (username) => {
-	  if(username.length < 3) return;
-    
-	  try {
-	  	const available = await dispatch(checkUsernameAvailability(username));
-      
-      if (available === false){
-	  		setUsernameError("Apodo no disponible.");
-	  	} else {
+    if (username.length < 3) return;
+
+    try {
+      const available = await dispatch(checkUsernameAvailability(username));
+
+      if (available === false) {
+        setUsernameError("Apodo no disponible.");
+      } else {
         setUsernameError("");
       }
-	  } catch (error) {
-	  	console.log("Username verification error: ", error);
-	  }
-  }
+    } catch (error) {
+      console.log("Username verification error: ", error);
+    }
+  };
 
   useEffect(() => {
     const loggedUser = localStorage.getItem("loggedUser");
@@ -153,8 +152,7 @@ export default function FormPostUser({ id, value }) {
     }
   }, []);
   useEffect(() => {
-    if (value === "update" && user.length)
-      dispatch(getUserId(user[0]?.id));
+    if (value === "update" && user.length) dispatch(getUserId(user[0]?.id));
   }, [dispatch, user]);
 
   useEffect(() => {
@@ -169,10 +167,9 @@ export default function FormPostUser({ id, value }) {
       });
     }
   }, [userInfo, value]);
-  
 
   useEffect(() => {
-    if(usernameAvailable === false) {
+    if (usernameAvailable === false) {
       setUsernameError("Este aoidi ya está en uso.");
     } else {
       setUsernameError("");
@@ -309,22 +306,33 @@ export default function FormPostUser({ id, value }) {
                     focusBorderColor={"brand.green.300"}
                     fontFamily={"body"}
                   />
-                  {inputError.username? (
-                    <Text className="text_inputError">{inputError.username}</Text>
+                  {inputError.username ? (
+                    <Text className="text_inputError">
+                      {inputError.username}
+                    </Text>
                   ) : (
-                    input.username.length >= 3 && (
-                      usernameError ? (
-                        <Text color="red.500" fontSize="sm" display="flex" alignItems="center"> 
-                          <MdCancel style={{marginRight: "0.5rem"}}/> En uso
-                        </Text>
-                      ) : (
-                        <Text color="green.500" fontSize="sm" display="flex" alignItems="center"> 
-                          <MdCheckCircle style={{marginRight: "0.5rem"}}/> Disponible
-                        </Text>
-                      )
-                    )
-                  )
-                }
+                    input.username.length >= 3 &&
+                    (usernameError ? (
+                      <Text
+                        color="red.500"
+                        fontSize="sm"
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <MdCancel style={{ marginRight: "0.5rem" }} /> En uso
+                      </Text>
+                    ) : (
+                      <Text
+                        color="green.500"
+                        fontSize="sm"
+                        display="flex"
+                        alignItems="center"
+                      >
+                        <MdCheckCircle style={{ marginRight: "0.5rem" }} />{" "}
+                        Disponible
+                      </Text>
+                    ))
+                  )}
                 </FormControl>
 
                 <FormControl id="email" isRequired>

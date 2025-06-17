@@ -21,15 +21,14 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-
+import { logout } from "../../redux/Actions/session";
 export default function Navbar({
   user,
   setUser,
-  closeSession,
   isAuthenticated,
+  handleLogout,
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const navigate = useNavigate();
 
   const userPhone = (e) => {
@@ -282,7 +281,7 @@ export default function Navbar({
                     <NavLink to="/myPets">
                       <MenuItem>Mis mascotas</MenuItem>
                     </NavLink>
-                    <MenuItem onClick={() => closeSession()}>
+                    <MenuItem onClick={() => handleLogout()}>
                       Cerrar sesión
                     </MenuItem>
                   </>

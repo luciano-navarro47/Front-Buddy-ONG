@@ -1,24 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { clearToken } from "../../redux/Actions/auth";
+import { logout } from "../../redux/Actions/session";
 
 export const PrivateRoute = ({
-  children,
   roles = [],
+  children,
   redirectPath = "/login",
 }) => {
   const dispatch = useDispatch();
   const { token, expiresAt } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.user.role);
-
   const isAuthenticated = Boolean(token && Date.now() / 1000 < expiresAt);
   const isAuthorized = roles.length === 0 || roles.includes(userRole);
 
-  if (token && !isAuthenticated) {
-    dispatch(clearToken());
-    return <Navigate to={redirectPath} replace />;
-  }
+  useEffect(() => {
+    if (token && !isAuthenticated) {
+      dispatch(logout());
+    }
+  }, [token, isAuthenticated, dispatch]);
 
   if (!isAuthenticated || !isAuthorized) {
     return <Navigate to={redirectPath} replace />;

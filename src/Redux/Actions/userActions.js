@@ -161,9 +161,12 @@ export const loginUser = async (
 
 const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
   dispatch(setAccessToken(data.token));
+  localStorage.setItem("token", data.token);
+
   dispatch(setUserState(data.user));
-  setUser(data.user);
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
+  setUser(data.user);
+  
   navigate("/");
 };
 

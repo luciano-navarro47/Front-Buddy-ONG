@@ -13,7 +13,7 @@ export const adminRoutes = ({
   {
     path: "/dashboard",
     element: (
-      <PrivateRoute isAllowed={user?.role === "admin"} redirectPath="/">
+      <PrivateRoute roles={["admin"]} redirectPath="/">
         <DashboardAdmin
           user={user}
           setUser={setUser}

@@ -27,7 +27,7 @@ import { useDisclosure } from "@chakra-ui/react";
 import { IoMdMale } from "react-icons/io";
 import { IoMdFemale } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
-import { deletePet } from "../../Redux/Actions/petActions";
+import { deletePet } from "../../redux/Actions/petActions";
 import { MdPlace } from "react-icons/md"
 
 const Card = ({ data: { id, size, img, sex, species, age, area }, value }) => {

@@ -25,7 +25,7 @@ import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 
-const Home = ({ user, setUser, closeSession, isAuthenticated }) => {
+const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -77,8 +77,8 @@ const Home = ({ user, setUser, closeSession, isAuthenticated }) => {
       <Navbar
         user={user}
         setUser={setUser}
-        closeSession={closeSession}
         isAuthenticated={isAuthenticated}
+        handleLogout={handleLogout}
       />
       <Box minHeight={"100vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Flex

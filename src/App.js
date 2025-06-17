@@ -2,18 +2,22 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { setAccessToken } from "./redux/Actions/auth";
-import { fetchAuth0User, postUser } from "./redux/Actions/userActions";
+import {
+  fetchAuth0User,
+  postUser,
+  setUserState,
+} from "./redux/Actions/userActions";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import NotFound from "./components/NotFound/NotFound";
 import { adminRoutes } from "./routes/adminRoutes";
+import { logout as logoutAction } from "./redux/Actions/session";
 
 export const App = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
 
@@ -22,23 +26,24 @@ export const App = () => {
     isAuthenticated,
     user: auth0User,
     getAccessTokenSilently,
-    logout,
+    logout: auth0Logout,
     loginWithRedirect,
   } = useAuth0();
 
-  const closeSession = () => {
-    if (auth0User) {
-      logout({ returnTo: window.location.origin + "/" });
-    }
-    setUser(null);
-    localStorage.removeItem("loggedUser");
-    localStorage.removeItem("alreadyUpserted");
-    navigate("/");
+  const handleLogout = () => {
+    dispatch(logoutAction(auth0Logout));
   };
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    const storedToken = localStorage.getItem("token");
+    // console.log("TOKEN STORED: ", storedToken)
+    if (storedToken) {
+      dispatch(setAccessToken(storedToken));
+    }
     if (storedUser) {
       setUser(storedUser);
+      dispatch(setUserState(storedUser));
       setIsUserLoading(false);
     } else if (auth0User) {
       const normalizedUser = normalizeAuth0User(auth0User);
@@ -68,7 +73,10 @@ export const App = () => {
       }
 
       getAccessTokenSilently()
-        .then((token) => setAccessToken(token))
+        .then((token) => {
+          dispatch(setAccessToken(token));
+          localStorage.setItem("token", token);
+        })
         .catch(console.error);
     } else {
       setIsUserLoading(false);
@@ -81,9 +89,9 @@ export const App = () => {
   const routeProps = {
     user,
     setUser,
-    closeSession,
     isAuthenticated,
     loginWithRedirect,
+    handleLogout,
   };
 
   return (
