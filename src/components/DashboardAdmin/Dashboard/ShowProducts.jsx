@@ -1,22 +1,13 @@
 import React, { useEffect } from "react";
 import ProductCard from "./Cards/ProductCard";
-import { SimpleGrid, Stack, Text, useBreakpointValue, Box } from "@chakra-ui/react";
+import { SimpleGrid, Stack, useBreakpointValue, Box } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts } from "../../../redux/Actions/productActions";
 
 export default function ShowProduct({ products }) {
-  const dispatch = useDispatch()
-  // console.log("PRODUCTS QUE LLEGAN",products)
-  const products2 = useSelector((state) => state.allProducts)
-  // console.log("PRODUCTS", products2)
-
+  // const products = useSelector((state) => state.allProducts)
   // useEffect(()=>{
-  //   dispatch(getAllProducts())
-  // },[])
-
-  useEffect(()=>{
    
-  },[products2])
+  // },[products])
 
   return (
     <Stack spacing="25px">

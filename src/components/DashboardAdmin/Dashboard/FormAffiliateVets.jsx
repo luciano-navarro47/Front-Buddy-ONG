@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { postOrUpdateVet, VeterinaryDetails } from "../../../Redux/Actions/veterinaryActions";
+import {
+  postOrUpdateVet,
+  VeterinaryDetails,
+} from "../../../redux/Actions/veterinaryActions";
 import UploadImage from "./UploadImage";
 import { ErrorForm, SuccedForm } from "../../FormPostPet/AlertForm/AlertForm";
 import {
@@ -18,21 +21,18 @@ import {
   useColorModeValue,
   Icon,
   Container,
-  // Select,
 } from "@chakra-ui/react";
 
 import { MdArrowBackIosNew } from "react-icons/md";
 
 export default function FormAffiliateVets({ value }) {
-  // console.log("VALUE", value)
-
   const dispatch = useDispatch();
 
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const paramsId = useParams("id");
 
-  const vetDetail = useSelector((state) => state.vetsDetail);
+  const vetDetail = useSelector((state) => state.root.vetsDetail);
   const vetInfo = vetDetail[0];
 
   const [image, setImage] = useState("");
@@ -143,7 +143,6 @@ export default function FormAffiliateVets({ value }) {
       ...input,
       [e.target.name]: e.target.value,
     });
-    // console.log("INPUT", input);
   }
 
   function handlerSubmit(e) {

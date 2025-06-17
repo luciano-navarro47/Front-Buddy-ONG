@@ -6,7 +6,7 @@ import { MdArrowBackIosNew } from "react-icons/md";
 
 const TopNav = () => {
   return (
-    <nav /* className={styles.topNav} */>
+    <nav>
       <SimpleGrid columns={[2, 4]} pt="2rem" bg={"brand.green.100"} pb={"1rem"}>
       <Box bg={"#1a202c"} maxW="7xl" mx={"auto"} pt={2} px={{ base: 2, sm: 12, md: 17 }} borderRadius="12px"
       color={"white"}

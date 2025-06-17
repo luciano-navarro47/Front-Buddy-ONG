@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProductDetailAdmin,
   postOrUpdateProduct,
-} from "../../../Redux/Actions/productActions";
+} from "../../../redux/Actions/productActions";
 import UploadImage from "./UploadImage";
 import { ErrorForm, SuccedForm } from "../../FormPostPet/AlertForm/AlertForm";
 import {
@@ -28,6 +28,7 @@ import { useEffect } from "react";
 import { MdArrowBackIosNew } from "react-icons/md";
 
 export default function FormPostProduct({ value }) {
+  console.log("VALUE: ", value)
   const dispatch = useDispatch();
   const paramsId = useParams("id");
 

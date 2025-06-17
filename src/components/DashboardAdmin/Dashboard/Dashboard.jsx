@@ -1,7 +1,7 @@
 import React from "react";
 import { getAllProducts } from "../../../redux/Actions/productActions";
 import { getAllUsers } from "../../../redux/Actions/userActions";
-import { getPets} from "../../../redux/Actions/petActions";
+import { getPets } from "../../../redux/Actions/petActions";
 import { getAllVeterinaries } from "../../../redux/Actions/veterinaryActions";
 
 import { useEffect, useState } from "react";
@@ -12,21 +12,19 @@ import ShowPets from "./ShowPets";
 import ShowProducts from "./ShowProducts";
 import ShowVets from "./ShowVets";
 import { Button, Box, Center, SimpleGrid } from "@chakra-ui/react";
-import logo from '../../../assets/imagenes/logo_negro.png'
-
+import logo from "../../../assets/imagenes/logo_negro.png";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   const [selection, setSelection] = useState("");
-  const usersArray = useSelector((state) => state.users)
-  const productsArray = useSelector((state) => state.products)
-  const vetsArray = useSelector((state) => state.allVets)
-  const petsArray = useSelector((state) => state.allPets)
+  const usersArray = useSelector((state) => state.users);
+  const productsArray = useSelector((state) => state.products);
+  const vetsArray = useSelector((state) => state.allVets);
+  const petsArray = useSelector((state) => state.allPets);
 
-  const bannedArray = usersArray.filter((user) => user.status === "banned")
-  const unbannedArray = usersArray.filter((user) => user.status !== "banned")
-  
+  const bannedArray = usersArray.filter((user) => user.status === "banned");
+  const unbannedArray = usersArray.filter((user) => user.status !== "banned");
 
   function handlerShowDataUsers(e) {
     e.preventDefault();
@@ -36,7 +34,6 @@ const Dashboard = () => {
     e.preventDefault();
     setSelection("bannedUser");
   }
-
 
   function handlerShowDataPets(e) {
     e.preventDefault();
@@ -52,55 +49,79 @@ const Dashboard = () => {
     setSelection("vets");
   }
 
-
-  useEffect(()=>{
-      
-  },[usersArray, petsArray, productsArray])
+  useEffect(() => {}, [usersArray, petsArray, productsArray]);
 
   useEffect(() => {
     dispatch(getAllUsers());
-    dispatch(getPets())
-    dispatch(getAllProducts())
-    dispatch(getAllVeterinaries())
+    dispatch(getPets());
+    dispatch(getAllProducts());
+    dispatch(getAllVeterinaries());
   }, [dispatch]);
 
   return (
-    <Box  pb='50%' pt='1rem' backgroundImage={logo}
-      backgroundSize='50%'
-      backgroundPosition='center'
-      backgroundRepeat='no-repeat'
+    <Box
+      pb="50%"
+      pt="1rem"
+      backgroundImage={logo}
+      backgroundSize="50%"
+      backgroundPosition="center"
+      backgroundRepeat="no-repeat"
     >
-
-      <SimpleGrid columns={[2, 5, 5]} mb='2rem'>
+      <SimpleGrid columns={[2, 5, 5]} mb="2rem">
         <Box>
-          <Button bg="orange.100" _hover={{
-            bg: "orange.300",
-          }} onClick={(e) => handlerShowDataUsers(e)}>Usuarios registrados</Button>
-        </Box>
-        <Box>
-          <Button bg="orange.100"
+          <Button
+            bg="orange.100"
             _hover={{
               bg: "orange.300",
             }}
-            onClick={(e) => handlerShowBannedUsers(e)}>Bloqueados</Button>
+            onClick={(e) => handlerShowDataUsers(e)}
+          >
+            Usuarios registrados
+          </Button>
         </Box>
         <Box>
-          <Button bg="orange.100"
+          <Button
+            bg="orange.100"
             _hover={{
               bg: "orange.300",
-            }} onClick={(e) => handlerShowDataPets(e)}>Mascotas</Button>
+            }}
+            onClick={(e) => handlerShowBannedUsers(e)}
+          >
+            Bloqueados
+          </Button>
         </Box>
         <Box>
-          <Button bg="orange.100"
+          <Button
+            bg="orange.100"
             _hover={{
               bg: "orange.300",
-            }} onClick={(e) => handlerShowDataProducts(e)}>Productos</Button>
+            }}
+            onClick={(e) => handlerShowDataPets(e)}
+          >
+            Mascotas
+          </Button>
         </Box>
         <Box>
-          <Button bg="orange.100"
+          <Button
+            bg="orange.100"
             _hover={{
               bg: "orange.300",
-            }} onClick={(e) => handlerShowDataVets(e)}>Veterinarias</Button>
+            }}
+            onClick={(e) => handlerShowDataProducts(e)}
+          >
+            Productos
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            bg="orange.100"
+            _hover={{
+              bg: "orange.300",
+            }}
+            onClick={(e) => handlerShowDataVets(e)}
+          >
+            Veterinarias
+          </Button>
         </Box>
       </SimpleGrid>
       <Center>
@@ -125,4 +146,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
