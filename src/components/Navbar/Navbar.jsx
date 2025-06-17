@@ -265,18 +265,18 @@ export default function Navbar({
                   }
                 />
               </MenuButton>
-              <NavLink to="/dashboard">
-                <MenuItem hidden={user?.role === "admin" ? false : true}>
-                  Administrar cuenta
-                  {/* WORK HERE */}
-                </MenuItem>
-              </NavLink>
-              <MenuDivider />
+
               <MenuList>
                 {user && Object.keys(user).length > 0 ? (
                   <>
+                    <NavLink to="/dashboard">
+                      <MenuItem hidden={user?.role === "admin" ? false : true}>
+                        Panel administrador
+                        {/* WORK HERE */}
+                      </MenuItem>
+                    </NavLink>
                     <NavLink to="/updateUser">
-                      <MenuItem>Modifica tus datos</MenuItem>
+                      <MenuItem>Datos personales</MenuItem>
                     </NavLink>
                     <NavLink to="/myPets">
                       <MenuItem>Mis mascotas</MenuItem>
