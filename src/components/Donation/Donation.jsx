@@ -1,9 +1,5 @@
 import React from "react";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import mercadoPago from "../../assets/imagenes/mercadoPago.png";
-
-// import NotFound from "../NotFound/NotFound";
 
 import {
   Box,
@@ -55,7 +51,6 @@ const Donation = ({ handleSetUserFlag }) => {
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag} />
       <Box minHeight={"100vh"} bg="brand.background" paddingBottom={"3rem"}>
         <Box maxW="7xl" mx={"auto"} pt={5} px={{ base: 2, sm: 12, md: 17 }}>
           <chakra.h1
@@ -139,7 +134,6 @@ const Donation = ({ handleSetUserFlag }) => {
           </Box>
         </Box>
       </Box>
-      <Footer />
     </>
   );
 };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Navbar from "../Navbar/Navbar";
 import FilterBar from "./FilterBar";
 import Footer from "../Footer/Footer";
 import Card from "../Card/Card";
@@ -30,7 +29,6 @@ const Adoption = ({ handleSetUserFlag, value }) => {
 
 	return (
 		<>
-			<Navbar handleSetUserFlag={handleSetUserFlag}/>
 
 			<FilterBar value={value} paginate={paginate} />
 

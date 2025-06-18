@@ -1,7 +1,5 @@
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
-import { useNavigate } from "react-router-dom";
 import "./NotFound.css";
+import { useNavigate } from "react-router-dom";
 import img5 from "../../assets/imagenes/img5.png";
 import { Box, Image, Center, Heading, Button } from "@chakra-ui/react";
 
@@ -9,7 +7,6 @@ const NotFound = ({ handleSetUserFlag }) => {
   const navigate = useNavigate();
   return (
     <Box minH="100vh" position="relative" bg="brand.green.200">
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
       <Box>
         <Center>
           <Heading
@@ -44,7 +41,6 @@ const NotFound = ({ handleSetUserFlag }) => {
           Volver atras
         </Button>
       </Box>
-      <Footer />
     </Box>
   );
 };

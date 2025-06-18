@@ -16,9 +16,9 @@ import { validateLoginForm } from "../../utils/formValidations/loginForm";
 const Login = ({
   user,
   setUser,
-  closeSession,
   isAuthenticated,
   loginWithRedirect,
+  handleLogout,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const Login = ({
         >
           Ir a la página
         </Button>
-        <Button onClick={closeSession} colorScheme="red">
+        <Button onClick={handleLogout} colorScheme="red">
           Cerrar sesión
         </Button>
       </Box>

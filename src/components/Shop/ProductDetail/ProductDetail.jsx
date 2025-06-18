@@ -2,8 +2,6 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getProductDetail } from "../../../Redux/Actions";
 import { useParams } from "react-router-dom";
-import Navbar from "../../Navbar/Navbar";
-import Footer from "../../Footer/Footer";
 import axios from "axios";
 
 import {
@@ -61,7 +59,6 @@ export default function ProductDetail({ handleSetUserFlag }) {
 let product = JSON.parse(localStorage.getItem("cart"))?.filter((pr)=>pr.id===detail[0].id)[0]
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
       <br />
               <Button
                 fontFamily={"body"}
@@ -252,7 +249,6 @@ let product = JSON.parse(localStorage.getItem("cart"))?.filter((pr)=>pr.id===det
           </SimpleGrid>
         </Container>
       </Box>
-      <Footer />
     </>
   );
 }

@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import VetCard from "../VetsCards/VetsCards";
 import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
 import MapView from "../Map/MapView";
@@ -18,7 +16,6 @@ const Veterinaries = ({ handleSetUserFlag }) => {
 
   return (
     <Box bg="brand.green.200">
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
       <Box>
         <Box>
           <Center>
@@ -118,7 +115,6 @@ const Veterinaries = ({ handleSetUserFlag }) => {
           </Center>
         </Box>
       </Box>
-      <Footer />
     </Box>
   );
 };

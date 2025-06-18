@@ -69,9 +69,9 @@ const avatars = [
 const LandingPage = ({
   user,
   setUser,
-  closeSession,
   isAuthenticated,
   loginWithRedirect,
+  handleLogout,
 }) => {
   return (
     <Box bg="brand.green.100">
@@ -215,9 +215,9 @@ const LandingPage = ({
                   name="Login"
                   setUser={setUser}
                   user={user}
-                  closeSession={closeSession}
                   isAuthenticated={isAuthenticated}
                   loginWithRedirect={loginWithRedirect}
+                  handleLogout={handleLogout}
                 />
               </Stack>
             </Box>

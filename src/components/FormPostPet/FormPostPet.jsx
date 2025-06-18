@@ -3,8 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getPetDetails, postOrUpdatePet } from "../../redux/Actions/petActions";
 import { MdArrowBackIosNew } from "react-icons/md";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import { ErrorForm, SuccedForm } from "./AlertForm/AlertForm";
 import "./FormPostPet.css";
 import {
@@ -163,7 +161,6 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 
 	return (
 		<div>
-			<Navbar handleSetUserFlag={handleSetUserFlag}/>
 			{isIncomplete ? <ErrorForm /> : null}
 			{infoSend ? <SuccedForm /> : null}
 			<form onSubmit={(e) => handlerSubmit(e)} id="myForm">
@@ -443,7 +440,6 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
 					</Stack>
 				</Flex>
 			</form>
-			<Footer />
 		</div>
 	);
 };

@@ -4,8 +4,6 @@ import { getAllProducts } from "../../redux/Actions/productActions";
 
 import CardsProduct from "./CardsProducts/CardsProduct";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
 import Pagination from "../Pagination/Pagination";
 
@@ -125,7 +123,6 @@ export default function Shop({ handleSetUserFlag }) {
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag} />
       <Box minHeight={"80vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <ShopNavbar
           handlerSetCart={handlerSetCart}
@@ -164,7 +161,6 @@ export default function Shop({ handleSetUserFlag }) {
           </Box>
         </Center>
       </Box>
-      <Footer />
     </>
   );
 }

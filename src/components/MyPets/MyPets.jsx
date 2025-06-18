@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import NavBar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import Card from "../Card/Card";
 import { Heading, Container, Text, Center, Box } from "@chakra-ui/react";
 import { getUserId } from "../../redux/Actions/userActions";
@@ -19,7 +17,6 @@ export default function MyPets({user, setUser}) {
 
   return (
     <>
-      <NavBar/>
       <Box bg={"brand.green.200"} mb="3rem">
         <Heading as="h1" fontSize="2.5rem" pt="3rem" color="gray.800">
           {" "}
@@ -56,7 +53,6 @@ export default function MyPets({user, setUser}) {
           )}
         </div>
       </Center>
-      <Footer />
     </>
   );
 }
