@@ -1,4 +1,4 @@
-import { SET_TOKEN } from "../ActionTypes";
+import { SET_TOKEN, CLEAR_TOKEN } from "../../redux/ActionTypes";
 
 const initialState = {
   token: null,
@@ -15,6 +15,8 @@ const authReducer = (state = initialState, action) => {
         expiresAt: action.payload.exp,
         tokenType: "Bearer",
       };
+    case CLEAR_TOKEN:
+      return initialState;
     default:
       return state;
   }

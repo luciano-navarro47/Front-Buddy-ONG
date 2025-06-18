@@ -8,11 +8,12 @@ import {
 } from "../ActionTypes";
 import { HOST } from "../../utils";
 import axios from "axios";
+import { setAccessToken } from "./auth";
 
 export const getAllUsers = () => {
   return async function (dispatch) {
     try {
-      const json = await axios.get("http://localhost:3001/users");
+      const json = await axios.get("http://localhost:3001/user");
       return dispatch({
         type: GET_ALL_USERS,
         payload: json.data,
@@ -159,9 +160,13 @@ export const loginUser = async (
 };
 
 const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
+  dispatch(setAccessToken(data.token));
+  localStorage.setItem("token", data.token);
+
   dispatch(setUserState(data.user));
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
   setUser(data.user);
+  
   navigate("/");
 };
 

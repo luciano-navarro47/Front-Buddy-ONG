@@ -4,15 +4,17 @@ import {
   POST_PRODUCT,
   UPDATE_PRODUCT,
   SHOP_FILTER_VALUE,
-  SHOP_SEARCH_INPUT_NAME
-} from "../ActionTypes";
-import { HOST, header } from "../../utils";
+  SHOP_SEARCH_INPUT_NAME,
+} from "../../redux/ActionTypes";
+// import { header } from "../../utils";
 import axios from "axios";
+const API_URL = process.env.REACT_APP_API_URL;
 
 export function getAllProducts() {
   return async function (dispatch) {
     try {
-      const allProducts = await axios.get(`${HOST}/products`);
+      const allProducts = await axios.get(`${API_URL}/products`);
+
       return dispatch({
         type: GET_ALL_PRODUCTS,
         payload: allProducts.data,
@@ -26,13 +28,13 @@ export function postOrUpdateProduct(formInput, value, id) {
   return async function (dispatch) {
     try {
       if (value === undefined) {
-        const newProduct = await axios.post(`${HOST}/products`, formInput);
+        await axios.post(`${API_URL}/products`, formInput);
         return dispatch({
           type: POST_PRODUCT,
         });
       } else {
-        console.log("FORM INPUT: ", formInput);
-        await axios.put(`${HOST}/products/${id}`, formInput);
+        // console.log("FORM INPUT: ", formInput);
+        await axios.put(`${API_URL}/products/${id}`, formInput);
         dispatch({
           type: UPDATE_PRODUCT,
         });
@@ -46,7 +48,7 @@ export function postOrUpdateProduct(formInput, value, id) {
 export function getProductDetail(obj) {
   return async function (dispatch) {
     try {
-      const productDetail = await axios.get(`${HOST}/products/${obj.id}`);
+      const productDetail = await axios.get(`${API_URL}/products/${obj.id}`);
       productDetail.data[0].handlerSetCart = obj.handlerSetCart;
       productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
       return dispatch({
@@ -62,7 +64,7 @@ export function getProductDetail(obj) {
 export function getProductDetailAdmin(id) {
   return async function (dispatch) {
     try {
-      const productDetail = await axios.get(`${HOST}/products/${id}`);
+      const productDetail = await axios.get(`${API_URL}/products/${id}`);
       return dispatch({
         type: GET_PRODUCT_DETAIL,
         payload: productDetail.data,
@@ -76,11 +78,11 @@ export function getProductDetailAdmin(id) {
 export function deleteProductAdmin(id) {
   return async function (dispatch) {
     try {
-      const json = await axios.delete(`${HOST}/products/${id}`);
-      const json2 = await axios.get(`http://localhost:3001/products`);
+      await axios.delete(`${API_URL}/products/${id}`);
+      const json = await axios.get(`http://localhost:3001/products`);
       return dispatch({
         type: GET_ALL_PRODUCTS,
-        payload: json2.data,
+        payload: json.data,
       });
     } catch (error) {
       console.log(error.message);

@@ -4,13 +4,13 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
-import { theme } from "./Componets/Theme";
+import { theme } from "./components/Theme";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "../src/Redux/Store/Index";
+import { store } from "./redux/Store/Index";
 
 import { Auth0Provider } from "@auth0/auth0-react";
 
