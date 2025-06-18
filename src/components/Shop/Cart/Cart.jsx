@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
 
 import axios from "axios";
-import Navbar from "../../Navbar/Navbar";
-import Footer from "../../Footer/Footer";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 import {
@@ -190,7 +188,6 @@ console.log("isLogged Cart: ",isLogged);
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag} />
       <Box minHeight={"90vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Stack
           direction={{
@@ -422,28 +419,6 @@ console.log("isLogged Cart: ",isLogged);
           </Stack>
         </Stack>
       </Box>
-      <Footer />
     </>
   );
 }
-
-//  <div>
-//           <h1>Cart</h1>
-//           <div>
-//             {
-//             !cart
-//             ? <h1>NO CART</h1>
-//             : <h1 className="total">Total: {total}</h1>
-//             }
-//           </div>
-//           <div>
-//               {
-//               !cart
-//               ? <h1>Tu carrito esta vacio</h1>
-//               : <div>
-//                   {cart.map((pr) => <CartCards amount={pr.amount} id={pr.id} image={pr.image} name={pr.name} price={pr.price} total={pr.total} stock={pr.stock} handlerSetCart={handlerSetCart} handleRemoveItemCart={handleRemoveItemCart}/>)}
-//                   <button onClick={()=>payMp()}>Pagar</button>
-//                 </div>
-//               }
-//           </div>
-//         </div>

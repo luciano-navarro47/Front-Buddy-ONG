@@ -21,10 +21,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
-
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
-
 const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -74,12 +70,6 @@ const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
 
   return (
     <>
-      <Navbar
-        user={user}
-        setUser={setUser}
-        isAuthenticated={isAuthenticated}
-        handleLogout={handleLogout}
-      />
       <Box minHeight={"100vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Flex
           w={"full"}
@@ -255,7 +245,6 @@ const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
           </SimpleGrid>
         </Box>
       </Box>
-      <Footer />
     </>
   );
 };

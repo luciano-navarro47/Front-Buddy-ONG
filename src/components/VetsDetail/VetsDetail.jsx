@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
 import {
   Box,
@@ -34,7 +32,6 @@ const VetsDetails = ({ handleSetUserFlag }) => {
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag} />
       {!Object.keys(vetDetail).length > 0 ? (
         <Box height="100vh" position="relative">
           <Center>
@@ -239,7 +236,6 @@ const VetsDetails = ({ handleSetUserFlag }) => {
           </SimpleGrid>
         </Box>
       )}
-      <Footer />
     </>
   );
 };

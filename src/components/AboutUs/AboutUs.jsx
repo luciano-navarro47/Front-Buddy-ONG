@@ -9,23 +9,22 @@ import {
   Flex,
   Icon,
   Image,
-  Center, AspectRatio
+  Center,
+  AspectRatio,
 } from "@chakra-ui/react";
 
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
 import {
   BiMessageRoundedAdd,
   BiDonateHeart,
   BiHomeHeart,
 } from "react-icons/bi";
 
-export default function AboutUs ({ setUsuario, handleSetUserFlag }) {
+export default function AboutUs({ setUsuario, handleSetUserFlag }) {
   const Feature = ({ title, text, icon }) => {
     return (
       <Stack alignItems={"center"}>
         <Flex
-          w={16} 
+          w={16}
           h={16}
           align={"center"}
           justify={"center"}
@@ -41,91 +40,86 @@ export default function AboutUs ({ setUsuario, handleSetUserFlag }) {
       </Stack>
     );
   };
-  console.log("SET-USUARIO, COMP ABOUT US: ",setUsuario);
+  console.log("SET-USUARIO, COMP ABOUT US: ", setUsuario);
   return (
     <>
-      <Navbar setUsuario2={setUsuario} handleSetUserFlag={handleSetUserFlag}/>
-
-
-      <Box bg={'brand.green.200'} py={['2rem', '4rem', '4rem', '3rem']}>
-        <SimpleGrid columns={[1, 1, 1, 2]} spacing={5} vW='100%' px='1rem' >
+      <Box bg={"brand.green.200"} py={["2rem", "4rem", "4rem", "3rem"]}>
+        <SimpleGrid columns={[1, 1, 1, 2]} spacing={5} vW="100%" px="1rem">
           <Center>
-            <Box pt='3rem' >
-              <Image src="https://www.hogarmania.com/archivos/202011/cosas-donar-refugio-animales-4-XxXx80.jpg" alt="dog's refugee"
-                borderRadius='15px' ></Image>
+            <Box pt="3rem">
+              <Image
+                src="https://www.hogarmania.com/archivos/202011/cosas-donar-refugio-animales-4-XxXx80.jpg"
+                alt="dog's refugee"
+                borderRadius="15px"
+              ></Image>
             </Box>
           </Center>
 
-          
-            <Box alignItems="left" py={1} pr={"90px"} >
-              <Stack
-                as={Box}
-                textAlign={"left"}
-                spacing={{ base: 4, md: 5 }}
-                py={{ base: 10, md: 10 }}
+          <Box alignItems="left" py={1} pr={"90px"}>
+            <Stack
+              as={Box}
+              textAlign={"left"}
+              spacing={{ base: 4, md: 5 }}
+              py={{ base: 10, md: 10 }}
+            >
+              <Heading
+                fontWeight={600}
+                fontSize={{ base: "4xl", sm: "4xl", md: "6xl" }}
+                /*   lineHeight={"100%"} */
+                pl="2rem"
               >
-                <Heading
-                  fontWeight={600}
-                  fontSize={{ base: "4xl", sm: "4xl", md: "6xl" }}
-                  /*   lineHeight={"100%"} */
-                  pl='2rem'>
-                  Hola!
-                </Heading>
-                <Text as={"span"} color={"brand.orange"} fontSize={{ base: "4xl", sm: "4xl", md: "6xl" }} pl='2rem'>
-                  Somos Buddy ONG
-                </Text>
-                <Text color={"gray.500"} fontSize={['1.3rem', '1.5rem', '1.5rem']} pl='2rem'>
-                  Somos organización sin fines de lucro liderada por un grupo de
-                  voluntarios que buscan superar la situación de sobrepoblación,
-                  abandono, crueldad e indiferencia que viven millones de
-                  animales en nuestro país.
-                  Propiciamos una actitud de respeto
-                  hacia todas las especies.
-                </Text>
-              </Stack>
-            </Box>
-         
+                Hola!
+              </Heading>
+              <Text
+                as={"span"}
+                color={"brand.orange"}
+                fontSize={{ base: "4xl", sm: "4xl", md: "6xl" }}
+                pl="2rem"
+              >
+                Somos Buddy ONG
+              </Text>
+              <Text
+                color={"gray.500"}
+                fontSize={["1.3rem", "1.5rem", "1.5rem"]}
+                pl="2rem"
+              >
+                Somos organización sin fines de lucro liderada por un grupo de
+                voluntarios que buscan superar la situación de sobrepoblación,
+                abandono, crueldad e indiferencia que viven millones de animales
+                en nuestro país. Propiciamos una actitud de respeto hacia todas
+                las especies.
+              </Text>
+            </Stack>
+          </Box>
         </SimpleGrid>
-
-
       </Box>
 
-  
+      <SimpleGrid columns={1} pb="1rem" pt="1rem" bg={"orange.200"}>
+        <Container h="100%" width="100%" justifyContent={"center"}>
+          <Box borderRadius={"7px"} bg="orange" w="100%">
+            <AspectRatio ratio={1} px="7rem">
+              <iframe
+                width="720"
+                height="405"
+                src="https://www.youtube.com/embed/rOW_cTjVleg"
+                title="BuddyVid"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </AspectRatio>
+          </Box>
+        </Container>
+      </SimpleGrid>
 
-        <SimpleGrid columns={1}  pb='1rem' pt='1rem' bg={'orange.200'}  > 
-    <Container  h='100%'   width='100%' justifyContent={'center'}>
-        <Box borderRadius={'7px'}  bg='orange'   w='100%' >  
-       
-            <AspectRatio ratio={1} px='7rem'>  
-          
-            <iframe
-              width="720"
-              height="405" 
-              src="https://www.youtube.com/embed/rOW_cTjVleg"
-              title="BuddyVid"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-            ></iframe>            
-            </AspectRatio>  
-          
-        </Box>  
-        </Container> 
-        
-        </SimpleGrid> 
-     
-
-
-
-
-      <Box pt={20} pb='2rem' bg={'brand.green.200'}>
+      <Box pt={20} pb="2rem" bg={"brand.green.200"}>
         <Stack spacing={4} as={Container} maxW={"3xl"} textAlign={"center"}>
           <Heading fontSize={"5xl"}>Nuestros Objetivos</Heading>
         </Stack>
       </Box>
-      <Box px={10} bgColor={"brand.green.200"} pb='5rem' fontSize='1.3rem'>
-        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} >
-          <Feature 
+      <Box px={10} bgColor={"brand.green.200"} pb="5rem" fontSize="1.3rem">
+        <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+          <Feature
             icon={
               <Icon
                 as={BiMessageRoundedAdd}
@@ -165,8 +159,6 @@ export default function AboutUs ({ setUsuario, handleSetUserFlag }) {
           />
         </SimpleGrid>
       </Box>
-      <Footer />
     </>
   );
-};
-
+}
