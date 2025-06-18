@@ -6,6 +6,7 @@ import Shop from "../components/Shop/Shop";
 import Cart from "../components/Shop/Cart/Cart"
 import Veterinaries from "../components/Veterinaries/Veterinaries";
 import VetsDetail from "../components/VetsDetail/VetsDetail"
+import Pets from "../components/Adoption/Pets"
 
 export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect, handleLogout }) => [
   {
@@ -43,5 +44,13 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   {
     path: "/veterinary/:id",
     element: <VetsDetail />
+  },
+  {
+    path: "/adoptions",
+    element: <Pets />
+  },
+  {
+    path: "/lostPets",
+    element: <Pets />
   }
 ];

@@ -4,14 +4,15 @@ import Navbar from "../Navbar/Navbar";
 import FilterBar from "./FilterBar";
 import Footer from "../Footer/Footer";
 import Card from "../Card/Card";
-import { getPets } from "../../Redux/Actions/petActions";
+import { getPets } from "../../redux/Actions/petActions";
 import { Link } from "react-router-dom";
 import { SimpleGrid, Box, Stack, Center, Icon, Text } from "@chakra-ui/react";
 import { SiDatadog } from "react-icons/si";
 import Pagination from "../Pagination/Pagination";
 
 const Adoption = ({ handleSetUserFlag, value }) => {
-	const pets = useSelector((state) => state.pets);
+	const pets = useSelector((state) => state.root.pets);
+	console.log("PETS: ", pets)
 	const dispatch = useDispatch();
 	useEffect(() => {
 		dispatch(getPets(value));

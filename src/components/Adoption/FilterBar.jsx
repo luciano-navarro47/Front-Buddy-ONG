@@ -4,7 +4,7 @@ import {
   filterBySearchArea,
   filterAdoptionPets,
   getPets,
-} from "../../Redux/Actions/petActions";
+} from "../../redux/Actions/petActions";
 
 import { GiSniffingDog } from 'react-icons/gi';
 
