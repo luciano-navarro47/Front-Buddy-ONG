@@ -4,9 +4,9 @@ import LandingPage from "../components/LandingPage/LandingPage";
 export const authRoutes = ({
   user,
   setUser,
-  closeSession,
   isAuthenticated,
   loginWithRedirect,
+  handleLogout
 }) => [
     {
         path: "/login",
@@ -14,9 +14,9 @@ export const authRoutes = ({
             <LandingPage
                 user={user}
                 setUser={setUser}
-                closeSession={closeSession}
                 isAuthenticated={isAuthenticated}
                 loginWithRedirect={loginWithRedirect}
+                handleLogout={handleLogout}
             />
         )
     },
