@@ -1,4 +1,4 @@
-import "./App.css";
+  import "./App.css";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -16,6 +16,7 @@ import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
+import { Layout } from "./components/Layout";
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,7 @@ export const App = () => {
 
   return (
     <Routes>
+      <Route element={<Layout />}>
       {[
         ...authRoutes(routeProps),
         ...userRoutes(routeProps),
@@ -104,6 +106,7 @@ export const App = () => {
       ].map(({ path, element }, idx) => (
         <Route key={idx} path={path} element={element} />
       ))}
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
