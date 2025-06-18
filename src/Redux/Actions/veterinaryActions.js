@@ -13,10 +13,10 @@ import axios from "axios";
 export function getAllVeterinaries() {
   return async function (dispatch) {
     try {
-      const json = await axios.get("http://localhost:3001/veterinary");
+      const response = await axios.get("http://localhost:3001/veterinary");
       return dispatch({
         type: GET_VETERINARIES,
-        payload: json.data,
+        payload: response.data,
       });
     } catch (error) {
       console.log(error);
@@ -25,8 +25,6 @@ export function getAllVeterinaries() {
 }
 
 export function postOrUpdateVet(formInput, value, id) {
-  console.log("VALUE", value);
-  console.log("FORMINPUT", formInput);
   return async function (dispatch) {
     try {
       if (value === undefined) {
@@ -48,10 +46,10 @@ export function postOrUpdateVet(formInput, value, id) {
 
 export const VeterinaryDetails = (id) => async (dispatch) => {
   try {
-    const getID = await axios.get(`${HOST}/veterinary/${id}`);
+    const response = await axios.get(`${HOST}/veterinary/${id}`);
     return dispatch({
       type: GET_DETAILS_VETERINARIES,
-      payload: getID.data,
+      payload: response.data[0],
     });
   } catch (err) {
     console.log(err.message);

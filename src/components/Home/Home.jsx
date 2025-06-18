@@ -29,9 +29,9 @@ const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(getAllVeterinaries());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getAllVeterinaries());
+  // }, [dispatch]);
 
   useEffect(() => {
     const safeuser =

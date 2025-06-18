@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
-import { VeterinaryDetails } from "../../Redux/Actions/veterinaryActions";
+import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
 import {
   Box,
   SimpleGrid,
@@ -24,19 +24,18 @@ import { RiHospitalLine } from "react-icons/ri";
 
 const VetsDetails = ({ handleSetUserFlag }) => {
   const dispatch = useDispatch();
-  const { paramsId } = useParams();
-  const Detail = useSelector((state) => state.vetsDetail);
-  const vetsDetail = Detail[0];
+  const { id } = useParams();
+  const vetDetail = useSelector((state) => state.root.vetsDetail);
 
   useEffect(() => {
-    dispatch(VeterinaryDetails(paramsId));
+    dispatch(VeterinaryDetails(id));
     window.scrollTo(0, 0);
-  }, [dispatch, paramsId]);
+  }, [dispatch, id]);
 
   return (
     <>
-      <Navbar handleSetUserFlag={handleSetUserFlag}/>
-      {!Detail?.length ? (
+      <Navbar handleSetUserFlag={handleSetUserFlag} />
+      {!Object.keys(vetDetail).length > 0 ? (
         <Box height="100vh" position="relative">
           <Center>
             <Spinner
@@ -71,7 +70,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   textTransform="uppercase"
                   color="gray.500"
                 >
-                  {vetsDetail.name}
+                  {vetDetail.name}
                 </Heading>
                 <Heading
                   as="h2"
@@ -79,7 +78,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   textTransform="uppercase"
                   color="gray.500"
                 >
-                  {vetsDetail.telefono}{" "}
+                  {vetDetail.telefono}{" "}
                 </Heading>
                 <Icon
                   as={RiHospitalLine}
@@ -107,8 +106,8 @@ const VetsDetails = ({ handleSetUserFlag }) => {
               >
                 <Center w="100%" h="100%">
                   <Image
-                    src={vetsDetail.image}
-                    alt={vetsDetail.name}
+                    src={vetDetail.image}
+                    alt={vetDetail.name}
                     borderRadius="50px"
                     objectFit="cover"
                     w="60%"
@@ -148,7 +147,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   fontSize={{ base: "14px", md: "18px", lg: "20px" }}
                   color="gray.500"
                 >
-                  {vetsDetail.description}
+                  {vetDetail.description}
                 </Text>
                 <Text
                   noOfLines={[1, 2, 3]}
@@ -159,7 +158,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   fontWeight="bold"
                   pb={["0rem", "0rem", "1rem"]}
                 >
-                  {vetsDetail.email}
+                  {vetDetail.email}
                 </Text>
                 <Text
                   fontFamily={"body"}
@@ -176,7 +175,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                     fontFamily={"heading"}
                     fontWeight="bold"
                   >
-                    {vetsDetail.address}{" "}
+                    {vetDetail.address}{" "}
                   </Text>
                 </Text>
               </Box>
@@ -199,22 +198,22 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                     <WrapItem>
                       <Avatar
                         size="lg"
-                        name={vetsDetail.name}
-                        src={vetsDetail.image}
+                        name={vetDetail.name}
+                        src={vetDetail.image}
                       />{" "}
                     </WrapItem>
                     <WrapItem>
                       <Avatar
                         size="lg"
-                        name={vetsDetail.name}
-                        src={vetsDetail.image}
+                        name={vetDetail.name}
+                        src={vetDetail.image}
                       />{" "}
                     </WrapItem>
                     <WrapItem>
                       <Avatar
                         size="lg"
-                        name={vetsDetail.name}
-                        src={vetsDetail.image}
+                        name={vetDetail.name}
+                        src={vetDetail.image}
                       />{" "}
                     </WrapItem>
                   </Wrap>
@@ -232,7 +231,7 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   size="lg"
                   px="3rem"
                   mt="1rem"
-                  href={`https://wa.me/${vetsDetail.phone}`}
+                  href={`https://wa.me/${vetDetail.phone}`}
                   icon={<PhoneIcon />}
                 />
               </Box>

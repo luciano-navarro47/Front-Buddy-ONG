@@ -3,14 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import VetCard from "../VetsCards/VetsCards";
-import { getAllVeterinaries } from "../../Redux/Actions/veterinaryActions";
+import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
 import MapView from "../Map/MapView";
 import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
 import logo from "../../assets/imagenes/logo_amarillo.png";
 
 const Veterinaries = ({ handleSetUserFlag }) => {
-  const veterinaries = useSelector((state) => state.allVets);
-
+  const veterinaries = useSelector((state) => state.root.allVets);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -56,7 +55,7 @@ const Veterinaries = ({ handleSetUserFlag }) => {
           </Center>
         </Box>
 
-        {!veterinaries?.length ? (
+        {veterinaries?.length === 0 ? (
           <Box margin="5em" padding="5em">
             <Text fontFamily="heading" fontSize={"3xl"}>
               Lo sentimos. No hay veterinarias disponibles

@@ -4,6 +4,8 @@ import AboutUs from "../components/AboutUs/AboutUs";
 import Donation from "../components/Donation/Donation";
 import Shop from "../components/Shop/Shop";
 import Cart from "../components/Shop/Cart/Cart"
+import Veterinaries from "../components/Veterinaries/Veterinaries";
+import VetsDetail from "../components/VetsDetail/VetsDetail"
 
 export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect, handleLogout }) => [
   {
@@ -33,5 +35,13 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   {
     path: "/shop/cart",
     element: <Cart />
+  },
+  {
+    path: "/veterinary",
+    element: <Veterinaries />
+  },
+  {
+    path: "/veterinary/:id",
+    element: <VetsDetail />
   }
 ];
