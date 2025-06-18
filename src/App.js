@@ -97,7 +97,7 @@ export const App = () => {
 
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route element={<Layout {...routeProps}/>}>
       {[
         ...authRoutes(routeProps),
         ...userRoutes(routeProps),
