@@ -148,7 +148,7 @@ export default function Subscription() {
             isLoading={isLoading}
             isDisabled={isLoading}
           >
-            Suscribite
+            SUSCRIBITE
           </Button>
         </Box>
       </VStack>
