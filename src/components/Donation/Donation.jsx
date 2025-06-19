@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import mercadoPago from "../../assets/imagenes/mercadoPago.png";
 
 import {
@@ -12,40 +13,21 @@ import {
 } from "@chakra-ui/react";
 
 import axios from "axios";
-import { HOST } from "../../utils";
+import { Subscription } from "./Subscription";
 
-const Donation = ({ handleSetUserFlag }) => {
-  const url = `${HOST}`;
-
+const Donation = () => {
+  const apiUrl = process.env.REACT_APP_API_URL;
+  const user = useSelector((state) => state.user);
   const handlePayment = async (value) => {
     const donation = {
       unit_price: parseInt(value),
       title: "Gracias por su colaboración",
     };
     try {
-      const response = await axios.post(`${url}/donation`, { donation });
+      const response = await axios.post(`${apiUrl}/donation`, { donation });
       window.open(response.data, "_blank");
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const handleSubscription = async () => {
-    const user = JSON.parse(localStorage.getItem("loggedUser"));
-    const email = user[0].email;
-
-    if (!email) {
-      console.error("The email was not found in localStorage");
-      return;
-    }
-
-    try {
-      const response = await axios.post(`${url}/donation/subscription`, {
-        email,
-      });
-      window.open(response.data, "_blank");
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -61,7 +43,7 @@ const Donation = ({ handleSetUserFlag }) => {
             color={"brand.darkBlue"}
             fontFamily={"heading"}
           >
-            Ayudanos con tu donación y forma parte!
+            ¡Ayudanos con tu donación y forma parte!
           </chakra.h1>
           <Box
             h={"80"}
@@ -72,19 +54,18 @@ const Donation = ({ handleSetUserFlag }) => {
             backgroundPosition={"center center"}
             borderRadius={20}
             boxShadow="2xl"
-            // _hover={}
           />
           <Text
             color={"gray.500"}
-            fontFamily={"body"}
-            py={10}
-            pb={10}
+            fontSize="xl"
+            py={8}
+            pb={8}
             alignItems={"center"}
           >
-            Tu aporte nos permite continuar llevando a cabo actividades
-            sanitarias, educativas y de asistencialismo. Los aportes económicos
-            son importantes para pagar tratamientos, estudios médicos y
-            honorarios veterinarios, comprar insumos y alimento, financiar
+            Tu aporte único o mensual nos permite seguir llevando a cabo
+            actividades sanitarias, educativas y de asistencialismo. Los aportes
+            económicos son importantes para pagar tratamientos, estudios médicos
+            y honorarios veterinarios, comprar insumos y alimento, financiar
             campañas de castración en zonas carenciadas, imprimir material de
             difusión entre otros.
           </Text>
@@ -119,19 +100,7 @@ const Donation = ({ handleSetUserFlag }) => {
               </Button>
             ))}
           </SimpleGrid>
-          <Box py={20}>
-            <Button
-              bg={"brand.darkBlue"}
-              rounded={"full"}
-              color={"white"}
-              _hover={{ bg: "brand.orange" }}
-              fontFamily={"body"}
-              onClick={handleSubscription}
-              size={"lg"}
-            >
-              Suscribite para ayudarnos mensualmente
-            </Button>
-          </Box>
+          <Subscription />
         </Box>
       </Box>
     </>
