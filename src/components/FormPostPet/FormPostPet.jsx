@@ -8,8 +8,8 @@ import "./FormPostPet.css";
 import {
   Flex,
   Box,
-  FormControl,
-  Input,
+  //   FormControl,
+  //   Input,
   HStack,
   Stack,
   Button,
@@ -18,7 +18,10 @@ import {
   Icon,
   Select,
 } from "@chakra-ui/react";
+import { SelectField, selectConfigs } from "./FormFields/SelectField";
+import { InputField, inputConfigs } from "./FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
+import { resetForm } from "utils/formUtils";
 
 export default function FormPostPet({ value }) {
   const dispatch = useDispatch();
@@ -27,7 +30,8 @@ export default function FormPostPet({ value }) {
   const [inputError, setInputError] = useState({});
   const paramsId = useParams().id;
   const petData = useSelector((state) => state.root.petDetails);
-  const [input, setInput] = useState({
+
+  const initialInputState = {
     specie: "",
     sex: "",
     age: "",
@@ -36,20 +40,85 @@ export default function FormPostPet({ value }) {
     area: "",
     detail: "",
     img: "",
-  });
+  };
 
-  function dataEmptied() {
-    setInput({
-      specie: "",
-      sex: "",
-      age: "",
-      size: "",
-      status: "",
-      area: "",
-      detail: "",
-      img: "",
-    });
-  }
+  const [input, setInput] = useState(initialInputState);
+
+//   const selectConfigs = [
+//     {
+//       id: "specie",
+//       name: "specie",
+//       label: "Especie",
+//       options: [
+//         { value: "gato", label: "Gato/a" },
+//         { value: "perro", label: "Perro/a" },
+//       ],
+//       isRequired: true,
+//     },
+//     {
+//       id: "sex",
+//       name: "sex",
+//       label: "Sexo",
+//       options: [
+//         { value: "macho", label: "Macho" },
+//         { value: "hembra", label: "Hembra" },
+//       ],
+//       isRequired: true,
+//     },
+//     {
+//       id: "age",
+//       name: "age",
+//       label: "Edad",
+//       options: [
+//         { value: "cachorro", label: "Cachorro/a" },
+//         { value: "joven", label: "Joven" },
+//         { value: "adulto", label: "Adulto/a" },
+//       ],
+//       isRequired: true,
+//     },
+//     {
+//       id: "size",
+//       name: "size",
+//       label: "Tamaño",
+//       options: [
+//         { value: "pequeño", label: "Pequeño/a" },
+//         { value: "mediano", label: "Mediano/a" },
+//         { value: "grande", label: "Grande" },
+//       ],
+//       isRequired: true,
+//     },
+//     {
+//       id: "status",
+//       name: "status",
+//       label: "Estado",
+//       options: [
+//         { value: "perdido", label: "Perdido/a" },
+//         { value: "encontrado", label: "Encontrado/a" },
+//       ],
+//       isRequired: true,
+//     },
+//   ];
+
+//   const inputConfigs = [
+//     {
+//       id: "area",
+//       name: "area",
+//       label: "Área",
+//       placeholder: "Lugar donde se encuentra...",
+//     },
+//     {
+//       id: "detail",
+//       name: "detail",
+//       label: "Detalles",
+//       placeholder: "Descripción del animal",
+//     },
+//     {
+//       id: "img",
+//       name: "img",
+//       label: "Imagen",
+//       placeholder: "EJ: https://urlDeLaImagen.jpg",
+//     },
+//   ];
   function completePetData() {
     if (petData) {
       setInput({
@@ -65,56 +134,44 @@ export default function FormPostPet({ value }) {
     }
   }
   const handlerChange = (e) => {
-	e.preventDefault();
+    e.preventDefault();
 
-	const { name, value } = e.target
+    const { name, value } = e.target;
 
     setInput({
       ...input,
       [name]: value,
     });
 
-	const updatedInput = { ...input, [name]: value};
-	const errors = validateForm(updatedInput);
+    const updatedInput = { ...input, [name]: value };
+    const errors = validateForm(updatedInput);
 
-	setInputError((prevErrors) => ({
-		...prevErrors,
-		[name]: errors[name] || "",
-	}));
+    setInputError((prevErrors) => ({
+      ...prevErrors,
+      [name]: errors[name] || "",
+    }));
   };
   const handlerSubmit = (e) => {
     e.preventDefault();
-	
-	setInputError(
-		validateForm({
-		  ...input,
-		  [e.target.name]: e.target.value,
-		})
-	  );
 
-    if (
-      input.specie &&
-      input.sex &&
-      input.age &&
-      input.size &&
-      input.area &&
-      input.status &&
-      input.detail &&
-      input.img !== ""
-    ) {
-      if (value === undefined) {
-        dispatch(postOrUpdatePet(input, value));
-        setIsIncomplete(false);
-        setInfoSend(true);
-        dataEmptied();
-      } else {
-        dispatch(postOrUpdatePet(input, value, paramsId.id));
-        setIsIncomplete(false);
-        setInfoSend(true);
-      }
-    } else {
+    const errors = validateForm(input);
+    setInputError(errors);
+
+    if (Object.keys(errors).length) {
       setIsIncomplete(true);
       setInfoSend(false);
+      return;
+    }
+    if (value === undefined) {
+      dispatch(postOrUpdatePet(input, value));
+      setIsIncomplete(false);
+      setInfoSend(true);
+      resetForm(setInput, setInputError, initialInputState);
+    } else {
+      dispatch(postOrUpdatePet(input, value, paramsId.id));
+      setIsIncomplete(false);
+      setInfoSend(true);
+      resetForm(setInput, setInputError, initialInputState);
     }
   };
 
@@ -128,12 +185,12 @@ export default function FormPostPet({ value }) {
     if (value === "update") {
       completePetData();
     } else {
-      dataEmptied();
+      resetForm(setInput, setInputError, initialInputState);
     }
   }, [petData, value]);
 
   return (
-    <div>
+    <Box>
       {isIncomplete ? <ErrorForm /> : null}
       {infoSend ? <SuccedForm /> : null}
       <form onSubmit={(e) => handlerSubmit(e)} id="myForm">
@@ -161,195 +218,37 @@ export default function FormPostPet({ value }) {
             <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
               <Stack spacing={4}>
                 <HStack>
-                  <Box>
-                    <FormControl id="specie" isRequired>
-                      <Select
-                        focusBorderColor={"brand.green.300"}
-                        fontFamily={"body"}
-                        name="specie"
-                        value={input.specie}
-                        onChange={(e) => handlerChange(e)}
-                      >
-                        <option value="" name="especie" key="defaultSpecies">
-                          Especie
-                        </option>
-                        <option value={"gato"} name="gato" key="cat">
-                          Gatx
-                        </option>
-                        <option value={"perro"} name="perro" key="dog">
-                          Perrx
-                        </option>
-                      </Select>
-                      {inputError.specie && (
-                        <Text className="text_inputError">
-                          {inputError.specie}
-                        </Text>
-                      )}
-                    </FormControl>
-                  </Box>
-
-                  <Box>
-                    <FormControl id="sex">
-                      <Select
-                        focusBorderColor={"brand.green.300"}
-                        value={input.sex}
-                        fontFamily={"body"}
-                        name="sex"
-                        key="sex"
-                        onChange={(e) => handlerChange(e)}
-                      >
-                        <option value="" key="defaultSex">
-                          Sexo
-                        </option>
-                        <option value="hembra" key="hembra">
-                          Hembra
-                        </option>
-                        <option value="macho" key="macho">
-                          Macho
-                        </option>
-                      </Select>
-                      {inputError.sex && (
-                        <Text className="text_inputError">
-                          {inputError.sex}
-                        </Text>
-                      )}
-                    </FormControl>
-                  </Box>
+                  {selectConfigs.slice(0, 2).map((cfg) => (
+                    <SelectField
+                      key={cfg.id}
+                      {...cfg}
+                      value={input[cfg.name]}
+                      error={inputError[cfg.name]}
+                      onChange={handlerChange}
+                    />
+                  ))}
                 </HStack>
 
-                <FormControl id="age" isRequired>
-                  <Select
-                    focusBorderColor={"brand.green.300"}
-                    value={input.age}
-                    fontFamily={"body"}
-                    name="age"
-                    key="age"
-                    onChange={(e) => handlerChange(e)}
-                  >
-                    <option value="" key="defaultAge">
-                      Edad
-                    </option>
-                    <option value="cachorro" key="cachorro">
-                      Cachorro
-                    </option>
-                    <option value="joven" key="joven">
-                      Joven
-                    </option>
-                    <option value="adulto" key="adulto">
-                      Adulto
-                    </option>
-                  </Select>
-                  {inputError.age && (
-                    <Text className="text_inputError">{inputError.age}</Text>
-                  )}
-                </FormControl>
-                <FormControl id="size" isRequired>
-                  <Select
-                    focusBorderColor={"brand.green.300"}
-                    value={input.size}
-                    fontFamily={"body"}
-                    name="size"
-                    key="size"
-                    onChange={(e) => handlerChange(e)}
-                  >
-                    <option value="" key="defaultSize">
-                      Tamaño
-                    </option>
-                    <option value="pequeño" key="pequeño">
-                      Chico
-                    </option>
-                    <option value="mediano" key="mediano">
-                      Mediano
-                    </option>
-                    <option value="grande" key="grande">
-                      Grande
-                    </option>
-                  </Select>
-                  {inputError.size && (
-                    <Text className="text_inputError">{inputError.size}</Text>
-                  )}
-                </FormControl>
-                <FormControl id="status" isRequired>
-                  <Select
-                    focusBorderColor={"brand.green.300"}
-                    value={input.status}
-                    fontFamily={"body"}
-                    name="status"
-                    key="status"
-                    onChange={(e) => handlerChange(e)}
-                  >
-                    <option value="" key="defaultStatus">
-                      Estado
-                    </option>
-                    <option value="encontrado" key="encontrado">
-                      Encontrado
-                    </option>
-                    <option value="perdido" key="perdido">
-                      Perdido
-                    </option>
-                  </Select>
-                  {inputError.status && (
-                    <Text className="text_inputError">{inputError.status}</Text>
-                  )}
-                </FormControl>
+				{selectConfigs.slice(2).map(cfg => (
+					<SelectField 
+						key={cfg.id}
+						{...cfg}
+						value={input[cfg.name]}
+						error={inputError[cfg.name]}
+						onChange={handlerChange}
+					/>
+				))}
 
-                <FormControl>
-                  <Text fontFamily={"body"} fontSize="14px">
-                    Área:
-                  </Text>
-                  <Input
-                    value={input.area}
-                    type="text"
-                    fontFamily={"body"}
-                    name="area"
-                    variant="flushed"
-                    focusBorderColor={"brand.green.300"}
-                    placeholder="Lugar donde se encuentra.."
-                    onChange={(e) => handlerChange(e)}
-                  />
-                  {inputError.area && (
-                    <Text className="text_inputError">{inputError.area}</Text>
-                  )}
-                </FormControl>
-
-                <FormControl>
-                  <Text fontFamily={"body"} fontSize="14px">
-                    Detalles:
-                  </Text>
-                  <Input
-                    value={input.detail}
-                    fontFamily={"body"}
-                    variant="flushed"
-                    focusBorderColor={"brand.green.300"}
-                    placeholder="Descripción de la mascota.."
-                    size="md"
-                    name="detail"
-                    onChange={(e) => handlerChange(e)}
-                  />
-                  {inputError.detail && (
-                    <Text className="text_inputError">{inputError.detail}</Text>
-                  )}
-                </FormControl>
-
-                <FormControl>
-                  <Text fontFamily={"body"} fontSize="14px">
-                    Imagen:
-                  </Text>
-                  <Input
-                    value={input.img}
-                    type="text"
-                    fontFamily={"body"}
-                    name="img"
-                    variant="flushed"
-                    focusBorderColor={"brand.green.300"}
-                    placeholder="https://urlDeLaImagen.jpg"
-                    onChange={(e) => handlerChange(e)}
-                  />
-                  {inputError.img && (
-                    <Text className="text_inputError">{inputError.img}</Text>
-                  )}
-                </FormControl>
-                <Stack spacing={10} pt={2}>
+				{inputConfigs.map(cfg => (
+					<InputField
+						key={cfg.id}
+						{...cfg}
+						value={input[cfg.name]}
+						error={inputError[cfg.name]}
+						onChange={handlerChange}
+					/>
+				))}
+               
                   <Button
                     onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
                     loadingText="Post or Edit"
@@ -361,9 +260,8 @@ export default function FormPostPet({ value }) {
                       bg: "orange.400",
                     }}
                   >
-                    {value === "update" ? "Modificar" : "Publicar" }
+                    {value === "update" ? "Modificar" : "Publicar"}
                   </Button>
-                </Stack>
               </Stack>
             </Box>
             <Link to={"/"}>
@@ -401,6 +299,6 @@ export default function FormPostPet({ value }) {
           </Stack>
         </Flex>
       </form>
-    </div>
+    </Box>
   );
 }
