@@ -365,37 +365,6 @@ export default function Navbar({
                 Veterinarias
               </Text>
             </NavLink>
-            <Menu>
-              <MenuButton
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                <Text
-                  fontSize="1.3rem"
-                  fontFamily={"body"}
-                  _hover={{
-                    fontWeight: "bold",
-                    color: "brand.green.300",
-                  }}
-                >
-                  Mascotas
-                </Text>
-              </MenuButton>
-              <MenuList>
-                <MenuItem>
-                  <NavLink to="/adoptions">
-                    <Text fontFamily={"body"}>Adopcion</Text>
-                  </NavLink>
-                </MenuItem>
-                <MenuItem>
-                  <NavLink to="/lostPets">
-                    <Text fontFamily={"body"}>Perdidos</Text>
-                  </NavLink>
-                </MenuItem>
-              </MenuList>
-            </Menu>
           </Stack>
         </Box>
       ) : null}
