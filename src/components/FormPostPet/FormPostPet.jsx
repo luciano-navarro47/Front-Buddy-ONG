@@ -18,48 +18,15 @@ import {
   Icon,
   Select,
 } from "@chakra-ui/react";
+import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 
-const validateForm = (input) => {
-  let inputError = {};
-
-  if (input.specie === "" || !input.specie.length) {
-    inputError.specie = "Selecciona gato o perro";
-  }
-  if (input.sex === "" || !input.sex.length) {
-    inputError.sex = `Selecciona macho o hembra`;
-  }
-  if (input.age === "" || !input.age.length) {
-    inputError.age = "Edad aproximada de la mascota";
-  }
-  if (input.size === "" || !input.size.length) {
-    inputError.size = "Selecciona un tamaño aproximado";
-  }
-  if (input.status === "" || !input.status.length) {
-    inputError.status = "Selecciona un estado";
-  }
-  if (input.area.trim() === "" || !input.area.length) {
-    inputError.area = "Provee una localidad";
-  }
-  if (input.detail.trim()) {
-    if (input.detail.trim().length < 15) {
-      inputError.detail = "Inserta al menos 16 caractéres";
-    }
-  } else {
-    inputError.detail = "Brinda una breve descripcion de la mascota";
-  }
-  if (input.img === "") {
-    inputError.img = "Inserta el link de una imagen";
-  }
-  return inputError;
-};
-
-export default function FormPostPet({ handleSetUserFlag, value }) {
+export default function FormPostPet({ value }) {
   const dispatch = useDispatch();
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const paramsId = useParams().id;
-  const petData = useSelector((state) => state.petDetails);
+  const petData = useSelector((state) => state.root.petDetails);
   const [input, setInput] = useState({
     specie: "",
     sex: "",
@@ -98,19 +65,33 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
     }
   }
   const handlerChange = (e) => {
+	e.preventDefault();
+
+	const { name, value } = e.target
+
     setInput({
       ...input,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
-    setInputError(
-      validateForm({
-        ...input,
-        [e.target.name]: e.target.value,
-      })
-    );
+
+	const updatedInput = { ...input, [name]: value};
+	const errors = validateForm(updatedInput);
+
+	setInputError((prevErrors) => ({
+		...prevErrors,
+		[name]: errors[name] || "",
+	}));
   };
   const handlerSubmit = (e) => {
     e.preventDefault();
+	
+	setInputError(
+		validateForm({
+		  ...input,
+		  [e.target.name]: e.target.value,
+		})
+	  );
+
     if (
       input.specie &&
       input.sex &&
@@ -125,21 +106,18 @@ export default function FormPostPet({ handleSetUserFlag, value }) {
         dispatch(postOrUpdatePet(input, value));
         setIsIncomplete(false);
         setInfoSend(true);
-        document.getElementById("myForm").reset();
+        dataEmptied();
       } else {
         dispatch(postOrUpdatePet(input, value, paramsId.id));
         setIsIncomplete(false);
         setInfoSend(true);
-        document.getElementById("myForm").reset();
       }
     } else {
       setIsIncomplete(true);
       setInfoSend(false);
     }
   };
-  useEffect(() => {
-    return () => dataEmptied();
-  }, []);
+
   useEffect(() => {
     if (paramsId) {
       dispatch(getPetDetails(paramsId));
