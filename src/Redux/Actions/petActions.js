@@ -7,49 +7,20 @@ import {
   UPDATE_PET,
   DELETE_PET,
 } from "../ActionTypes";
-import { HOST, header } from "../../utils";
 import axios from "axios";
+import { HOST, header } from "../../utils";
 
-export function getPets(value) {
+export function getPets() {
   return async function (dispatch) {
     try {
-      if (value === undefined) {
-        const json = await axios.get(`${HOST}/pet`);
-        const payload = {
-          allPets: json.data,
-          value,
-        };
-        return dispatch({
-          type: GET_PETS,
-          payload,
-        });
-      }
-      if (value === "lostPets") {
-        const json = await axios.get(`${HOST}/pet`);
-        const lostPets = json.data.filter((pet) => pet.status === "perdido");
-        const payload = {
-          lostPets,
-          value,
-        };
-        return dispatch({
-          type: GET_PETS,
-          payload,
-        });
-      }
-      if (value === "adoptions") {
-        const json = await axios.get(`${HOST}/pet`);
-        const adoptionPets = json.data.filter(
-          (pet) => pet.status === "encontrado"
-        );
-        const payload = {
-          adoptionPets,
-          value,
-        };
-        return dispatch({
-          type: GET_PETS,
-          payload,
-        });
-      }
+      const response = await axios.get(`${HOST}/pet`);
+      const payload = {
+        pets: response.data,
+      };
+      return dispatch({
+        type: GET_PETS,
+        payload,
+      });
     } catch (error) {
       console.log(error);
     }

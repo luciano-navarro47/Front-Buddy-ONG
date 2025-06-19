@@ -14,9 +14,6 @@ import {
 } from "../../redux/ActionTypes";
 
 const initialState = {
-  allPets: [],
-  adoptionPets: [],
-  lostPets: [],
   pets: [],
   petDetails: {},
   actualPage: 1,
@@ -29,27 +26,22 @@ const initialState = {
 const RootReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_PETS:
-      if (action.payload.value === undefined) {
-        return {
-          ...state,
-          allPets: action.payload.allPets,
-        };
-      }
-      if (action.payload.value === "lostPets") {
-        return {
-          ...state,
-          lostPets: action.payload.lostPets,
-          pets: action.payload.lostPets,
-        };
-      }
-      if (action.payload.value === "adoptions") {
-        return {
-          ...state,
-          adoptionPets: action.payload.adoptionPets,
-          pets: action.payload.adoptionPets,
-        };
-      }
-      break;
+      return action.payload;
+    // if (action.payload.value === "lostPets") {
+    //   return {
+    //     ...state,
+    //     lostPets: action.payload.lostPets,
+    //     pets: action.payload.lostPets,
+    //   };
+    // }
+    // if (action.payload.value === "adoptions") {
+    //   return {
+    //     ...state,
+    //     adoptionPets: action.payload.adoptionPets,
+    //     pets: action.payload.adoptionPets,
+    //   };
+    // }
+    // break;
     case GET_PET_ID:
       return {
         ...state,
