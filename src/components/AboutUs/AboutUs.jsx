@@ -19,7 +19,7 @@ import {
   BiHomeHeart,
 } from "react-icons/bi";
 
-export default function AboutUs({ setUsuario, handleSetUserFlag }) {
+export default function AboutUs() {
   const Feature = ({ title, text, icon }) => {
     return (
       <Stack alignItems={"center"}>
@@ -40,11 +40,10 @@ export default function AboutUs({ setUsuario, handleSetUserFlag }) {
       </Stack>
     );
   };
-  console.log("SET-USUARIO, COMP ABOUT US: ", setUsuario);
   return (
     <>
-      <Box bg={"brand.green.200"} py={["2rem", "4rem", "4rem", "3rem"]}>
-        <SimpleGrid columns={[1, 1, 1, 2]} spacing={5} vW="100%" px="1rem">
+      <Box py={["2rem", "4rem", "4rem", "3rem"]}>
+        <SimpleGrid columns={[1, 1, 1, 2]} spacing={5} vw="100%" px="1rem">
           <Center>
             <Box pt="3rem">
               <Image
@@ -62,14 +61,6 @@ export default function AboutUs({ setUsuario, handleSetUserFlag }) {
               spacing={{ base: 4, md: 5 }}
               py={{ base: 10, md: 10 }}
             >
-              <Heading
-                fontWeight={600}
-                fontSize={{ base: "4xl", sm: "4xl", md: "6xl" }}
-                /*   lineHeight={"100%"} */
-                pl="2rem"
-              >
-                Hola!
-              </Heading>
               <Text
                 as={"span"}
                 color={"brand.orange"}
@@ -101,11 +92,11 @@ export default function AboutUs({ setUsuario, handleSetUserFlag }) {
               <iframe
                 width="720"
                 height="405"
-                src="https://www.youtube.com/embed/rOW_cTjVleg"
+                src="https://www.youtube-nocookie.com/embed/rOW_cTjVleg?modestbranding=1&rel=0"
                 title="BuddyVid"
-                frameborder="0"
+                frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
+                allowFullScreen
               ></iframe>
             </AspectRatio>
           </Box>
