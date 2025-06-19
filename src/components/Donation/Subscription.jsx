@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
-  Heading,
+  //   Heading,
+  chakra,
   Input,
   VStack,
   useToast,
@@ -13,10 +14,11 @@ import {
 import { useSelector } from "react-redux";
 import axios from "axios";
 
-export const Subscription = () => {
+export default function Subscription() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const user = useSelector((s) => s.user);
   const [amount, setAmount] = useState(500);
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
 
   const handleChange = (e) => {
@@ -53,6 +55,9 @@ export const Subscription = () => {
         isClosable: true,
       });
     }
+
+    setIsLoading(true);
+
     try {
       const response = await axios.post(`${apiUrl}/subscription`, {
         email: user.email,
@@ -69,45 +74,62 @@ export const Subscription = () => {
         duration: 5000,
         isClosable: true,
       });
+    } finally {
+        setIsLoading(false);
     }
   };
 
   return (
-    <Box>
+    <Box
+      bg="brand.background"
+      paddingBottom={"3rem"}
+      maxW="7xl"
+      mx={"auto"}
+      pt={10}
+      px={{ base: 2, sm: 12, md: 17 }}
+    >
       <VStack spacing={8}>
-        <Heading textAlign="center" marginTop={"20px"} color="brand.darkBlue">
+        <chakra.h1
+          textAlign={"center"}
+          fontSize={"4xl"}
+          fontWeight={"bold"}
+          color={"brand.darkBlue"}
+          fontFamily={"heading"}
+        >
           Suscripciones
-        </Heading>
+        </chakra.h1>
 
-        <Text fontSize="xl" color="gray.500">
+        <Text color={"gray.500"} fontSize="1.5rem" pb={5} alignItems={"center"}>
           Podés ayudarnos de forma constante desde <b>$500</b> en adelante. Tu
           colaboración mensual nos permite seguir rescatando, cuidando y
           alimentando a cientos de animales que lo necesitan 💚.
         </Text>
 
         <VStack spacing={2} align="center">
-          <Text mb={2} fontWeight="bold" color="brand.orange">
+          <Text mb={2} fontWeight="bold" fontSize="1.3rem" color="brand.orange">
             Elegí el monto que querés aportar mensualmente:
           </Text>
 
           <Flex>
             <Tag
               bg={"gray.200"}
-              px={2}
+              px={1}
+              w={"60px"}
               borderRadius={0}
               border="1px solid #ccc"
               borderRight="none"
             >
-              $
+            ARS $
             </Tag>
             <Input
               type="number"
               value={amount}
               min={500}
               onChange={handleChange}
-              textAlign="center"
+              textAlign="left"
               borderColor="gray.300"
-              _focus={{ borderColor: "brand.orange" }}
+              borderRadius={0}
+              _focus={{ borderColor: "brand.green" }}
               fontFamily="body"
               fontWeight="bold"
             />
@@ -123,6 +145,8 @@ export const Subscription = () => {
             fontFamily={"body"}
             onClick={handleSubmit}
             size={"lg"}
+            isLoading={isLoading}
+            isDisabled={isLoading}
           >
             Suscribite
           </Button>
@@ -130,4 +154,4 @@ export const Subscription = () => {
       </VStack>
     </Box>
   );
-};
+}

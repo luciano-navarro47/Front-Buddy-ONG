@@ -1,7 +1,7 @@
 import React from "react";
 import Home from "../components/Home/Home";
 import AboutUs from "../components/AboutUs/AboutUs";
-import Donation from "../components/Donation/Donation";
+import DonationPage from "../components/Donation/DonationPage";
 import Shop from "../components/Shop/Shop";
 import Cart from "../components/Shop/Cart/Cart"
 import Veterinaries from "../components/Veterinaries/Veterinaries";
@@ -27,7 +27,7 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   },
   {
     path: "/donate",
-    element: <Donation/>
+    element: <DonationPage />
   },
   {
     path: "/shop",
