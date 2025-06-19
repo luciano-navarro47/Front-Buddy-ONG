@@ -35,5 +35,5 @@ export const userRoutes = ({
         <MyPets user={user} setUser={setUser} />
       </PrivateRoute>
     )
-  }
+  },
 ];
