@@ -7,7 +7,7 @@ import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
 import logo from "../../assets/imagenes/logo_amarillo.png";
 
 const Veterinaries = ({ handleSetUserFlag }) => {
-  const veterinaries = useSelector((state) => state.root.allVets);
+  const veterinaries = useSelector((state) => state.root.allVets ?? []);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,7 +29,6 @@ const Veterinaries = ({ handleSetUserFlag }) => {
               fontFamily={"heading"}
               mt="1%"
               mb="1%"
-              // py={10}
             >
               Bienvenidos a nuestra seccion de veterinarias en línea.
             </chakra.h4>

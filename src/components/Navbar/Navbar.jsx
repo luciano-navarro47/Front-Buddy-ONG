@@ -1,259 +1,94 @@
-import logo from "../../assets/imagenes/logo_negro.png";
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
+import logo from "../../assets/imagenes/logo_negro.png";
 import {
-  Box,
-  Flex,
   Avatar,
-  HStack,
-  IconButton,
+  Box,
   Button,
+  Flex,
+  IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  MenuDivider,
   useDisclosure,
-  useColorModeValue,
-  Stack,
-  Image,
-  Text,
+  useToast,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { logout } from "../../redux/Actions/session";
-export default function Navbar({
-  user,
-  setUser,
-  isAuthenticated,
-  handleLogout,
-}) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+import NavLinks from "./NavLinks";
+import { mainLinks } from "./navConfig";
+export default function Navbar({ user, isAuthenticated, handleLogout }) {
   const navigate = useNavigate();
 
-  const userPhone = (e) => {
-    e.preventDefault();
-    if (user?.phone === "123456789") {
-      navigate("/updateUser");
-      alert("Actualiza tu telefono para publicar");
-    } else {
-      navigate("/createPet");
-    }
-  };
+  const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const userAuth = (e) => {
-    e.preventDefault();
-    alert("Para publicar una mascota ingresa a tu cuenta");
-    navigate("/");
+  const handleLinkClick = (link) => {
+    if (link.requiresAuth) {
+      if (!user) {
+        toast({
+          title: "Acceso denegado",
+          description: "Debes iniciar sesión para publicar una mascota.",
+          status: "warning",
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
+      if (!user.phone) {
+        toast({
+          title: "Acceso denegado",
+          description:
+            "Debes tener un número de celular válido. Redirigiendote a tu sección de datos personales",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+        setTimeout(() => {
+          navigate("/updateUser");
+        }, 5000);
+
+        return;
+      }
+    }
+    navigate(link.to);
   };
 
   return (
     <Box
-      bg="brand.green.100"
-      padding="0.5rem"
       as="header"
       position="sticky"
       top="0"
-      width="100%"
+      bg="brand.green.100"
+      px="2rem"
+      py="1rem"
       zIndex="1000"
       boxShadow="md"
     >
-      <Flex h={16} alignItems={"center"} justifyContent={"space-evenly"}>
+      <Flex h={16} alignItems="center" justifyContent="space-evenly">
         <IconButton
           size={"md"}
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          aria-label={"Open Menu"}
+          aria-label="Hamburger Menu"
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         />
-        <HStack spacing={8} alignItems={"center"}>
-          <Box>
-            <NavLink to="/">
-              <Image
-                src={logo}
-                boxSize="6rem"
-                mx="2rem"
-                my="1rem"
-                _hover={{
-                  opacity: "0.5",
-                }}
-              />
-            </NavLink>
-          </Box>
+        <Image
+          src={logo}
+          boxSize="6rem"
+          cursor="pointer"
+          onClick={() => navigate("/")}
+        />
 
-          <HStack
-            as={"nav"}
-            spacing={8}
-            display={{ base: "none", md: "flex" }}
-            padding="3rem"
-          >
-            <NavLink
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.200", "gray.700"),
-              }}
-              to="/aboutUs"
-              variant="custom"
-            >
-              <Text
-                fontSize="1.3rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Nosotros
-              </Text>
-            </NavLink>
-            <NavLink
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                color: "brand.green.300",
-              }}
-              to="/donate"
-              variant="custom"
-            >
-              <Text
-                fontSize="1.3rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Donaciones
-              </Text>
-            </NavLink>
-            <NavLink
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.200", "gray.700"),
-              }}
-              to="/shop"
-              variant="custom"
-            >
-              <Text
-                fontSize="1.3rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Tienda
-              </Text>
-            </NavLink>
-            {!user ? (
-              <NavLink
-                onClick={(e) => userAuth(e)}
-                px={2}
-                py={1}
-                rounded={"md"}
-                _hover={{
-                  textDecoration: "none",
-                }}
-                to="/createPet"
-                variant="custom"
-              >
-                <Text
-                  fontSize="1.3rem"
-                  fontFamily={"body"}
-                  _hover={{
-                    fontWeight: "bold",
-                    color: "brand.green.300",
-                  }}
-                >
-                  Publicar Mascota
-                </Text>
-              </NavLink>
-            ) : (
-              <NavLink
-                onClick={(e) => userPhone(e)}
-                px={2}
-                py={1}
-                rounded={"md"}
-                _hover={{
-                  textDecoration: "none",
-                }}
-                to="/createPet"
-                variant="custom"
-              >
-                <Text
-                  fontSize="1.3rem"
-                  fontFamily={"body"}
-                  _hover={{
-                    fontWeight: "bold",
-                    color: "brand.green.300",
-                  }}
-                >
-                  Publicar Mascota
-                </Text>
-              </NavLink>
-            )}
-            <NavLink
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.200", "gray.700"),
-              }}
-              to="/veterinary"
-              variant="custom"
-            >
-              <Text
-                fontSize="1.3rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Veterinarias
-              </Text>
-            </NavLink>
+        <NavLinks
+          links={mainLinks}
+          handleLinkClick={handleLinkClick}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
 
-            <Menu>
-              <MenuButton
-                as={Button}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                <Text
-                  fontSize="1.3rem"
-                  fontFamily={"body"}
-                  _hover={{
-                    fontWeight: "bold",
-                    color: "brand.green.300",
-                  }}
-                >
-                  Mascotas
-                </Text>
-              </MenuButton>
-              <MenuList>
-                <MenuItem as={NavLink} to="/adoptions">
-                  <Text fontFamily={"body"}>En adopción</Text>
-                </MenuItem>
-                <MenuItem as={NavLink} to="/lostPets">
-                  <Text fontFamily={"body"}>Perdidos</Text>
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </HStack>
-        </HStack>
-        <Flex alignItems={"center"}>
+        {user && Object.keys(user).length > 0 ? (
           <Menu>
             <MenuButton
               as={Button}
@@ -274,100 +109,30 @@ export default function Navbar({
             </MenuButton>
 
             <MenuList>
-              {user && Object.keys(user).length > 0 ? (
-                <>
-                  <NavLink to="/dashboard">
-                    <MenuItem hidden={user?.role === "admin" ? false : true}>
-                      Panel administrador
-                      {/* WORK HERE */}
-                    </MenuItem>
-                  </NavLink>
-                  <NavLink to="/updateUser">
-                    <MenuItem>Datos personales</MenuItem>
-                  </NavLink>
-                  <NavLink to="/myPets">
-                    <MenuItem>Mis mascotas</MenuItem>
-                  </NavLink>
-                  <MenuItem onClick={() => handleLogout()}>
-                    Cerrar sesión
+              <>
+                <NavLink to="/dashboard">
+                  <MenuItem hidden={user?.role === "admin" ? false : true}>
+                    Panel administrador
                   </MenuItem>
-                </>
-              ) : (
-                <NavLink to="/login">
-                  <MenuItem>Ingresar</MenuItem>
                 </NavLink>
-              )}
+                <NavLink to="/updateUser">
+                  <MenuItem>Datos personales</MenuItem>
+                </NavLink>
+                <NavLink to="/myPets">
+                  <MenuItem>Mis mascotas</MenuItem>
+                </NavLink>
+                <MenuItem onClick={() => handleLogout()}>
+                  Cerrar sesión
+                </MenuItem>
+              </>
             </MenuList>
           </Menu>
-        </Flex>
+        ) : (
+          <NavLink to="/login">
+            <Button>Ingresar</Button>
+          </NavLink>
+        )}
       </Flex>
-
-      {isOpen ? (
-        <Box pb={1} display={{ md: "none" }}>
-          <Stack as={"nav"} p={5} spacing={6} alignItems={"center"}>
-            <NavLink to="/aboutUs">
-              <Text
-                fontSize="1.2rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Nosotros
-              </Text>
-            </NavLink>
-            <NavLink to="/donate">
-              <Text
-                fontSize="1.2rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Donaciones
-              </Text>
-            </NavLink>
-            <NavLink to="/shop">
-              <Text
-                fontSize="1.2rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Tienda
-              </Text>
-            </NavLink>
-            <NavLink to="/createPet">
-              <Text
-                fontSize="1.2rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Publicar Mascota
-              </Text>
-            </NavLink>
-            <NavLink to="/veterinary">
-              <Text
-                fontSize="1.2rem"
-                fontFamily={"body"}
-                _hover={{
-                  fontWeight: "bold",
-                  color: "brand.green.300",
-                }}
-              >
-                Veterinarias
-              </Text>
-            </NavLink>
-          </Stack>
-        </Box>
-      ) : null}
     </Box>
   );
 }
