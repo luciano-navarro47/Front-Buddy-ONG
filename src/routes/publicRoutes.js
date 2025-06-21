@@ -46,11 +46,7 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
     element: <VetsDetail />
   },
   {
-    path: "/adoptions",
+    path: "/pets",
     element: <Pets />
   },
-  {
-    path: "/lostPets",
-    element: <Pets />
-  }
 ];
