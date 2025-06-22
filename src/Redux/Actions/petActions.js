@@ -1,11 +1,12 @@
 import {
+  GET_PET_BY_ID,
   GET_PETS,
-  GET_PET_ID,
+  GET_PETS_BY_USER,
   POST_PET,
-  FILTER_ADOPTION_VALUES,
-  FILTER_BY_SEARCH_AREA,
   UPDATE_PET,
   DELETE_PET,
+  FILTER_ADOPTION_VALUES,
+  FILTER_BY_SEARCH_AREA,
 } from "../ActionTypes";
 import axios from "axios";
 import { HOST, header } from "../../utils";
@@ -31,7 +32,7 @@ export const getPetDetails = (id) => async (dispatch) => {
   try {
     const getID = await axios.get(`${HOST}/pet/${id}`);
     return dispatch({
-      type: GET_PET_ID,
+      type: GET_PET_BY_ID,
       payload: getID.data,
     });
   } catch (err) {
