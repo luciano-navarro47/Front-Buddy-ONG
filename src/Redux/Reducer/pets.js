@@ -19,7 +19,11 @@ const petReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_PETS:
       return action.payload;
-
+    case GET_PETS_BY_USER:
+        return {
+            ...state,
+            userPets: action.payload
+        }
     case FILTER_ADOPTION_VALUES:
       if (action.payload.value === "lostPets") {
         return {

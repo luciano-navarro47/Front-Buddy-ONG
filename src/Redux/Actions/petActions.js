@@ -28,6 +28,23 @@ export function getPets() {
   };
 }
 
+export function getPetsByUser(id) {
+  return async function (dispatch) {
+    try {
+      if (!id) throw new Error("Id not provided.");
+      const res = await axios.get(`${HOST}/pet/user/${id}`);
+      const userPets = res.data
+      console.log("USER P: ", userPets);
+      return dispatch({
+        type: GET_PETS_BY_USER,
+        payload: userPets 
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
+}
+
 export const getPetDetails = (id) => async (dispatch) => {
   try {
     const getID = await axios.get(`${HOST}/pet/${id}`);
