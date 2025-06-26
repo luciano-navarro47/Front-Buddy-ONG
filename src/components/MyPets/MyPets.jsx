@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Card from "../Card/Card";
-import { Heading, Container, Text, Center, Box } from "@chakra-ui/react";
-import { getUserId } from "../../redux/Actions/userActions";
 import s from "./MyPets.module.css";
+import { Heading, Container, Text, Center, Box } from "@chakra-ui/react";
+import Card from "../Card/Card";
+import { getPetsByUser } from "redux/Actions/petActions";
 
-export default function MyPets({user, setUser}) {
+export default function MyPets({ user, setUser }) {
   const dispatch = useDispatch();
-  const userRedux = useSelector((state) => state.user);
-  const userPets = userRedux[0]?.pet;
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+  const userPets = useSelector((state) => state.pets.userPets);
+  console.log("U.P: ", userPets)
 
   useEffect(() => {
-    dispatch(getUserId(loggedUser.id));
-  }, [dispatch, userPets, loggedUser.id]);
+    if (userPets === undefined || userPets.length === 0) {
+      dispatch(getPetsByUser(user.id));
+    }
+  }, [dispatch, userPets]);
 
   return (
     <>

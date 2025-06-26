@@ -14,7 +14,8 @@ const Adoption = ({ value }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage, setPetsPerPage] = useState(3);
 
-  const pets = useSelector((state) => state.root.pets);
+  const pets = useSelector((state) => state.pets.allPets);
+  console.log("PETS: ", pets)
   const indexOfLastPet = currentPage * petsPerPage;
   const indexOfFirstPet = indexOfLastPet - petsPerPage;
   const currentPets = pets.slice(indexOfFirstPet, indexOfLastPet);
