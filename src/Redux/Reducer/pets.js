@@ -18,7 +18,10 @@ const initialState = {
 const petReducer = (state = initialState, action) => {
   switch (action.type) {
     case GET_PETS:
-      return action.payload;
+      return {
+        ...state,
+        allPets: action.payload
+      };
     case GET_PETS_BY_USER:
         return {
             ...state,

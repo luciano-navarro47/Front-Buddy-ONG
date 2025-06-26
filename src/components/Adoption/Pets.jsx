@@ -12,10 +12,9 @@ import { getPets } from "../../redux/Actions/petActions";
 const Adoption = ({ value }) => {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [petsPerPage, setPetsPerPage] = useState(3);
+  const [petsPerPage, setPetsPerPage] = useState(8);
 
   const pets = useSelector((state) => state.pets.allPets);
-  console.log("PETS: ", pets)
   const indexOfLastPet = currentPage * petsPerPage;
   const indexOfFirstPet = indexOfLastPet - petsPerPage;
   const currentPets = pets.slice(indexOfFirstPet, indexOfLastPet);
