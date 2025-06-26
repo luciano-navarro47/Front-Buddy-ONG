@@ -15,12 +15,10 @@ export function getPets() {
   return async function (dispatch) {
     try {
       const response = await axios.get(`${HOST}/pet`);
-      const payload = {
-        pets: response.data,
-      };
+      console.log("PAYL: ", response)
       return dispatch({
         type: GET_PETS,
-        payload,
+        payload: response.data
       });
     } catch (error) {
       console.log(error);
