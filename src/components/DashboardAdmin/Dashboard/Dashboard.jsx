@@ -1,18 +1,18 @@
 import React from "react";
-import { getAllProducts } from "../../../redux/Actions/productActions";
-import { getAllUsers } from "../../../redux/Actions/userActions";
-import { getPets } from "../../../redux/Actions/petActions";
-import { getAllVeterinaries } from "../../../redux/Actions/veterinaryActions";
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Button, Box, Center, SimpleGrid } from "@chakra-ui/react";
+import logo from "../../../assets/imagenes/logo_negro.png";
+
 import ShowUsers from "./ShowUsers";
 import ShowBannedUsers from "./ShowBannedUsers";
 import ShowPets from "./ShowPets";
 import ShowProducts from "./ShowProducts";
 import ShowVets from "./ShowVets";
-import { Button, Box, Center, SimpleGrid } from "@chakra-ui/react";
-import logo from "../../../assets/imagenes/logo_negro.png";
+
+import { getAllProducts } from "../../../redux/Actions/productActions";
+import { getAllUsers } from "../../../redux/Actions/userActions";
+import { getPets } from "../../../redux/Actions/petActions";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -20,7 +20,6 @@ const Dashboard = () => {
   const [selection, setSelection] = useState("");
   const usersArray = useSelector((state) => state.users);
   const productsArray = useSelector((state) => state.products);
-  const vetsArray = useSelector((state) => state.allVets);
   const petsArray = useSelector((state) => state.allPets);
 
   const bannedArray = usersArray.filter((user) => user.status === "banned");
@@ -55,7 +54,6 @@ const Dashboard = () => {
     dispatch(getAllUsers());
     dispatch(getPets());
     dispatch(getAllProducts());
-    dispatch(getAllVeterinaries());
   }, [dispatch]);
 
   return (
@@ -135,7 +133,7 @@ const Dashboard = () => {
           ) : selection === "pets" ? (
             <ShowPets pets={petsArray} />
           ) : selection === "vets" ? (
-            <ShowVets vets={vetsArray} />
+            <ShowVets />
           ) : (
             <>{null}</>
           )}
