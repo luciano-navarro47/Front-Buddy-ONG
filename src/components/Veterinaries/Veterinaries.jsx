@@ -1,13 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import logo from "../../assets/imagenes/logo_amarillo.png";
+import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
+
+import MapView from "../Map/MapView";
 import VetCard from "../VetsCards/VetsCards";
 import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
-import MapView from "../Map/MapView";
-import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
-import logo from "../../assets/imagenes/logo_amarillo.png";
 
-const Veterinaries = ({ handleSetUserFlag }) => {
-  const veterinaries = useSelector((state) => state.root.allVets ?? []);
+const Veterinaries = () => {
+  const veterinaries = useSelector((state) => state.vets.allVets);
   const dispatch = useDispatch();
 
   useEffect(() => {
