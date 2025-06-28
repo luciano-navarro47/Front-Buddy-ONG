@@ -109,8 +109,8 @@ export const setUserState = (userData) => {
 export function setStatusUser(id) {
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/users/setStatusUser/${id}`);
-      const updatedUsers = await axios.get(`${HOST}/users`);
+      await axios.put(`${HOST}/user/setStatusUser/${id}`);
+      const updatedUsers = await axios.get(`${HOST}/user`);
       dispatch({
         type: GET_ALL_USERS,
         payload: updatedUsers.data,

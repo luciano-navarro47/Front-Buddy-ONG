@@ -59,7 +59,7 @@ const petReducer = (state = initialState, action) => {
     case DELETE_PET:
       return {
         ...state,
-        user: action.payload,
+        allPets: state.allPets.filter((pet) => pet.id !== action.payload),
       };
     case FILTER_ADOPTION_VALUES:
       let all;

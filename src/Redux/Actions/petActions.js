@@ -15,7 +15,6 @@ export function getPets() {
   return async function (dispatch) {
     try {
       const response = await axios.get(`${HOST}/pet`);
-      console.log("PAYL: ", response)
       return dispatch({
         type: GET_PETS,
         payload: response.data
@@ -32,7 +31,6 @@ export function getPetsByUser(id) {
       if (!id) throw new Error("Id not provided.");
       const res = await axios.get(`${HOST}/pet/user/${id}`);
       const userPets = res.data
-      console.log("USER P: ", userPets);
       return dispatch({
         type: GET_PETS_BY_USER,
         payload: userPets 
@@ -109,11 +107,10 @@ export function deletePet(idPet, idUser) {
 export function deletePetAdmin(id) {
   return async function (dispatch) {
     try {
-      await axios.delete(`${HOST}/pets/${id}`);
-      const json = await axios.get(`http://localhost:3001/pet`);
+      await axios.delete(`${HOST}/pet/${id}`);
       return dispatch({
-        type: GET_PETS,
-        payload: { allPets: json.data },
+        type: DELETE_PET,
+        payload: id,
       });
     } catch (error) {
       console.log(error);
