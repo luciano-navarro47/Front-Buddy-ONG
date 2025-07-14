@@ -165,14 +165,15 @@ const VetsDetails = () => {
                   py={["3rem", "2rem", "0rem"]}
                 >
                   Se encuentra en la zona de:{" "}
-                  <Text
+                  <Box
+                    as="span"
                     color="orange.500"
                     textTransform={"uppercase"}
                     fontFamily={"heading"}
                     fontWeight="bold"
                   >
-                    {vetDetail.address}{" "}
-                  </Text>
+                    {vetDetail.address}
+                  </Box>
                 </Text>
               </Box>
             </Center>
