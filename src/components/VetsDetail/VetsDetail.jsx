@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
 import {
   Box,
@@ -20,14 +20,13 @@ import {
 import { PhoneIcon } from "@chakra-ui/icons";
 import { RiHospitalLine } from "react-icons/ri";
 
-const VetsDetails = ({ handleSetUserFlag }) => {
+const VetsDetails = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
-  const vetDetail = useSelector((state) => state.root.vetsDetail);
+  const vetDetail = useSelector((state) => state.vets.vetsDetail);
 
   useEffect(() => {
     dispatch(VeterinaryDetails(id));
-    window.scrollTo(0, 0);
   }, [dispatch, id]);
 
   return (
@@ -166,14 +165,15 @@ const VetsDetails = ({ handleSetUserFlag }) => {
                   py={["3rem", "2rem", "0rem"]}
                 >
                   Se encuentra en la zona de:{" "}
-                  <Text
+                  <Box
+                    as="span"
                     color="orange.500"
                     textTransform={"uppercase"}
                     fontFamily={"heading"}
                     fontWeight="bold"
                   >
-                    {vetDetail.address}{" "}
-                  </Text>
+                    {vetDetail.address}
+                  </Box>
                 </Text>
               </Box>
             </Center>
