@@ -1,27 +1,29 @@
-  import "./App.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
 import { setAccessToken } from "./redux/Actions/auth";
-import {
-  fetchAuth0User,
-  postUser,
-  setUserState,
-} from "./redux/Actions/userActions";
 import { logout as logoutAction } from "./redux/Actions/session";
-import NotFound from "./components/NotFound/NotFound";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
+import NotFound from "./components/NotFound/NotFound";
 import { Layout } from "./components/Layout";
+import EmailFallBackModal from "./components/Modal/EmailFallbackModal";
+import {
+  fetchAuth0User,
+  postUser,
+  setUserState,
+} from "./redux/Actions/userActions";
 
 export const App = () => {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
+  const [isWaitingEmail, setIsWaitingEmail] = useState(false);
+  const [pendingAuth0User, setPendingAuth0User] = useState(null);
 
   const {
     isLoading,
@@ -36,53 +38,74 @@ export const App = () => {
     dispatch(logoutAction(auth0Logout));
   };
 
+  const handleUserFlow = useCallback(
+    async (normalizedUser) => {
+      try {
+        // Try to find the user if exists
+        const userDb = await dispatch(fetchAuth0User(normalizedUser.auth0Sub));
+        setUser(userDb);
+      } catch {
+        // User not exist. Create.
+        const userDb = await dispatch(postUser(normalizedUser));
+        setUser(userDb);
+        localStorage.setItem("loggedUser", JSON.stringify(userDb));
+      } finally {
+        setIsUserLoading(false);
+      }
+
+      // Token
+      try {
+        const token = await getAccessTokenSilently();
+        dispatch(setAccessToken(token));
+        localStorage.setItem("token", token);
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [dispatch, getAccessTokenSilently]
+  );
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
     const storedToken = localStorage.getItem("token");
-    if (storedToken) {
-      dispatch(setAccessToken(storedToken));
-    }
+
+    if (storedToken) dispatch(setAccessToken(storedToken));
     if (storedUser) {
       setUser(storedUser);
       dispatch(setUserState(storedUser));
       setIsUserLoading(false);
-    } else if (auth0User) {
-      const normalizedUser = normalizeAuth0User(auth0User);
-      let userExists;
-      dispatch(fetchAuth0User(normalizedUser.auth0Sub))
-        .then((userDb) => {
-          setUser(userDb);
-          userExists = true;
-          localStorage.setItem("loggedUser", JSON.stringify(userDb));
-        })
-        .catch((err) => console.error("Error fetching oauth user: ", err))
-        .finally(() => setIsUserLoading(false));
-
-      if (!userExists) {
-        dispatch(postUser(normalizedUser))
-          .then((userDb) => {
-            setUser(userDb);
-            localStorage.setItem("loggedUser", JSON.stringify(userDb));
-            localStorage.setItem("alreadyUpserted", "true");
-          })
-          .catch((err) => {
-            console.error("Error saving OAuth user: ", err);
-          })
-          .finally(() => {
-            setIsUserLoading(false);
-          });
-      }
-
-      getAccessTokenSilently()
-        .then((token) => {
-          dispatch(setAccessToken(token));
-          localStorage.setItem("token", token);
-        })
-        .catch(console.error);
     } else {
-      setIsUserLoading(false);
+      setIsUserLoading(true);
     }
-  }, [auth0User, dispatch, getAccessTokenSilently]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) return; 
+    if (!auth0User) {
+      setIsUserLoading(false);
+      return;
+    }
+
+    const checkOrAskEmail = async () => {
+      try {
+        const existing = await dispatch(fetchAuth0User(auth0User.sub));
+        if (existing.email) {
+          const normalized = normalizeAuth0User({
+            ...auth0User,
+            email: existing.email,
+          });
+          return handleUserFlow(normalized);
+        }
+        setPendingAuth0User(auth0User);
+        setIsWaitingEmail(true);
+      } catch {
+        setPendingAuth0User(auth0User);
+        setIsWaitingEmail(true);
+      }
+    };
+
+    checkOrAskEmail();
+  }, [auth0User, user, dispatch, handleUserFlow]);
 
   if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
   if (user?.status === "banned") return <p>User was banned from the app</p>;
@@ -96,19 +119,36 @@ export const App = () => {
   };
 
   return (
-    <Routes>
-      <Route element={<Layout {...routeProps}/>}>
-      {[
-        ...authRoutes(routeProps),
-        ...userRoutes(routeProps),
-        ...adminRoutes(routeProps),
-        ...publicRoutes(routeProps),
-      ].map(({ path, element }, idx) => (
-        <Route key={idx} path={path} element={element} />
-      ))}
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <EmailFallBackModal
+        isOpen={isWaitingEmail}
+        onClose={() => setIsWaitingEmail(false)}
+        onSave={(email) => {
+          const completeUser = {
+            ...pendingAuth0User,
+            email,
+          };
+
+          const normalizedUser = normalizeAuth0User(completeUser);
+          handleUserFlow(normalizedUser);
+          setPendingAuth0User(null);
+          setIsWaitingEmail(false);
+        }}
+      />
+      <Routes>
+        <Route element={<Layout {...routeProps} />}>
+          {[
+            ...authRoutes(routeProps),
+            ...userRoutes(routeProps),
+            ...adminRoutes(routeProps),
+            ...publicRoutes(routeProps),
+          ].map(({ path, element }, idx) => (
+            <Route key={idx} path={path} element={element} />
+          ))}
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 
