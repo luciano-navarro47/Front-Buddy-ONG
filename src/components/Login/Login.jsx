@@ -160,7 +160,7 @@ const Login = ({
           onClick={() => loginWithRedirect()}
         >
           <Text fontSize={{ base: "16px", sm: "16px", md: "16px", lg: "1rem" }}>
-            Ingresar con Google{" "}
+            Usar otros métodos{" "}
           </Text>
         </Button>
       </Box>
