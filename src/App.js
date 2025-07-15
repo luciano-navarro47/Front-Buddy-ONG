@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
@@ -38,64 +38,74 @@ export const App = () => {
     dispatch(logoutAction(auth0Logout));
   };
 
-  const handleUserFlow = (normalizedUser) => {
-    dispatch(fetchAuth0User(normalizedUser.auth0Sub))
-      .then((userDb) => {
-        // User already exists.
+  const handleUserFlow = useCallback(
+    async (normalizedUser) => {
+      try {
+        // Try to find the user if exists
+        const userDb = await dispatch(fetchAuth0User(normalizedUser.auth0Sub));
+        setUser(userDb);
+      } catch {
+        // User not exist. Create.
+        const userDb = await dispatch(postUser(normalizedUser));
         setUser(userDb);
         localStorage.setItem("loggedUser", JSON.stringify(userDb));
-      })
-      .catch(() => {
-        // User not exist. Create.
-        dispatch(postUser(normalizedUser))
-          .then((userDb) => {
-            setUser(userDb);
-            localStorage.setItem("loggedUser", JSON.stringify(userDb));
-          })
-          .catch((err) => {
-            console.error("Error saving OAuth user:", err);
-          });
-      })
-      .finally(() => {
+      } finally {
         setIsUserLoading(false);
-      });
+      }
 
-    getAccessTokenSilently()
-      .then((token) => {
+      // Token
+      try {
+        const token = await getAccessTokenSilently();
         dispatch(setAccessToken(token));
         localStorage.setItem("token", token);
-      })
-      .catch(console.error);
-  };
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [dispatch, getAccessTokenSilently]
+  );
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
     const storedToken = localStorage.getItem("token");
 
-    if (storedToken) {
-      dispatch(setAccessToken(storedToken));
-    }
-
+    if (storedToken) dispatch(setAccessToken(storedToken));
     if (storedUser) {
       setUser(storedUser);
       dispatch(setUserState(storedUser));
       setIsUserLoading(false);
+    } else {
+      setIsUserLoading(true);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) return; 
+    if (!auth0User) {
+      setIsUserLoading(false);
       return;
     }
 
-    if (auth0User) {
-      if (!auth0User.email) {
+    const checkOrAskEmail = async () => {
+      try {
+        const existing = await dispatch(fetchAuth0User(auth0User.sub));
+        if (existing.email) {
+          const normalized = normalizeAuth0User({
+            ...auth0User,
+            email: existing.email,
+          });
+          return handleUserFlow(normalized);
+        }
         setPendingAuth0User(auth0User);
         setIsWaitingEmail(true);
-        return;
+      } catch {
+        setPendingAuth0User(auth0User);
+        setIsWaitingEmail(true);
       }
+    };
 
-      const normalizedUser = normalizeAuth0User(auth0User);
-      handleUserFlow(normalizedUser);
-    } else {
-      setIsUserLoading(false);
-    }
-  }, [auth0User, dispatch, getAccessTokenSilently]);
+    checkOrAskEmail();
+  }, [auth0User, user, dispatch, handleUserFlow]);
 
   if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
   if (user?.status === "banned") return <p>User was banned from the app</p>;
