@@ -1,4 +1,5 @@
 export const normalizeAuth0User = (auth0User) => {
+  
   return {
     first_name: auth0User.given_name,
     last_name: auth0User.family_name,

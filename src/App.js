@@ -1,17 +1,17 @@
-import "./App.css";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
 import { setAccessToken } from "./redux/Actions/auth";
 import { logout as logoutAction } from "./redux/Actions/session";
-import NotFound from "./components/NotFound/NotFound";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
+import NotFound from "./components/NotFound/NotFound";
 import { Layout } from "./components/Layout";
+import EmailFallBackModal from "./components/Modal/EmailFallbackModal";
 import {
   fetchAuth0User,
   postUser,
@@ -23,6 +23,7 @@ export const App = () => {
   const [user, setUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isWaitingEmail, setIsWaitingEmail] = useState(false);
+  const [pendingAuth0User, setPendingAuth0User] = useState(null);
 
   const {
     isLoading,
@@ -45,9 +46,9 @@ export const App = () => {
         localStorage.setItem("loggedUser", JSON.stringify(userDb));
       })
       .catch(() => {
-        // User not exists. Create.
+        // User not exist. Create.
         dispatch(postUser(normalizedUser))
-        .then((userDb) => {
+          .then((userDb) => {
             setUser(userDb);
             localStorage.setItem("loggedUser", JSON.stringify(userDb));
           })
@@ -84,12 +85,12 @@ export const App = () => {
 
     if (auth0User) {
       if (!auth0User.email) {
+        setPendingAuth0User(auth0User);
         setIsWaitingEmail(true);
         return;
       }
 
       const normalizedUser = normalizeAuth0User(auth0User);
-      console.log("NORMALIZED: ", normalizedUser);
       handleUserFlow(normalizedUser);
     } else {
       setIsUserLoading(false);
@@ -108,19 +109,36 @@ export const App = () => {
   };
 
   return (
-    <Routes>
-      <Route element={<Layout {...routeProps} />}>
-        {[
-          ...authRoutes(routeProps),
-          ...userRoutes(routeProps),
-          ...adminRoutes(routeProps),
-          ...publicRoutes(routeProps),
-        ].map(({ path, element }, idx) => (
-          <Route key={idx} path={path} element={element} />
-        ))}
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      <EmailFallBackModal
+        isOpen={isWaitingEmail}
+        onClose={() => setIsWaitingEmail(false)}
+        onSave={(email) => {
+          const completeUser = {
+            ...pendingAuth0User,
+            email,
+          };
+
+          const normalizedUser = normalizeAuth0User(completeUser);
+          handleUserFlow(normalizedUser);
+          setPendingAuth0User(null);
+          setIsWaitingEmail(false);
+        }}
+      />
+      <Routes>
+        <Route element={<Layout {...routeProps} />}>
+          {[
+            ...authRoutes(routeProps),
+            ...userRoutes(routeProps),
+            ...adminRoutes(routeProps),
+            ...publicRoutes(routeProps),
+          ].map(({ path, element }, idx) => (
+            <Route key={idx} path={path} element={element} />
+          ))}
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 

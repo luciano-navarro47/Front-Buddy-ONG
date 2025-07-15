@@ -46,8 +46,8 @@ export const postUser = (user) => {
   return async function (dispatch) {
     try {
       let response;
-      // Verified by OAuth
-      if (user.email_verified) {
+      // Auth0Sub: provided by OAuth service
+      if (user.auth0Sub) {
         response = await axios.post(`${HOST}/user/oauth-upsert`, user);
       } else {
         response = await axios.post(`${HOST}/user/register`, user);
