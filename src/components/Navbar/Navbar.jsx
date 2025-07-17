@@ -111,7 +111,7 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
             <MenuList>
               <>
                 <NavLink to="/account">
-                  <MenuItem fontSize="1.10rem">
+                  <MenuItem fontSize="1rem">
                     Cuenta
                   </MenuItem>
                   {/* <MenuItem hidden={user?.role === "admin" ? false : true}>
@@ -124,7 +124,7 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
                 <NavLink to="/myPets">
                   <MenuItem>Mis mascotas</MenuItem>
                 </NavLink> */}
-                <MenuItem fontSize="1.10rem" onClick={() => handleLogout()}>
+                <MenuItem fontSize="1rem" onClick={() => handleLogout()}>
                   Cerrar sesión
                 </MenuItem>
               </>
