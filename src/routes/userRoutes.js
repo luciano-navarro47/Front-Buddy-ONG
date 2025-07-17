@@ -4,13 +4,14 @@ import FormPostPet from "../components/FormPostPet/FormPostPet";
 import FormPostUser from "../components/FormPostUser/FormPostUser";
 import MyPets from "../components/MyPets/MyPets";
 import AccountLayout from "components/Account/AccountLayout";
+import Veterinaries from "components/Veterinaries/Veterinaries";
 
 export const userRoutes = ({
   user,
   setUser,
+  handleLogout,
   // isAuthenticated,
   // loginWithRedirect,
-  // handleLogout,
 }) => [
   // Only to registered users
   {
@@ -41,22 +42,57 @@ export const userRoutes = ({
     path: "/account",
     element: (
       <PrivateRoute roles={["user", "admin"]}>
-        <AccountLayout user={user} setUser={setUser} />
+        <AccountLayout
+          user={user}
+          setUser={setUser}
+          handleLogout={handleLogout}
+        />
       </PrivateRoute>
     ),
     children: [
       // Redirect to profile from /account
-      // { index: true, element: <Profile user={user} setUser={setUser} /> },
+      { index: true, element: <FormPostUser user={user} setUser={setUser} /> },
 
       // Common user section
       { path: "pets", element: <MyPets user={user} /> },
-      // { path: "profile", element: <Profile user={user} setUser={setUser} /> },
+      {
+        path: "profile",
+        element: <FormPostUser user={user} setUser={setUser} />,
+      },
 
       // // Admin section
-      // { path: "users", element: <Users /> },
-      // { path: "users/banned", element: <BannedUsers /> },
-      // { path: "products", element: <Products /> },
-      // { path: "veterinaries", element: <Veterinaries /> },
+      // {
+      //   path: "users",
+      //   element: (
+      //     <PrivateRoute roles={["user", "admin"]}>
+      //       <Users />
+      //     </PrivateRoute>
+      //   ),
+      // },
+      // {
+      //   path: "users/banned",
+      //   element: (
+      //     <PrivateRoute roles={["admin"]}>
+      //       <BannedUsers />
+      //     </PrivateRoute>
+      //   ),
+      // },
+      // {
+      //   path: "products",
+      //   element: (
+      //     <PrivateRoute roles={["admin"]}>
+      //       <Products />
+      //     </PrivateRoute>
+      //   ),
+      // },
+      {
+        path: "veterinaries",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <Veterinaries />
+          </PrivateRoute>
+        ),
+      },
     ],
   },
 ];
