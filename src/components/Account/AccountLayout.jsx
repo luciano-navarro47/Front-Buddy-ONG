@@ -1,6 +1,6 @@
 import { Flex, Box } from "@chakra-ui/react";
 import { Outlet } from "react-router-dom";
-import Sidebar from ".Sidebar";
+import Sidebar from "./Sidebar";
 
 export default function AccountLayout({ user, setUser }) {
   return (
