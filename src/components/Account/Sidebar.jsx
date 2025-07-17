@@ -24,8 +24,8 @@ export default function Sidebar({ user, handleLogout }) {
   const activeColor = useColorModeValue("blue.600", "blue.300");
 
   const baseLinks = [
-    { to: "pets", label: "Mis Mascotas", icon: FaPaw },
-    { to: "profile", label: "Información Personal", icon: FaUser },
+      { to: "pets", label: "Mis Mascotas", icon: FaPaw },
+      { to: "profile", label: "Información Personal", icon: FaUser },
   ];
 
   const adminLinks = [
