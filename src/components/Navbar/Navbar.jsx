@@ -110,18 +110,21 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
 
             <MenuList>
               <>
-                <NavLink to="/dashboard">
-                  <MenuItem hidden={user?.role === "admin" ? false : true}>
-                    Panel administrador
+                <NavLink to="/account">
+                  <MenuItem fontSize="1.10rem">
+                    Cuenta
                   </MenuItem>
+                  {/* <MenuItem hidden={user?.role === "admin" ? false : true}>
+                    Panel administrador
+                  </MenuItem> */}
                 </NavLink>
-                <NavLink to="/updateUser">
+                {/* <NavLink to="/updateUser">
                   <MenuItem>Datos personales</MenuItem>
                 </NavLink>
                 <NavLink to="/myPets">
                   <MenuItem>Mis mascotas</MenuItem>
-                </NavLink>
-                <MenuItem onClick={() => handleLogout()}>
+                </NavLink> */}
+                <MenuItem fontSize="1.10rem" onClick={() => handleLogout()}>
                   Cerrar sesión
                 </MenuItem>
               </>
