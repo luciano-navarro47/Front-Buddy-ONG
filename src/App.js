@@ -142,8 +142,21 @@ export const App = () => {
             ...userRoutes(routeProps),
             ...adminRoutes(routeProps),
             ...publicRoutes(routeProps),
-          ].map(({ path, element }, idx) => (
-            <Route key={idx} path={path} element={element} />
+          ].map((route, idx) => (
+            <Route 
+              key={idx} 
+              path={route.path} 
+              element={route.element} 
+            >
+              {route.children?.map((child, cidx) => (
+                <Route
+                  key={`${idx}-${cidx}`}
+                  path={child.path}
+                  index={child.index}
+                  element={child.element}
+                />
+              ))}
+            </Route>
           ))}
         </Route>
         <Route path="*" element={<NotFound />} />

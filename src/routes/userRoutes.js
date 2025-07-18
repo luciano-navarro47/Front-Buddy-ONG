@@ -2,8 +2,8 @@ import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
 import FormPostPet from "../components/FormPostPet/FormPostPet";
 import FormPostUser from "../components/FormPostUser/FormPostUser";
-import MyPets from "../components/MyPets/MyPets";
-import AccountLayout from "components/Account/AccountLayout";
+import PetsList from "components/account/pets/PetsList";
+import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
 
 export const userRoutes = ({
@@ -13,6 +13,7 @@ export const userRoutes = ({
   // isAuthenticated,
   // loginWithRedirect,
 }) => [
+  
   // Only to registered users
   {
     path: "/createPet",
@@ -27,14 +28,6 @@ export const userRoutes = ({
     element: (
       <PrivateRoute roles={["user", "admin"]}>
         <FormPostUser />
-      </PrivateRoute>
-    ),
-  },
-  {
-    path: "/myPets",
-    element: (
-      <PrivateRoute roles={["user", "admin"]}>
-        <MyPets user={user} setUser={setUser} />
       </PrivateRoute>
     ),
   },
@@ -54,7 +47,10 @@ export const userRoutes = ({
       { index: true, element: <FormPostUser user={user} setUser={setUser} /> },
 
       // Common user section
-      { path: "pets", element: <MyPets user={user} /> },
+      { path: "myPets", element: <PetsList user={user} setUser={setUser}/> },
+      {
+        path: "*", element: <div>No match for nested route</div>
+      },
       {
         path: "profile",
         element: <FormPostUser user={user} setUser={setUser} />,

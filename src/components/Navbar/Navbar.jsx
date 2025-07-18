@@ -111,7 +111,7 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
             <MenuList>
               <>
                 <NavLink to="/account">
-                  <MenuItem fontSize="1rem">
+                  <MenuItem fontSize="1srem">
                     Cuenta
                   </MenuItem>
                   {/* <MenuItem hidden={user?.role === "admin" ? false : true}>

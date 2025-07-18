@@ -24,12 +24,12 @@ export default function Sidebar({ user, handleLogout }) {
   const activeColor = useColorModeValue("blue.600", "blue.300");
 
   const baseLinks = [
-      { to: "pets", label: "Mis Mascotas", icon: FaPaw },
+      { to: "myPets", label: "Mis Mascotas", icon: FaPaw },
       { to: "profile", label: "Información Personal", icon: FaUser },
   ];
 
   const adminLinks = [
-    { to: "users", label: "Usuarios", icon: FaUsers },
+    { to: "users", label: "Ususarios", icon: FaUsers },
     {
       to: "users/banned",
       label: "Bloqueados",
@@ -40,7 +40,7 @@ export default function Sidebar({ user, handleLogout }) {
   ];
 
   const renderLink = ({ to, label, icon }) => (
-    <NavLink key={to} to={to} end>
+    <NavLink key={to} to={`/account/${to}`} end={false}>
       {({ isActive }) => (
         <Flex
           align="center"

@@ -6,6 +6,7 @@ import Card from "../Card/Card";
 import { getPetsByUser } from "redux/Actions/petActions";
 
 export default function MyPets({ user, setUser }) {
+  console.log("Rendering MyPets")
   const dispatch = useDispatch();
   const userPets = useSelector((state) => state.pets.userPets);
   console.log("U.P: ", userPets)
