@@ -17,7 +17,7 @@ export function getPets() {
       const response = await axios.get(`${HOST}/pet`);
       return dispatch({
         type: GET_PETS,
-        payload: response.data
+        payload: response.data,
       });
     } catch (error) {
       console.log(error);
@@ -30,11 +30,11 @@ export function getPetsByUser(id) {
     try {
       if (!id) throw new Error("Id not provided.");
       const res = await axios.get(`${HOST}/pet/user/${id}`);
-      const userPets = res.data
+      const userPets = res.data;
       return dispatch({
         type: GET_PETS_BY_USER,
-        payload: userPets 
-      })
+        payload: userPets,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -89,14 +89,17 @@ export function postOrUpdatePet(formInput, value, petId) {
   };
 }
 
-export function deletePet(idPet, idUser) {
+export function deletePet(petId, userId) {
   return async function (dispatch) {
     try {
-      await axios.delete(`${HOST}/pets/${idPet}`);
-      const json = await axios.get(`http://localhost:3001/user/${idUser}`);
+      await axios.delete(`${HOST}/pet/${petId}`);
+      const allPets = await axios.get(`http://localhost:3001/pet`);
+      const usersPets = await axios.get(
+        `http://localhost:3001/pet/user/${userId}`
+      );
       return dispatch({
         type: DELETE_PET,
-        payload: json.data,
+        payload: { allPets: allPets.data, userPets: usersPets.data },
       });
     } catch (error) {
       console.log(error);

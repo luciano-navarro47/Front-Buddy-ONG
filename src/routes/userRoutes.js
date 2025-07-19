@@ -2,7 +2,7 @@ import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
 import FormPostPet from "../components/FormPostPet/FormPostPet";
 import FormPostUser from "../components/FormPostUser/FormPostUser";
-import PetsList from "components/account/pets/PetsList";
+import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
 
@@ -47,7 +47,7 @@ export const userRoutes = ({
       { index: true, element: <FormPostUser user={user} setUser={setUser} /> },
 
       // Common user section
-      { path: "myPets", element: <PetsList user={user} setUser={setUser}/> },
+      { path: "myPets", element: <MyPetsList user={user} setUser={setUser}/> },
       {
         path: "*", element: <div>No match for nested route</div>
       },
@@ -57,6 +57,14 @@ export const userRoutes = ({
       },
 
       // // Admin section
+      // {
+      //     path: "managePets",
+      //     element: (
+      //       <PrivateRoute roles={["user", "admin"]}>
+      //         <PetsList />
+      //       </PrivateRoute>
+      //     ),
+      //   },
       // {
       //   path: "users",
       //   element: (

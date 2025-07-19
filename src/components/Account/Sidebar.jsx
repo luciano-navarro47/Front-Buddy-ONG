@@ -16,6 +16,7 @@ import {
   FaClinicMedical,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { SiDatadog } from "react-icons/si";
 import { MdOutlineFaceRetouchingOff } from "react-icons/md";
 
 export default function Sidebar({ user, handleLogout }) {
@@ -29,12 +30,13 @@ export default function Sidebar({ user, handleLogout }) {
   ];
 
   const adminLinks = [
-    { to: "users", label: "Ususarios", icon: FaUsers },
+    { to: "users", label: "Usuarios", icon: FaUsers },
     {
       to: "users/banned",
       label: "Bloqueados",
       icon: MdOutlineFaceRetouchingOff,
     },
+    { to: "managePets", label: "Gestionar mascotas", icon: SiDatadog},
     { to: "products", label: "Productos", icon: FaBoxOpen },
     { to: "veterinaries", label: "Veterinarias", icon: FaClinicMedical },
   ];
