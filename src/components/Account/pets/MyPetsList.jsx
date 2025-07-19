@@ -23,9 +23,9 @@ export default function MyPetsList({ user, setUser }) {
       </Box>
 
       {userPets.length > 0 ? (
-        <SimpleGrid minChildWidth="300px" spacingX="90px" spacingY="40px">
+        <SimpleGrid minChildWidth="250px" spacing="20px" justifyContent="center" alignItems="start">
           {userPets.map((pet, idx) => (
-            <PetCard key={idx} data={pet} value={"update"} />
+            <PetCard key={idx} data={pet} value="update" />
           ))}
         </SimpleGrid>
       ) : (

@@ -24,7 +24,7 @@ const PetCard = ({ data: { id, img, sex, specie, age, area }, value }) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
 
   useEffect(() => {
     const loggedUser = localStorage.getItem("loggedUser");
@@ -34,18 +34,18 @@ const PetCard = ({ data: { id, img, sex, specie, age, area }, value }) => {
     }
   }, []);
 
-  function handlerNavigateUpdate(e) {
-    e.preventDefault();
-    navigate(`/updatePet/${id}`);
-  }
+//   function handlerNavigateUpdate(e) {
+//     e.preventDefault();
+//     navigate(`/updatePet/${id}`);
+//   }
 
   function handleDeletePet(id) {
     dispatch(deletePet(id, user?.id));
   }
 
   return (
-    <Card maxW="sm">
-      <CardBody>
+    <Card width="100%" maxW="260px" mx="auto">
+      <CardBody >
         <Image src={img} alt="Pet Image" borderRadius="lg" />
         <Stack mt="6" spacing="3">
           <Heading size="md">
