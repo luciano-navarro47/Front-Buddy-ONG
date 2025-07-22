@@ -4,7 +4,8 @@ import { getPetDetails } from "redux/Actions/petActions";
 
 export function usePetForm(paramsId, initialValues, setInput, isUpdating) {
   const dispatch = useDispatch();
-  const petData = useSelector((s) => s.root.petDetails);
+  const petData = useSelector((s) => s.pets.petDetails);
+
 
   useEffect(() => {
     if (paramsId) dispatch(getPetDetails(paramsId));
@@ -12,7 +13,7 @@ export function usePetForm(paramsId, initialValues, setInput, isUpdating) {
 
   useEffect(() => {
     setInput(
-      isUpdating === "update" ? { ...initialValues, ...petData } : initialValues
+      isUpdating === true ? { ...initialValues, ...petData } : initialValues
     );
   }, [petData, paramsId, isUpdating, setInput]);
 

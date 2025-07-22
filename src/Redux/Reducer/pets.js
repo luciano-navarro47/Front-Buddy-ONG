@@ -46,7 +46,7 @@ const petReducer = (state = initialState, action) => {
     case GET_PET_BY_ID:
       return {
         ...state,
-        petDetails: action.payload[0],
+        petDetails: action.payload,
       };
     case POST_PET:
       return {
