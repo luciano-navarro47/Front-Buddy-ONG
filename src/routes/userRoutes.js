@@ -48,7 +48,7 @@ export const userRoutes = ({
 
       // Common user section
       { path: "myPets", element: <MyPetsList user={user} /> },
-      { path: "myPets/:id", element: <FormPostPet isUpdating={true} userRole={user.role} /> },
+      { path: "myPets/:id", element: <FormPostPet isUpdating={true} userRole={user?.role} /> },
       {
         path: "*", element: <div>No match for nested route</div>
       },
