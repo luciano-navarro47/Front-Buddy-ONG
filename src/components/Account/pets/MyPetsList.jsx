@@ -38,10 +38,10 @@ export default function MyPetsList({ user }) {
 
   return (
     <Box>
-      <Box bg="brand.green.200" p="4" borderRadius="md" mb="6">
+      <Box bg="brand.green.100" p="4" borderRadius="md" mb="6">
         <Heading size="lg">Mis mascotas</Heading>
         <Text mt="2" color="gray.700">
-          Podes editar la información o dejar de publicar tus animales
+          Editá la información o dejá de publicar tus animales
           posteados.
         </Text>
       </Box>
