@@ -60,7 +60,7 @@ const PetCard = ({
       maxW="230px"
       boxShadow="md"
       mx="auto"
-      border={"gray solid 1px"}
+      border={"#e2e8f0 solid 1px"}
     >
       <CardBody p="4">
         <Image

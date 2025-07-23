@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   postUser,
   updateUser,
-  getUserId,
+  getUserById,
   checkUsernameAvailability,
 } from "../../redux/Actions/userActions";
 
@@ -152,7 +152,7 @@ export default function FormPostUser({ id, value }) {
     }
   }, []);
   useEffect(() => {
-    if (value === "update" && user.length) dispatch(getUserId(user[0]?.id));
+    if (value === "update" && user.length) dispatch(getUserById(user[0]?.id));
   }, [dispatch, user]);
 
   useEffect(() => {

@@ -5,6 +5,7 @@ import FormPostUser from "../components/FormPostUser/FormPostUser";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
+import ProfileForm from "components/account/profile/ProfileForm";
 
 export const userRoutes = ({
   user,
@@ -44,7 +45,7 @@ export const userRoutes = ({
     ),
     children: [
       // Redirect to profile from /account
-      { index: true, element: <FormPostUser user={user} setUser={setUser} /> },
+      { index: true, element: <ProfileForm user={user} setUser={setUser} /> },
 
       // Common user section
       { path: "myPets", element: <MyPetsList user={user} /> },
@@ -54,7 +55,7 @@ export const userRoutes = ({
       },
       {
         path: "profile",
-        element: <FormPostUser user={user} setUser={setUser} />,
+        element: <ProfileForm user={user} setUser={setUser} />,
       },
 
       // // Admin section
