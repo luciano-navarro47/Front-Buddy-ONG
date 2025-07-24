@@ -5,6 +5,7 @@ import { getPetsByUser } from "redux/Actions/petActions";
 import Pagination from "components/Pagination/Pagination";
 import PetCard from "./PetCard";
 import { useSearchParams } from "react-router-dom";
+import ProfileHeader from "../common/ProfileHeader";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
@@ -38,13 +39,11 @@ export default function MyPetsList({ user }) {
 
   return (
     <Box>
-      <Box bg="brand.green.100" p="4" borderRadius="md" mb="6">
-        <Heading size="lg">Mis mascotas</Heading>
-        <Text mt="2" color="gray.700">
-          Editá la información o dejá de publicar tus animales
-          posteados.
-        </Text>
-      </Box>
+      <ProfileHeader
+        title="Mis mascotas"
+        subtitle="Editá la información de tus animales
+          posteados o dejá de publicarlos."
+      />
 
       {userPets.length > 0 ? (
         <Box maxW="1200px" mx="auto" px="4">
@@ -55,7 +54,12 @@ export default function MyPetsList({ user }) {
             alignItems="start"
           >
             {currentPets.map((pet) => (
-              <PetCard key={pet.id} data={pet} user={user} currentPage={currentPage} />
+              <PetCard
+                key={pet.id}
+                data={pet}
+                user={user}
+                currentPage={currentPage}
+              />
             ))}
           </SimpleGrid>
 

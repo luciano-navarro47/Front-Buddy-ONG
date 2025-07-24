@@ -1,28 +1,20 @@
 import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   Avatar,
   Heading,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  InputRightElement,
   Button,
   Stack,
   VStack,
   HStack,
   Text,
   useToast,
-  Spinner,
 } from "@chakra-ui/react";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  updateUser,
-  getUserById,
-  checkUserPassword,
-} from "redux/Actions/userActions";
+import ProfileHeader from "../common/ProfileHeader";
+import TextField from "./TextField";
+import PasswordSection from "./PasswordSection";
+import { updateUser, getUserById } from "redux/Actions/userActions";
 import { validateRequiredFields, validateFieldPatterns } from "utils/formUtils";
 
 export default function ProfileForm({ user }) {
@@ -48,41 +40,15 @@ export default function ProfileForm({ user }) {
     "phone",
   ];
 
-  const [isSamePassword, setIsSamePassword] = useState(false);
-
-  const [isCurrentValid, setIsCurrentValid] = useState(null);
-  const [checking, setChecking] = useState(false);
   const debounceRef = useRef(null);
 
-  const [showActualPass, setShowActualPass] = useState(false);
-  const [showNewPass, setShowNewPass] = useState(false);
+  const [isSamePassword, setIsSamePassword] = useState(false);
+  const [isCurrentValid, setIsCurrentValid] = useState(null);
+  const [passwordResetTrigger, setPasswordResetTrigger] = useState(0);
 
-  const validateCurrentPassword = async (password) => {
-    if (!password) {
-      setIsCurrentValid(null);
-      return;
-    }
-    setChecking(true);
-    try {
-      const isCorrect = await dispatch(checkUserPassword(user?.id, password));
-
-      setIsCurrentValid(isCorrect);
-    } catch (error) {
-      setIsCurrentValid(false);
-    } finally {
-      setChecking(false);
-    }
-  };
-
-  const handleCurrentChange = (e) => {
-    const password = e.target.value;
-    setForm((form) => ({ ...form, currentPassword: password }));
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
-      validateCurrentPassword(password);
-    }, 500);
+  const handlePasswordValidationChange = (isValid, isSame) => {
+    setIsCurrentValid(isValid);
+    setIsSamePassword(isSame);
   };
 
   const requiresPasswordChange = form.newPassword.length > 0;
@@ -133,6 +99,7 @@ export default function ProfileForm({ user }) {
     toast({ status: "success", title: "Perfil actualizado" });
     setForm((form) => ({ ...form, currentPassword: "", newPassword: "" }));
     setIsCurrentValid(null);
+    setPasswordResetTrigger((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -159,23 +126,12 @@ export default function ProfileForm({ user }) {
     }
   }, [userInfo]);
 
-  useEffect(() => {
-    if (form.currentPassword && form.newPassword) {
-      setIsSamePassword(form.currentPassword === form.newPassword);
-    } else {
-      setIsSamePassword(false);
-    }
-  }, [form.currentPassword, form.newPassword]);
-
   return (
     <Box>
-      <Box bg="brand.green.100" p="4" borderRadius="md" mb="6">
-        <Heading size="lg">Información Personal</Heading>
-        <Text mt="2" color="gray.700">
-          Editá tus datos. Nombre de usuario, email, teléfono o contraseña.
-        </Text>
-      </Box>
-
+      <ProfileHeader
+        title="Información Personal"
+        subtitle="Editá tus datos. Nombre de usuario, email, teléfono o contraseña."
+      />
       <Box maxW="600px" mx="auto" p="6" bg="white" shadow="md">
         <VStack spacing="6">
           <Avatar
@@ -187,130 +143,55 @@ export default function ProfileForm({ user }) {
           <Box as="form" w="100%" onSubmit={handleSubmit}>
             <Stack spacing="4">
               <HStack spacing="4">
-                <FormControl id="first_name">
-                  <FormLabel>Nombre</FormLabel>
-                  <Input
-                    name="first_name"
-                    value={form.first_name}
-                    onChange={handleChange}
-                    isDisabled={true}
-                  />
-                </FormControl>
-                <FormControl id="last_name">
-                  <FormLabel>Apellido</FormLabel>
-                  <Input
-                    name="last_name"
-                    value={form.last_name}
-                    onChange={handleChange}
-                    isDisabled={true}
-                  />
-                </FormControl>
-                <FormControl id="username" isInvalid={!!errors.username}>
-                  <FormLabel>Nombre de usuario</FormLabel>
-                  <Input
-                    name="username"
-                    value={form.username}
-                    onChange={handleChange}
-                  />
-                  {errors.username && (
-                    <Text color="red.500" fontSize="sm">
-                      {errors.username}
-                    </Text>
-                  )}
-                </FormControl>
+                <TextField
+                  label="Nombre"
+                  name="first_name"
+                  value={form.first_name}
+                  onChange={handleChange}
+                  error={errors.first_name}
+                  disabled={true}
+                />
+                <TextField
+                  label="Apellido"
+                  name="last_name"
+                  value={form.last_name}
+                  onChange={handleChange}
+                  error={errors.last_name}
+                  disabled={true}
+                />
+                <TextField
+                  label="Nombre de usuario"
+                  name="username"
+                  value={form.username}
+                  onChange={handleChange}
+                  error={errors.username}
+                />
               </HStack>
-
-              <FormControl id="email" isInvalid={!!errors.email}>
-                <FormLabel>Correo electrónico</FormLabel>
-                <Input
+              <HStack>
+                <TextField
+                  label="Correo electrónico"
                   name="email"
                   value={form.email}
                   onChange={handleChange}
+                  error={errors.email}
                 />
-                {errors.email && (
-                  <Text color="red.500" fontSize="sm">
-                    {errors.email}
-                  </Text>
-                )}
-              </FormControl>
-
-              <FormControl id="phone" isInvalid={!!errors.phone}>
-                <FormLabel>Teléfono</FormLabel>
-                <Input
+                <TextField
+                  label="Teléfono/Celular"
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
-                  // isDisabled={form.phone === "" ? false : true}
+                  error={errors.phone}
                 />
-                {errors.phone && (
-                  <Text color="red.500" fontSize="sm">
-                    {errors.phone}
-                  </Text>
-                )}
-              </FormControl>
+              </HStack>
 
-              <FormControl id="currentPassword">
-                <FormLabel>Contraseña actual</FormLabel>
-                <InputGroup>
-                  <Input
-                    name="currentPassword"
-                    type={showActualPass ? "text" : "password"}
-                    value={form.currentPassword}
-                    onChange={handleCurrentChange}
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button
-                      size="sm"
-                      onClick={() => setShowActualPass((v) => !v)}
-                    >
-                      {showActualPass ? "Ocultar" : "Mostrar"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <HStack spacing="2" mt="1">
-                  {checking && <Spinner size="sm" />}
-                  {isCurrentValid === true && <CheckIcon color="green.500" />}
-                  {isCurrentValid === false && <CloseIcon color="red.500" />}
-                  {isCurrentValid === false && (
-                    <Text color="red.500" fontSize="sm">
-                      Contraseña incorrecta
-                    </Text>
-                  )}
-                  <Text>Ingresá tu contraseña actual para poder cambiarla</Text>
-                </HStack>
-              </FormControl>
-
-              <FormControl
-                id="newPassword"
-                isDisabled={!isCurrentValid}
-                isInvalid={isSamePassword}
-              >
-                <FormLabel>Nueva contraseña</FormLabel>
-                <InputGroup>
-                  <Input
-                    name="newPassword"
-                    type={showNewPass ? "text" : "password"}
-                    value={form.newPassword}
-                    onChange={(e) =>
-                      setForm((form) => ({
-                        ...form,
-                        newPassword: e.target.value,
-                      }))
-                    }
-                  />
-                  <InputRightElement width="4.5rem">
-                    <Button size="sm" onClick={() => setShowNewPass((v) => !v)}>
-                      {showNewPass ? "Ocultar" : "Mostrar"}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                {isSamePassword && (
-                  <Text>
-                    La nueva contraseña debe ser distinta de la actual
-                  </Text>
-                )}
-              </FormControl>
-
+              <PasswordSection
+                form={form}
+                setForm={setForm}
+                debounceRef={debounceRef}
+                onPasswordValidationChange={handlePasswordValidationChange}
+                userId={user?.id}
+                resetTrigger={passwordResetTrigger}
+              />
               <Button
                 type="submit"
                 colorScheme="blue"
