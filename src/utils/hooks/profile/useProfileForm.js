@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { updateUser, getUserById } from "redux/Actions/userActions";
-import { validateRequiredFields, validateFieldPatterns } from "utils/formUtils";
+import { validateRequiredFields, validateFieldPatterns } from "utils/formValidations/profileForm";
 import { useDispatch, useSelector } from "react-redux";
 
 export function useProfileForm(user, toast) {

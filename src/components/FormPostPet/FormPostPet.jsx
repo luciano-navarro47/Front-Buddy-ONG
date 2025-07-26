@@ -17,7 +17,7 @@ import { postOrUpdatePet } from "../../redux/Actions/petActions";
 import { SelectField, selectConfigs } from "./FormFields/SelectField";
 import { InputField, inputConfigs } from "./FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
-import { resetForm } from "utils/formUtils";
+import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/usePetForm";
 
 export default function FormPostPet({ isUpdating, userRole }) {

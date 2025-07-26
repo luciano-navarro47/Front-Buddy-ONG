@@ -44,7 +44,7 @@ export function validateFieldPatterns(values) {
   const usernameRegex = /^(?=(?:.*\d){2,})[a-zA-Z\d]{5,}$/;
   if (values.username && !usernameRegex.test(values.username)) {
     errors.username =
-      "Nombre de usuario debe tener al menos 5 caracteres y 2 numeros";
+      "Debe tener al menos 5 caracteres y 2 numeros";
   }
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

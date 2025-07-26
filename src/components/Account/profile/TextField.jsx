@@ -1,5 +1,6 @@
 import {
   Button,
+  Box,
   FormControl,
   FormLabel,
   Input,
@@ -8,6 +9,7 @@ import {
   Text,
   Spinner,
   HStack,
+  FormErrorMessage,
 } from "@chakra-ui/react";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
@@ -42,21 +44,24 @@ export default function TextField({
         )}
       </InputGroup>
 
-      {error && (
-        <Text color="red.500" fontSize="sm">
-          {error}
-        </Text>
-      )}
+      <Box minHeight="35px" mt="1">
+        <FormErrorMessage
+          fontSize="sm"
+          visibility={error ? "visible" : "hidden"}
+        >
+          {error || "placeholder"}
+        </FormErrorMessage>
+      </Box>
 
       {(checking || isValid !== null || helpText) && (
-        <HStack spacing="2" mt="1">
+        <HStack>
           {checking && <Spinner size="sm" />}
           {isValid === true && <CheckIcon color="green.500" />}
           {isValid === false && <CloseIcon color="red.500" />}
           {isValid === false && (
-            <Text color="red.500" fontSize="sm">
+            <FormErrorMessage fontSize="sm">
               Contraseña incorrecta
-            </Text>
+            </FormErrorMessage>
           )}
           {helpText && <Text mt="1">{helpText}</Text>}
         </HStack>
