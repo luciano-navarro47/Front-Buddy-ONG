@@ -3,7 +3,6 @@ import axios from "axios";
 export const HOST = "http://localhost:3001";
 
 export const header = (token) => {
-  console.log("TOKEN: ", token);
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -25,6 +24,6 @@ export async function setImageAsync(obj) {
     const file = await res.data;
     return file.url;
   } catch (error) {
-    console.log("IMAGE FUNCT: ",error);
+    console.log("An error has ocurred: ",error);
   }
 }
