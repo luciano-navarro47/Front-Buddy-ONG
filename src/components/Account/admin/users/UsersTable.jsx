@@ -27,7 +27,7 @@ export function UsersTable() {
     <Box>
       <ProfileHeader
         title="Gestionar usuarios"
-        subtitle="Ver información del usuario y cambiar su estado de actividad (bloquear/desbloquear)"
+        subtitle="Table con información básica de cada usuario. El estado de actividad se puede alterar (bloquear/desbloquear)"
       />
       <TableContainer ml={5} mr={5}  maxH="calc(100vh - 200px)" overflowY="auto" overflowX="auto">
         <Table
