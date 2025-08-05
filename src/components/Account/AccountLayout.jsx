@@ -7,7 +7,7 @@ export default function AccountLayout({ user, setUser, handleLogout }) {
   const navigate = useNavigate();
   return (
     <Flex h="100vh">
-      <Box w="240px" bg="gray.50" p="4">
+      <Box w="240px" bg="brand.green.100" p="4">
         <Flex justify="center" align="center" mb="4" h="6rem">
           <Image
             src={logo}
@@ -18,7 +18,7 @@ export default function AccountLayout({ user, setUser, handleLogout }) {
         </Flex>
         <Sidebar user={user} handleLogout={handleLogout} />
       </Box>
-      <Box flex="1" p="3" overflow="auto">
+      <Box flex="1" p="3" overflow="auto" minW="0">
         <Outlet />
       </Box>
     </Flex>

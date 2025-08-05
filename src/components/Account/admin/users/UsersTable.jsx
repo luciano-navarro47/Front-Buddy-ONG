@@ -7,6 +7,7 @@ import {
   Tr,
   TableCaption,
   TableContainer,
+  Box,
 } from "@chakra-ui/react";
 import { getAllUsers } from "redux/Actions/userActions";
 import ProfileHeader from "components/account/common/ProfileHeader";
@@ -23,36 +24,37 @@ export function UsersTable() {
   }, []);
 
   return (
-    <TableContainer>
+    <Box>
       <ProfileHeader
         title="Gestionar usuarios"
         subtitle="Ver información del usuario y cambiar su estado de actividad (bloquear/desbloquear)"
       />
-      <Table
-        variant="striped"
-        colorScheme="blackAlpha"
-        width="100%"
-        sx={{ tableLayout: "fixed" }}
-      >
-        <TableCaption>{`Usuarios registrados en Buddy: ${users.length}`}</TableCaption>
-        <Thead>
-          <Tr>
-            <ResizableTh initialWidth={150}>id</ResizableTh>
-            <ResizableTh>nombre y apellido</ResizableTh>
-            <ResizableTh>email</ResizableTh>
-            <ResizableTh>username</ResizableTh>
-            <ResizableTh>celular</ResizableTh>
-            <ResizableTh>Rol</ResizableTh>
-            <ResizableTh>Estado</ResizableTh>
-            {showCustomer && <ResizableTh>Mp_customer_id</ResizableTh>}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {users.map((u) => (
-            <UserRow key={u.id} user={u} />
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+      <TableContainer ml={5} mr={5}  maxH="calc(100vh - 200px)" overflowY="auto" overflowX="auto">
+        <Table
+          variant="striped"
+          colorScheme="blackAlpha"
+          sx={{ tableLayout: "fixed" }}
+        >
+          <TableCaption>{`Usuarios registrados en Buddy: ${users.length}`}</TableCaption>
+          <Thead>
+            <Tr>
+              <ResizableTh initialWidth={150}>id</ResizableTh>
+              <ResizableTh>nombre y apellido</ResizableTh>
+              <ResizableTh>email</ResizableTh>
+              <ResizableTh>username</ResizableTh>
+              <ResizableTh>celular</ResizableTh>
+              <ResizableTh>Rol</ResizableTh>
+              <ResizableTh>Estado</ResizableTh>
+              {showCustomer && <ResizableTh>Mp_customer_id</ResizableTh>}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {users.map((u) => (
+              <UserRow key={u.id} user={u} />
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Box>
   );
 }

@@ -5,6 +5,8 @@ export default function UserRow({ user }) {
   const [showToolTip, setShowToolTip] = useState(false);
   const [iconColor, setIconColor] = useState(false);
 
+  // const formatPhone = user.phone.split()
+
   const handleCopy = () => {
     navigator.clipboard.writeText(user.id);
     setIconColor(true);

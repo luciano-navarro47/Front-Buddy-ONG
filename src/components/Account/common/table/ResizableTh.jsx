@@ -5,7 +5,6 @@ export function ResizableTh({ children, initialWidth = 200 }) {
   const [width, setWidth] = useState(initialWidth);
   const startXRef = useRef(null);
   const startWidthRef = useRef(null);
-  console.log("WIDHT: ", width)
 
   const onMouseDown = (e) => {
     startXRef.current = e.clientX;
@@ -31,10 +30,14 @@ export function ResizableTh({ children, initialWidth = 200 }) {
     <Th
       w={`${width}px`}
       minW="25px"
-      position="relative"
+      position="sticky"
+      top="0"
+      zIndex="10"
+      bg="brand.green.100"
       userSelect="none"
       textAlign="center"
       fontSize="15px"
+      
     >
       <Box isTruncated>{children}</Box>
       <Box
@@ -44,10 +47,11 @@ export function ResizableTh({ children, initialWidth = 200 }) {
         right={0}
         top={0}
         bottom={0}
-        mb={2}
+        mt={1}
+        mb={1}
         width="4px"
         borderRadius="md"
-        backgroundColor="gray.300"
+        backgroundColor="white"
         _hover={{ backgroundColor: "teal.300" }}
       />
     </Th>
