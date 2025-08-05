@@ -30,9 +30,9 @@ export default function Sidebar({ user, handleLogout }) {
   ];
 
   const adminLinks = [
-    { to: "users", label: "Usuarios", icon: FaUsers },
+    { to: "manageUsers", label: "Usuarios", icon: FaUsers },
     {
-      to: "users/banned",
+      to: "manageUsers/banned",
       label: "Bloqueados",
       icon: MdOutlineFaceRetouchingOff,
     },

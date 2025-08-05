@@ -11,10 +11,7 @@ export const userRoutes = ({
   user,
   setUser,
   handleLogout,
-  // isAuthenticated,
-  // loginWithRedirect,
 }) => [
-  
   // Only to registered users
   {
     path: "/createPet",
@@ -49,48 +46,14 @@ export const userRoutes = ({
 
       // Common user section
       { path: "myPets", element: <MyPetsList user={user} /> },
-      { path: "myPets/:id", element: <FormPostPet isUpdating={true} userRole={user?.role} /> },
       {
-        path: "*", element: <div>No match for nested route</div>
+        path: "myPets/:id",
+        element: <FormPostPet isUpdating={true} userRole={user?.role} />,
       },
       {
         path: "profile",
         element: <ProfileForm user={user} setUser={setUser} />,
       },
-
-      // // Admin section
-      // {
-      //     path: "managePets",
-      //     element: (
-      //       <PrivateRoute roles={["user", "admin"]}>
-      //         <PetsList />
-      //       </PrivateRoute>
-      //     ),
-      //   },
-      // {
-      //   path: "users",
-      //   element: (
-      //     <PrivateRoute roles={["user", "admin"]}>
-      //       <Users />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "users/banned",
-      //   element: (
-      //     <PrivateRoute roles={["admin"]}>
-      //       <BannedUsers />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "products",
-      //   element: (
-      //     <PrivateRoute roles={["admin"]}>
-      //       <Products />
-      //     </PrivateRoute>
-      //   ),
-      // },
       {
         path: "veterinaries",
         element: (
@@ -98,6 +61,10 @@ export const userRoutes = ({
             <Veterinaries />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "*",
+        element: <div>No match for nested route</div>,
       },
     ],
   },

@@ -1,52 +1,33 @@
 import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
-import DashboardAdmin from "../components/DashboardAdmin/DashboardAdmin/DashboardAdmin";
-import FormPostProduct from "../components/DashboardAdmin/Dashboard/FormPostProduct";
-import FormAffiliateVets from "../components/DashboardAdmin/Dashboard/FormAffiliateVets";
+import { UsersTable } from "components/account/admin/users/UsersTable";
+import AccountLayout from "components/account/AccountLayout";
 
 export const adminRoutes = ({
   user,
   setUser,
-  closeSession,
-  isAuthenticated,
-  loginWithRedirect,
+  handleLogout,
 }) => [
   {
-    path: "/dashboard",
+    path: "/account",
     element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <DashboardAdmin
+      <PrivateRoute roles={["admin"]}>
+        <AccountLayout
           user={user}
-          setUser={setUser}
-          closeSession={closeSession}
-          isAuthenticated={isAuthenticated}
-          loginWithRedirect={loginWithRedirect}
+          setUser={setUser}   
+          handleLogout={handleLogout}
         />
       </PrivateRoute>
     ),
+    children: [
+      {
+        path: "manageUsers",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <UsersTable />
+          </PrivateRoute>
+        ),
+      },
+    ],
   },
-  {
-    path: "/dashboard/createProduct",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormPostProduct />
-      </PrivateRoute>
-    )
-  },
-  {
-    path: "/dashboard/updateProduct/:id",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormPostProduct />
-      </PrivateRoute>
-    )
-  },
-  {
-    path: "/dashboard/createVet",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormAffiliateVets/>
-      </PrivateRoute>
-    )
-  }
 ];

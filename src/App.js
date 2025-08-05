@@ -140,7 +140,7 @@ export const App = () => {
           {[
             ...authRoutes(routeProps),
             ...userRoutes(routeProps),
-            ...adminRoutes(routeProps),
+            ...adminRoutes(routeProps),                                                
             ...publicRoutes(routeProps),
           ].map((route, idx) => (
             <Route 
