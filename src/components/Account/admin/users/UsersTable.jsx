@@ -2,48 +2,33 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
-  Flex,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  TableCaption,
-  TableContainer,
   Box,
+  Flex,
+  Select,
+  Tooltip,
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import UserRow from "./UserRow";
-import ReusableAlertDialog from "components/ReusableAlertDialog";
+import { CopyIcon } from "@chakra-ui/icons";
 import ProfileHeader from "components/account/common/ProfileHeader";
-import ResizableTh from "components/account/common/table/ResizableTh";
+import ReusableAlertDialog from "components/ReusableAlertDialog";
+import DataTable from "../dataTable/DataTable";
 import { bulkSetStatusUser, getAllUsers } from "redux/Actions/userActions";
 
 export function UsersTable() {
   const dispatch = useDispatch();
-  const users = useSelector((s) => s.users);
   const toast = useToast();
+  const users = useSelector((s) => s.users);
+
   const showCustomerColumn = users.some((u) => u.customer != null);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [copiedId, setCopiedId] = useState(null);
   const [pendingChanges, setPendingChanges] = useState({});
 
   useEffect(() => {
     dispatch(getAllUsers());
-  }, []);
-
-  const handleStatusChange = (userId, newStatus) => {
-    const originalStatus = users.find((u) => u.id === userId)?.status;
-
-    setPendingChanges((prev) => {
-      if (newStatus === originalStatus) {
-        const { [userId]: _, ...rest } = prev;
-        return rest;
-      }
-
-      return { ...prev, [userId]: newStatus };
-    });
-  };
+  }, [dispatch]);
 
   const changesArray = useMemo(
     () =>
@@ -81,7 +66,104 @@ export function UsersTable() {
     }
   };
 
+  const handleCopy = (userId) => {
+    navigator.clipboard.writeText(userId);
+    setCopiedId(userId);
+
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 500);
+  };
+
+  const handleStatusChange = (userId, newStatus) => {
+    const originalStatus = users.find((u) => u.id === userId)?.status;
+
+    setPendingChanges((prev) => {
+      if (newStatus === originalStatus) {
+        const { [userId]: _, ...rest } = prev;
+        return rest;
+      }
+
+      return { ...prev, [userId]: newStatus };
+    });
+  };
+
+  const handleSelectChange = (userId, newStatus) => {
+    handleStatusChange(userId, newStatus);
+  };
+
   const hasChanges = changesArray.length > 0;
+
+  const columns = [
+    {
+      key: "id",
+      header: "ID",
+      initialWidth: 50,
+      renderCell: (value, row) => (
+        <Flex align="center">
+          <Tooltip
+            label="Copiado"
+            placement="top"
+            hasArrow
+            isOpen={copiedId === row.id}
+            borderRadius="md"
+          >
+            <CopyIcon
+              cursor="pointer"
+              mr={2}
+              boxSize={5}
+              color={copiedId === row.id ? "orange" : "black"}
+              onClick={() => handleCopy(row.id)}
+            />
+          </Tooltip>
+          {value}
+        </Flex>
+      ),
+    },
+    {
+      key: "status",
+      header: "Estado",
+      initialWidth: 75,
+      renderCell: (_, row) => {
+        const pending = pendingChanges[row.id];
+        return (
+          <Flex justify="center">
+            <Select
+              size="sm"
+              maxW="120px"
+              value={pending ?? row.status}
+              onChange={(e) => handleSelectChange(row.id, e.target.value)}
+              borderColor={pending ? "orange.400" : "gray.200"}
+              borderWidth={pending ? "2px" : "1px"}
+              textAlign="center"
+            >
+              <option value="active">Activo</option>
+              <option value="banned">Bloqueado</option>
+            </Select>
+          </Flex>
+        );
+      },
+    },
+    {
+      key: "first_name",
+      header: "Nombre y apellido",
+      initialWidth: 100,
+      renderCell: (_, row) => `${row.first_name} ${row.last_name}`,
+    },
+    { key: "email", header: "Email", initialWidth: 150 },
+    { key: "username", header: "Username", initialWidth: 100 },
+    { key: "phone", header: "Celular", initialWidth: 100 },
+    { key: "role", header: "Rol", initialWidth: 100 },
+    ...(showCustomerColumn
+      ? [
+          {
+            key: "customer",
+            header: "MP Customer ID",
+            initialWidth: 100,
+          },
+        ]
+      : []),
+  ];
 
   return (
     <Box>
@@ -97,48 +179,26 @@ export function UsersTable() {
         onConfirm={() => handleSave()}
       />
       <Flex justify="flex-end" mb={6} mr={8}>
-        <Button colorScheme="teal" onClick={onOpen} isDisabled={!hasChanges}>
+        <Button
+          colorScheme="teal"
+          onClick={onOpen}
+          isDisabled={!hasChanges}
+          whiteSpace="normal"
+          textAlign="center"
+          px={4}
+          w={{ base: "100%", sm: "auto" }}
+          fontSize={{ base: "xs", sm: "md"}}
+        >
           Guardar cambios ({changesArray.length})
         </Button>
       </Flex>
 
-      <TableContainer
-        ml={5}
-        mr={5}
-        maxH="calc(100vh - 200px)"
-        overflowY="auto"
-        overflowX="auto"
-      >
-        <Table
-          variant="striped"
-          colorScheme="blackAlpha"
-          sx={{ tableLayout: "fixed" }}
-        >
-          <TableCaption>{`Usuarios registrados en Buddy: ${users.length}`}</TableCaption>
-          <Thead>
-            <Tr>
-              <ResizableTh initialWidth={150}>id</ResizableTh>
-              <ResizableTh>Estado</ResizableTh>
-              <ResizableTh>nombre y apellido</ResizableTh>
-              <ResizableTh>email</ResizableTh>
-              <ResizableTh>username</ResizableTh>
-              <ResizableTh>celular</ResizableTh>
-              <ResizableTh>Rol</ResizableTh>
-              {showCustomerColumn && <ResizableTh>Mp_customer_id</ResizableTh>}
-            </Tr>
-          </Thead>
-          <Tbody>
-            {users.map((u) => (
-              <UserRow
-                key={u.id}
-                user={u}
-                onStatusChange={handleStatusChange}
-                pendingStatus={pendingChanges[u.id]}
-              />
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <DataTable
+        columns={columns}
+        data={users}
+        rowKey="id"
+        caption={`Usuarios registrados: ${users.length}`}
+      />
     </Box>
   );
 }

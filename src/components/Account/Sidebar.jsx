@@ -1,12 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import {
-  Box,
-  Flex,
-  Text,
-  Icon,
-  useColorModeValue,
-} from "@chakra-ui/react";
+import { Box, Flex, Text, Icon, useColorModeValue } from "@chakra-ui/react";
 import {
   FaPaw,
   FaUser,
@@ -49,6 +43,7 @@ export default function Sidebar({ user, handleLogout }) {
         {({ isActive }) => (
           <Flex
             px="3"
+            my="2"
             py="2"
             align="center"
             cursor="pointer"

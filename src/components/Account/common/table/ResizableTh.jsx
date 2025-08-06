@@ -1,7 +1,7 @@
 import { Th, Box } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 
-export default function ResizableTh({ children, initialWidth = 200 }) {
+export default function ResizableTh({ children, initialWidth = 100, minWidth=25 }) {
   const [width, setWidth] = useState(initialWidth);
   const startXRef = useRef(null);
   const startWidthRef = useRef(null);
@@ -29,7 +29,7 @@ export default function ResizableTh({ children, initialWidth = 200 }) {
   return (
     <Th
       w={`${width}px`}
-      minW="25px"
+      minW={`${minWidth}px`}
       position="sticky"
       top="0"
       zIndex="10"
@@ -49,7 +49,7 @@ export default function ResizableTh({ children, initialWidth = 200 }) {
         bottom={0}
         mt={1}
         mb={1}
-        width="4px"
+        width="5px"
         borderRadius="md"
         backgroundColor="white"
         _hover={{ backgroundColor: "teal.300" }}
