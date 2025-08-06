@@ -103,10 +103,11 @@ export const setUserState = (userData) => {
   };
 };
 
-export function setStatusUser(id) {
+export function bulkSetStatusUser(changesArray) {
+  console.log("CHANGES: ", changesArray)
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/user/setStatusUser/${id}`);
+      await axios.put(`${HOST}/user/bulk-set-status`, changesArray);
       const updatedUsers = await axios.get(`${HOST}/user`);
       dispatch({
         type: GET_ALL_USERS,

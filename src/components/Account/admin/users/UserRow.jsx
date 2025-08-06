@@ -1,17 +1,19 @@
 import { useState } from "react";
-import { Tr, Td, Tooltip } from "@chakra-ui/react";
+import { Tr, Td, Tooltip, Select } from "@chakra-ui/react";
 import { CopyIcon } from "@chakra-ui/icons";
-export default function UserRow({ user }) {
+export default function UserRow({ user, onStatusChange, pendingStatus }) {
   const [showToolTip, setShowToolTip] = useState(false);
   const [iconColor, setIconColor] = useState(false);
-
-  // const formatPhone = user.phone.split()
 
   const handleCopy = () => {
     navigator.clipboard.writeText(user.id);
     setIconColor(true);
     setShowToolTip(true);
   };
+
+  const handleSelectChange = (e) => {
+    onStatusChange(user.id, e.target.value);
+  }
 
   return (
     <Tr>
@@ -34,13 +36,38 @@ export default function UserRow({ user }) {
         </Tooltip>
         {user.id}
       </Td>
-      <Td textAlign="center" isTruncated >{user.first_name + " " + user.last_name}</Td>
-      <Td textAlign="center" isTruncated>{user.email}</Td>
-      <Td textAlign="center" isTruncated>{user.username}</Td>
-      <Td textAlign="center" isTruncated>{user.phone}</Td>
-      <Td textAlign="center" isTruncated>{user.role}</Td>
-      <Td textAlign="center" isTruncated>{user.status}</Td>
-      <Td textAlign="center" isTruncated>{user.customer}</Td>
+      <Td textAlign="center" isTruncated>
+        {user.first_name} {user.last_name}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.email}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.username}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.phone}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.role}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        <Select
+          size="sm"
+          maxW="120px"
+          value={pendingStatus ?? user.status}
+          onChange={handleSelectChange}
+          borderColor={pendingStatus ? "orange" : "gray.200" }
+          borderWidth={pendingStatus ? "2px" : "1px" }
+          _hover={{ borderColor: pendingStatus ? "orange.400" : "gray.300"}}
+        >
+          <option value="active">Activo</option>
+          <option value="banned">Bloqueado</option>
+        </Select>
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.customer}
+      </Td>
     </Tr>
   );
 }

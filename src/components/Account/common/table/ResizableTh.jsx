@@ -1,7 +1,7 @@
 import { Th, Box } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 
-export function ResizableTh({ children, initialWidth = 200 }) {
+export default function ResizableTh({ children, initialWidth = 200 }) {
   const [width, setWidth] = useState(initialWidth);
   const startXRef = useRef(null);
   const startWidthRef = useRef(null);
