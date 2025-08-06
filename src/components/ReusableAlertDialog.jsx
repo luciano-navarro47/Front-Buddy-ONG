@@ -32,7 +32,7 @@ const ReusableAlertDialog = ({
         </AlertDialogHeader>
         <AlertDialogCloseButton />
 
-        <AlertDialogBody>
+        <AlertDialogBody whiteSpace="pre-line">
           {message}
         </AlertDialogBody>
 

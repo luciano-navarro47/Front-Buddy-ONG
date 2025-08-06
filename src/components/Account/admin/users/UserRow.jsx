@@ -60,6 +60,7 @@ export default function UserRow({ user, onStatusChange, pendingStatus }) {
           borderColor={pendingStatus ? "orange" : "gray.200" }
           borderWidth={pendingStatus ? "2px" : "1px" }
           _hover={{ borderColor: pendingStatus ? "orange.400" : "gray.300"}}
+          textAlign="center"
         >
           <option value="active">Activo</option>
           <option value="banned">Bloqueado</option>

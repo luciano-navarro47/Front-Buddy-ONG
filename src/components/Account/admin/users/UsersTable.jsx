@@ -11,8 +11,10 @@ import {
   TableContainer,
   Box,
   useToast,
+  useDisclosure,
 } from "@chakra-ui/react";
 import UserRow from "./UserRow";
+import ReusableAlertDialog from "components/ReusableAlertDialog";
 import ProfileHeader from "components/account/common/ProfileHeader";
 import ResizableTh from "components/account/common/table/ResizableTh";
 import { bulkSetStatusUser, getAllUsers } from "redux/Actions/userActions";
@@ -23,6 +25,7 @@ export function UsersTable() {
   const toast = useToast();
   const showCustomerColumn = users.some((u) => u.customer != null);
 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [pendingChanges, setPendingChanges] = useState({});
 
   useEffect(() => {
@@ -86,13 +89,15 @@ export function UsersTable() {
         title="Gestionar usuarios"
         subtitle="Tabla con información básica de cada usuario. El estado de actividad se puede cambiar (bloquear/desbloquear)."
       />
-
-      <Flex justify="flex-end" mb={4} mr={5}>
-        <Button
-          colorScheme="teal"
-          onClick={handleSave}
-          isDisabled={!hasChanges}
-        >
+      <ReusableAlertDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title="Aplicar cambios masivos"
+        message={`¿Estás seguro/a de aplicar todos los cambios realizados?\n\nEsta acción no se puede deshacer.`}
+        onConfirm={() => handleSave()}
+      />
+      <Flex justify="flex-end" mb={6} mr={8}>
+        <Button colorScheme="teal" onClick={onOpen} isDisabled={!hasChanges}>
           Guardar cambios ({changesArray.length})
         </Button>
       </Flex>
