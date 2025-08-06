@@ -1,13 +1,12 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import {
-  VStack,
+  Box,
   Flex,
   Text,
   Icon,
   useColorModeValue,
-  Divider,
 } from "@chakra-ui/react";
-import { NavLink } from "react-router-dom";
 import {
   FaPaw,
   FaUser,
@@ -17,7 +16,7 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { SiDatadog } from "react-icons/si";
-import { MdOutlineFaceRetouchingOff } from "react-icons/md";
+import { IoIosHome } from "react-icons/io";
 
 export default function Sidebar({ user, handleLogout }) {
   const linkBg = useColorModeValue("blue.50", "blue.900");
@@ -25,59 +24,64 @@ export default function Sidebar({ user, handleLogout }) {
   const activeColor = useColorModeValue("blue.600", "blue.300");
 
   const baseLinks = [
-      { to: "myPets", label: "Mis Mascotas", icon: FaPaw },
-      { to: "profile", label: "Información Personal", icon: FaUser },
+    { to: "/", label: "Inicio", icon: IoIosHome },
+    { to: "myPets", label: "Mis Mascotas", icon: FaPaw },
+    { to: "profile", label: "Información Personal", icon: FaUser },
   ];
 
   const adminLinks = [
     { to: "manageUsers", label: "Usuarios", icon: FaUsers },
-    // {
-    //   to: "manageUsers/banned",
-    //   label: "Bloqueados",
-    //   icon: MdOutlineFaceRetouchingOff,
-    // },
-    { to: "managePets", label: "Gestionar mascotas", icon: SiDatadog},
+    { to: "managePets", label: "Gestionar mascotas", icon: SiDatadog },
     { to: "products", label: "Productos", icon: FaBoxOpen },
     { to: "veterinaries", label: "Veterinarias", icon: FaClinicMedical },
   ];
 
-  const renderLink = ({ to, label, icon }) => (
-    <NavLink key={to} to={`/account/${to}`} end={false}>
-      {({ isActive }) => (
-        <Flex
-          align="center"
-          w="100%"
-          px="3"
-          py="2"
-          borderRadius="md"
-          bg={isActive ? linkBg : "transparent"}
-          color={isActive ? activeColor : linkColor}
-          _hover={{ bg: linkBg }}
-        >
-          <Icon as={icon} mr="3" color={isActive ? activeColor : linkColor} />
-          <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"}>
-            {label}
-          </Text>
-        </Flex>
-      )}
-    </NavLink>
-  );
+  const renderLink = ({ to, label, icon }) => {
+    const path = to.startsWith("/") ? to : `/account/${to}`;
+
+    return (
+      <NavLink
+        key={to}
+        to={path}
+        end={false}
+        style={{ display: "block", width: "100%" }}
+      >
+        {({ isActive }) => (
+          <Flex
+            px="3"
+            py="2"
+            align="center"
+            cursor="pointer"
+            borderRadius="md"
+            bg={isActive ? linkBg : "transparent"}
+            color={isActive ? activeColor : linkColor}
+            _hover={{ bg: linkBg }}
+          >
+            <Icon as={icon} mr="3" color={isActive ? activeColor : linkColor} />
+            <Text fontSize="sm" fontWeight={isActive ? "bold" : "medium"}>
+              {label}
+            </Text>
+          </Flex>
+        )}
+      </NavLink>
+    );
+  };
 
   return (
-    <VStack align="start" spacing="1">
-      {baseLinks.map(renderLink)}
+    <Flex direction="column" h="100%">
+      <Box flex="1" overflowY="auto">
+        {baseLinks.map(renderLink)}
 
-      {user?.role === "admin" && (
-        <>
-          <Divider my="3" />
-          <Text mt="4" mb="1" px="3" fontSize="15px" color="gray.500">
-            Panel Admin
-          </Text>
-          {adminLinks.map(renderLink)}
-        </>
-      )}
+        {user?.role === "admin" && (
+          <>
+            <Text pt={4} pb={1} pl={3} fontSize="sm" color="gray.500">
+              Panel Administrador
+            </Text>
+            {adminLinks.map(renderLink)}
+          </>
+        )}
+      </Box>
 
-      <Divider my="3"/>
       <Flex
         w="100%"
         px="3"
@@ -86,12 +90,12 @@ export default function Sidebar({ user, handleLogout }) {
         cursor="pointer"
         borderRadius="md"
         color="red.500"
-        onClick={() => handleLogout()}
+        onClick={handleLogout}
         _hover={{ bg: "red.50" }}
       >
-        <Icon as={FaSignOutAlt} mr="3" />
+        <Icon as={FaSignOutAlt} mr="2" />
         <Text fontSize="sm">Cerrar sesión</Text>
       </Flex>
-    </VStack>
+    </Flex>
   );
 }

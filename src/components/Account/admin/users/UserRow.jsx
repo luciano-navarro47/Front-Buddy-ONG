@@ -37,21 +37,6 @@ export default function UserRow({ user, onStatusChange, pendingStatus }) {
         {user.id}
       </Td>
       <Td textAlign="center" isTruncated>
-        {user.first_name} {user.last_name}
-      </Td>
-      <Td textAlign="center" isTruncated>
-        {user.email}
-      </Td>
-      <Td textAlign="center" isTruncated>
-        {user.username}
-      </Td>
-      <Td textAlign="center" isTruncated>
-        {user.phone}
-      </Td>
-      <Td textAlign="center" isTruncated>
-        {user.role}
-      </Td>
-      <Td textAlign="center" isTruncated>
         <Select
           size="sm"
           maxW="120px"
@@ -66,6 +51,22 @@ export default function UserRow({ user, onStatusChange, pendingStatus }) {
           <option value="banned">Bloqueado</option>
         </Select>
       </Td>
+      <Td textAlign="center" isTruncated>
+        {user.first_name} {user.last_name}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.email}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.username}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.phone}
+      </Td>
+      <Td textAlign="center" isTruncated>
+        {user.role}
+      </Td>
+
       <Td textAlign="center" isTruncated>
         {user.customer}
       </Td>

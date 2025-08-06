@@ -118,12 +118,12 @@ export function UsersTable() {
           <Thead>
             <Tr>
               <ResizableTh initialWidth={150}>id</ResizableTh>
+              <ResizableTh>Estado</ResizableTh>
               <ResizableTh>nombre y apellido</ResizableTh>
               <ResizableTh>email</ResizableTh>
               <ResizableTh>username</ResizableTh>
               <ResizableTh>celular</ResizableTh>
               <ResizableTh>Rol</ResizableTh>
-              <ResizableTh>Estado</ResizableTh>
               {showCustomerColumn && <ResizableTh>Mp_customer_id</ResizableTh>}
             </Tr>
           </Thead>
