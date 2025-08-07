@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { useRef } from "react";
 
-const ReusableAlertDialog = ({
+export default function ReusableAlertDialog({
   isOpen,
   onClose,
   title,
   message,
   onConfirm,
-}) => {
+}) {
   const cancelRef = useRef();
 
   return (
@@ -32,9 +32,7 @@ const ReusableAlertDialog = ({
         </AlertDialogHeader>
         <AlertDialogCloseButton />
 
-        <AlertDialogBody whiteSpace="pre-line">
-          {message}
-        </AlertDialogBody>
+        <AlertDialogBody whiteSpace="pre-line">{message}</AlertDialogBody>
 
         <AlertDialogFooter>
           <Button ref={cancelRef} onClick={onClose}>
@@ -44,8 +42,8 @@ const ReusableAlertDialog = ({
             ml={3}
             colorScheme="red"
             onClick={() => {
-              if (typeof onConfirm === "function"){
-                  onConfirm();
+              if (typeof onConfirm === "function") {
+                onConfirm();
               }
               onClose();
             }}
@@ -56,6 +54,4 @@ const ReusableAlertDialog = ({
       </AlertDialogContent>
     </AlertDialog>
   );
-};
-
-export default ReusableAlertDialog;
+}

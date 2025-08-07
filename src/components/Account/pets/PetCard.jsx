@@ -20,7 +20,7 @@ import { MdPlace } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { deletePet } from "redux/Actions/petActions";
-import ReusableAlertDialog from "components/ReusableAlertDialog";
+import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 
 const PetCard = ({
   data: { id, img, sex, specie, age, area },

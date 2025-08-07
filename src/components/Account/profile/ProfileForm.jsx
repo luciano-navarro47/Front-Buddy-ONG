@@ -7,7 +7,7 @@ import {
   HStack,
   useToast,
 } from "@chakra-ui/react";
-import ProfileHeader from "../common/ProfileHeader";
+import SectionHeader from "../common/SectionHeader";
 import TextField from "./TextField";
 import PasswordSection from "./PasswordSection";
 import { useProfileForm } from "utils/hooks/profile/useProfileForm";
@@ -29,7 +29,7 @@ export default function ProfileForm({ user }) {
 
   return (
     <Box>
-      <ProfileHeader
+      <SectionHeader
         title="Información Personal"
         subtitle="Editá tus datos. Nombre de usuario, email, teléfono o contraseña."
       />

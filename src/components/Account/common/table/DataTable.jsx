@@ -14,10 +14,11 @@ export default function DataTable({
   columns,
   data,
   rowKey,
-  caption,
   maxHeight = "70vh",
 }) {
   const rows = useMemo(() => data, [data]);
+
+  console.log("ROWS: ", rows)
 
   return (
     <TableContainer overflowX="auto" overflowY="auto" maxH={maxHeight} w="100%">
@@ -26,11 +27,6 @@ export default function DataTable({
         colorScheme="blackAlpha"
         sx={{ tableLayout: "fixed" }}
       >
-        {caption && (
-          <TableCaption backgroundColor={"brand.green.200"} fontWeight={600}>
-            {caption}
-          </TableCaption>
-        )}
         <Thead position="sticky" top={0} bg="white" zIndex={1}>
           <Tr>
             {columns.map(

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Heading, Text, Box, SimpleGrid } from "@chakra-ui/react";
-import { getPetsByUser } from "redux/Actions/petActions";
-import Pagination from "components/Pagination/Pagination";
-import PetCard from "./PetCard";
 import { useSearchParams } from "react-router-dom";
-import ProfileHeader from "../common/ProfileHeader";
+import { Text, Box, SimpleGrid } from "@chakra-ui/react";
+import { getPetsByUser } from "redux/Actions/petActions";
+import PetCard from "./PetCard";
+import Pagination from "components/Pagination/Pagination";
+import SectionHeader from "../common/SectionHeader";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
@@ -39,7 +39,7 @@ export default function MyPetsList({ user }) {
 
   return (
     <Box>
-      <ProfileHeader
+      <SectionHeader
         title="Mis mascotas"
         subtitle="Editá la información de tus animales
           posteados o dejá de publicarlos."

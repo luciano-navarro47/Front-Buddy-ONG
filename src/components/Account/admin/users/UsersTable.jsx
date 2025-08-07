@@ -10,9 +10,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { CopyIcon } from "@chakra-ui/icons";
-import ProfileHeader from "components/account/common/ProfileHeader";
-import ReusableAlertDialog from "components/ReusableAlertDialog";
-import DataTable from "../dataTable/DataTable";
+import SectionHeader from "components/account/common/SectionHeader";
+import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
+import DataTable from "../../common/table/DataTable";
 import { bulkSetStatusUser, getAllUsers } from "redux/Actions/userActions";
 
 export function UsersTable() {
@@ -72,7 +72,7 @@ export function UsersTable() {
 
     setTimeout(() => {
       setCopiedId(null);
-    }, 500);
+    }, 750);
   };
 
   const handleStatusChange = (userId, newStatus) => {
@@ -166,8 +166,8 @@ export function UsersTable() {
   ];
 
   return (
-    <Box>
-      <ProfileHeader
+    <>
+      <SectionHeader
         title="Gestionar usuarios"
         subtitle="Tabla con información básica de cada usuario. El estado de actividad se puede cambiar (bloquear/desbloquear)."
       />
@@ -178,6 +178,21 @@ export function UsersTable() {
         message={`¿Estás seguro/a de aplicar todos los cambios realizados?\n\nEsta acción no se puede deshacer.`}
         onConfirm={() => handleSave()}
       />
+      <Box
+        bg="gray.200"
+        borderRadius="md"
+        px={4}
+        py={2}
+        mb={4}
+        maxW="fit-content"
+        boxShadow="sm"
+        whiteSpace="normal"
+        textAlign="center"
+        w={{ base: "100%", sm: "auto" }}
+        fontSize={{ base: "xs", sm: "md" }}
+      >
+        <strong>Usuarios Registrados:</strong> {users.length}
+      </Box>
       <Flex justify="flex-end" mb={6} mr={8}>
         <Button
           colorScheme="teal"
@@ -185,20 +200,15 @@ export function UsersTable() {
           isDisabled={!hasChanges}
           whiteSpace="normal"
           textAlign="center"
-          px={4}
+          boxShadow="sm"
           w={{ base: "100%", sm: "auto" }}
-          fontSize={{ base: "xs", sm: "md"}}
+          fontSize={{ base: "xs", sm: "md" }}
         >
-          Guardar cambios ({changesArray.length})
+          Aplicar ({changesArray.length})
         </Button>
       </Flex>
 
-      <DataTable
-        columns={columns}
-        data={users}
-        rowKey="id"
-        caption={`Usuarios registrados: ${users.length}`}
-      />
-    </Box>
+      <DataTable columns={columns} data={users} rowKey="id" />
+    </>
   );
 }
