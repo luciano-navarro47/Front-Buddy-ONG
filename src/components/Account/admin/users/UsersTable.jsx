@@ -110,8 +110,8 @@ export function UsersTable() {
           >
             <CopyIcon
               cursor="pointer"
-              mr={2}
-              boxSize={5}
+              mr={1}
+              boxSize={4}
               color={copiedId === row.id ? "orange" : "black"}
               onClick={() => handleCopy(row.id)}
             />

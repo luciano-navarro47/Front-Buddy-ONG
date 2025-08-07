@@ -6,13 +6,15 @@ export default function ResizableTh({ children, initialWidth = 100, minWidth=25 
   const startXRef = useRef(null);
   const startWidthRef = useRef(null);
 
+  console.log("WIDTH: ", width)
+
   const onMouseDown = (e) => {
     startXRef.current = e.clientX;
     startWidthRef.current = width;
 
     const onMouseMove = (e) => {
       const delta = e.clientX - startXRef.current;
-      const newWidth = Math.max(25, startWidthRef.current + delta);
+      const newWidth = Math.max(minWidth, startWidthRef.current + delta);
 
       setWidth(newWidth);
     };
