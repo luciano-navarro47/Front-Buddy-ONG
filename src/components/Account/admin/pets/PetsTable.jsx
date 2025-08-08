@@ -1,24 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  // Box,
-  Flex,
-  // Select,
-  Image,
-  Text,
-  Tooltip,
-  // useToast,
-  ModalCloseButton,
-  ModalHeader,
-  ModalContent,
-  ModalOverlay,
-  Modal,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
@@ -36,15 +19,14 @@ export function PetsTable() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [modalImages, setModalImages] = useState([]);
   const [modalStartIndex, setModalStartIndex] = useState(0);
+  const [modalPetId, setModalPetId] = useState(null);
 
-  const openImagesModal = (images, idx = 0) => {
+  const openImagesModal = (images, idx = 0, petId = null) => {
     setModalImages(images || []);
     setModalStartIndex(idx);
+    setModalPetId(petId);
     onOpen();
   };
-
-  const currentImgPosition = 1;
-  const totalImgAmount = 1;
 
   useEffect(() => {
     dispatch(getPets());
@@ -125,7 +107,7 @@ export function PetsTable() {
               }}
               willChange="transform"
               alt="foto mascota"
-              onClick={() => openImagesModal(images, 0)}
+              onClick={() => openImagesModal(images, 0, row.id)}
             />
           </Flex>
         );
@@ -257,6 +239,7 @@ export function PetsTable() {
         title="Fotos del animal"
         onViewDetails={(index) => {
           onClose();
+          if (modalPetId) navigate(`/pet/detail/${modalPetId}`);
         }}
       />
       <SectionHeader

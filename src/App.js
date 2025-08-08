@@ -126,7 +126,7 @@ export const App = () => {
           setIsWaitingEmail(false);
           setPendingAuth0User(null);
         }}
-        onSave={async(email) => {
+        onSave={async (email) => {
           try {
             const completeUser = { ...pendingAuth0User, email };
             const normalizedUser = normalizeAuth0User(completeUser);

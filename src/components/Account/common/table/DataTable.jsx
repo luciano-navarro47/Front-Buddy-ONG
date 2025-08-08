@@ -21,7 +21,6 @@ export default function DataTable({
           <Tr>
             {columns.map(
               ({ key, header, initialWidth = 100, minWidth = 25 }) => (
-                
                 <ResizableTh
                   key={key}
                   initialWidth={initialWidth}
