@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Box,
@@ -11,7 +12,7 @@ import {
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
@@ -19,6 +20,7 @@ import { getPets } from "redux/Actions/petActions";
 
 export function PetsTable() {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   // const toast = useToast();
   const pets = useSelector((s) => s.pets.allPets);
   const [copiedPetId, setCopiedPetId] = useState(null);
@@ -150,8 +152,15 @@ export function PetsTable() {
       key: "detail",
       header: "Detalles",
       initialWidth: 100,
-      renderCell: (value) => (
+      renderCell: (value, row) => (
         <Flex>
+          <ExternalLinkIcon 
+            mr={1} 
+            mt={1} 
+            cursor="pointer"
+            _hover={{ color: "blue.500"}}
+            onClick={() => navigate(`/pet/detail/${row.id}`)}
+          />
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
         </Flex>
       ),

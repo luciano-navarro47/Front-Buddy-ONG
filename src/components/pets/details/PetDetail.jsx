@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getPetDetails } from "../../redux/Actions/petActions";
+import { getPetDetails } from "../../../redux/Actions/petActions";
 import {
   Box,
   Heading,
@@ -20,6 +20,7 @@ import {
   HStack,
   VStack,
 } from "@chakra-ui/react";
+
 import { GiSittingDog } from "react-icons/gi";
 import { GiCat } from "react-icons/gi";
 import { PhoneIcon, CheckIcon } from "@chakra-ui/icons";
@@ -45,17 +46,15 @@ const features = messages.map(function (x, i) {
   };
 });
 
-const Details = ({ handleSetUserFlag }) => {
+export default function Details() {
   const dispatch = useDispatch();
-  const { paramsId } = useParams();
-  const petDetail = useSelector((state) => state.petDetails);
+  const { id } = useParams();
+  const petDetail = useSelector((s) => s.pets.petDetails);
 
   useEffect(() => {
-    dispatch(getPetDetails(paramsId));
-  }, []);
-  useEffect(() => {
-    console.log("DETAIL: ", petDetail);
-  }, [petDetail]);
+    dispatch(getPetDetails(id));
+  }, [dispatch]);
+
   return (
     <div className="detailContainer">
       {window.scrollTo(0, 0)}
@@ -79,7 +78,7 @@ const Details = ({ handleSetUserFlag }) => {
                 textTransform="uppercase"
                 color="gray.500"
               >
-                {petDetail.species}{" "}
+                {petDetail.specie}{" "}
               </Heading>
               <Heading
                 as="h2"
@@ -91,7 +90,7 @@ const Details = ({ handleSetUserFlag }) => {
               </Heading>
               <Box pt="0px">
                 {" "}
-                {petDetail.species === "perro" ? (
+                {petDetail.specie === "perro" ? (
                   <Icon
                     as={GiSittingDog}
                     color="orange"
@@ -229,21 +228,21 @@ const Details = ({ handleSetUserFlag }) => {
                   <WrapItem>
                     <Avatar
                       size="lg"
-                      name={petDetail.species}
+                      name={petDetail.specie}
                       src={petDetail.img}
                     />{" "}
                   </WrapItem>
                   <WrapItem>
                     <Avatar
                       size="lg"
-                      name={petDetail.species}
+                      name={petDetail.specie}
                       src={petDetail.img}
                     />{" "}
                   </WrapItem>
                   <WrapItem>
                     <Avatar
                       size="lg"
-                      name={petDetail.species}
+                      name={petDetail.specie}
                       src={petDetail.img}
                     />{" "}
                   </WrapItem>
@@ -302,6 +301,4 @@ const Details = ({ handleSetUserFlag }) => {
       </Box>
     </div>
   );
-};
-
-export default Details;
+}
