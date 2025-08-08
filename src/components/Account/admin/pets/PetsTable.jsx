@@ -1,30 +1,50 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Box,
+  // Box,
   Flex,
-  Select,
+  // Select,
   Image,
   Text,
   Tooltip,
-  useToast,
+  // useToast,
+  ModalCloseButton,
+  ModalHeader,
+  ModalContent,
+  ModalOverlay,
+  Modal,
+  ModalBody,
+  ModalFooter,
   useDisclosure,
 } from "@chakra-ui/react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
+import ImageGalleryModal from "components/Modal/ImageGalleryModal";
 import { getPets } from "redux/Actions/petActions";
 
 export function PetsTable() {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   // const toast = useToast();
   const pets = useSelector((s) => s.pets.allPets);
   const [copiedPetId, setCopiedPetId] = useState(null);
   const [copiedUserRowId, setCopiedUserRowId] = useState(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [modalImages, setModalImages] = useState([]);
+  const [modalStartIndex, setModalStartIndex] = useState(0);
+
+  const openImagesModal = (images, idx = 0) => {
+    setModalImages(images || []);
+    setModalStartIndex(idx);
+    onOpen();
+  };
+
+  const currentImgPosition = 1;
+  const totalImgAmount = 1;
 
   useEffect(() => {
     dispatch(getPets());
@@ -77,16 +97,39 @@ export function PetsTable() {
       key: "img",
       header: "Foto",
       initialWidth: 50,
-      renderCell: (value) => (
-        <Flex justify="center" align="center" w="100%" h="100%" py={1}>
-          <Image
-            src={value}
-            boxSize="40px"
-            objectFit="cover"
-            borderRadius="md"
-          />
-        </Flex>
-      ),
+      renderCell: (value, row) => {
+        const images =
+          row.images && row.images.length ? row.images : [row.img || value];
+
+        return (
+          <Flex
+            justify="center"
+            align="center"
+            w="100%"
+            h="100%"
+            py={1}
+            overflow="visible"
+            position="relative"
+          >
+            <Image
+              src={images[0]}
+              boxSize="40px"
+              objectFit="cover"
+              borderRadius="md"
+              cursor="pointer"
+              transition="transform 0.2s ease, box-shadow 0.18s ease"
+              _hover={{
+                transform: "scale(1.2)",
+                zIndex: 1,
+                boxShadow: "md",
+              }}
+              willChange="transform"
+              alt="foto mascota"
+              onClick={() => openImagesModal(images, 0)}
+            />
+          </Flex>
+        );
+      },
     },
     {
       key: "specie",
@@ -154,11 +197,11 @@ export function PetsTable() {
       initialWidth: 100,
       renderCell: (value, row) => (
         <Flex>
-          <ExternalLinkIcon 
-            mr={1} 
-            mt={1} 
+          <ExternalLinkIcon
+            mr={1}
+            mt={1}
             cursor="pointer"
-            _hover={{ color: "blue.500"}}
+            _hover={{ color: "blue.500" }}
             onClick={() => navigate(`/pet/detail/${row.id}`)}
           />
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -206,11 +249,20 @@ export function PetsTable() {
 
   return (
     <>
+      <ImageGalleryModal
+        isOpen={isOpen}
+        onClose={onClose}
+        images={modalImages}
+        startIndex={modalStartIndex}
+        title="Fotos del animal"
+        onViewDetails={(index) => {
+          onClose();
+        }}
+      />
       <SectionHeader
         title="Gestionar mascotas publicadas"
         subtitle="Tabla con información básica de las mascotas publicadas por los usuarios."
       />
-
       <DataTable columns={columns} data={pets} rowKey="id" />
     </>
   );
