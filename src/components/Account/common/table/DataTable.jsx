@@ -20,7 +20,7 @@ export default function DataTable({
         <Thead position="sticky" top={0} bg="white" zIndex={1}>
           <Tr>
             {columns.map(
-              ({ key, header, initialWidth = 100, minWidth = 25 }) => (
+              ({ key, header, initialWidth = 100, minWidth = 5 }) => (
                 <ResizableTh
                   key={key}
                   initialWidth={initialWidth}
@@ -37,7 +37,7 @@ export default function DataTable({
           {rows.map((row) => (
             <Tr key={row[rowKey] || row.id || Math.random()}>
               {columns.map(({ key, renderCell }) => (
-                <Td key={key} px={key === "id" ? 1 : 4} py={2} isTruncated>
+                <Td key={key} px={key === "id" ? 1 : 4} py={2} w={key === "id" ? "40px" : "auto"} textAlign="center" isTruncated>
                   {renderCell
                     ? renderCell(row[key], row)
                     : String(row[key] ?? "-")}

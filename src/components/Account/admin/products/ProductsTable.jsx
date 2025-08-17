@@ -8,6 +8,7 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  Link,
 } from "@chakra-ui/react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
@@ -15,19 +16,21 @@ import SectionHeader from "components/account/common/SectionHeader";
 import DataTable from "../../common/table/DataTable";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
 import { getAllProducts } from "redux/Actions/productActions";
+import ReusableFormModal from "components/account/common/ReusableFormModal";
+import ProductForm from "components/account/common/ProductForm";
 
 export function ProductsTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const products = useSelector((s) => s.products);
+  const products = useSelector((s) => s.products.allProducts);
   const [copiedProductId, setCopiedProductId] = useState(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const { isOpen: isImageOpen, onOpen: onOpenImage, onClose: onCloseImage } = useDisclosure();
+  const { isOpen: isFormOpen, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure();
   const [modalImages, setModalImages] = useState([]);
   const [modalStartIndex, setModalStartIndex] = useState(0);
   const [modalProductId, setModalProductId] = useState(null);
-
-  console.log("PRODUCTS: ", products);
 
   useEffect(() => {
     dispatch(getAllProducts());
@@ -37,7 +40,12 @@ export function ProductsTable() {
     setModalImages(images || []);
     setModalStartIndex(idx);
     setModalProductId(productId);
-    onOpen();
+    onOpenImage();
+  };
+
+  const handleOpenForm = (productId) => {
+    setSelectedProductId(productId);
+    onOpenForm();
   };
 
   const handleCopy = (id) => {
@@ -46,17 +54,22 @@ export function ProductsTable() {
     setTimeout(() => setCopiedProductId(null), 750);
   };
 
+  const handleSuccess = () => {
+    dispatch(getAllProducts());
+    onCloseForm();
+  };
+
   const columns = [
     {
       key: "id",
       header: "Id",
-      initialWidth: 25,
+      initialWidth: 5,
 
       renderCell: (value, row) => {
         const productId = row.id;
 
         return (
-          <Flex align="center">
+          <Flex align="center" justify="center" w="fit-content" minW="0">
             <Tooltip
               label="ID Copiado"
               placement="top"
@@ -69,7 +82,7 @@ export function ProductsTable() {
                 mr={1}
                 boxSize={4}
                 color={copiedProductId === productId ? "orange" : "black"}
-                onClick={() => handleCopy(productId, "pet")}
+                onClick={() => handleCopy(productId)}
               />
             </Tooltip>
             {value}
@@ -120,7 +133,18 @@ export function ProductsTable() {
       header: "NOMBRE",
       initialWidth: 50,
       renderCell: (_, row) => {
-        return <Text align="center">{row.name}</Text>;
+        return (
+          <Text
+            align="left"
+            fontWeight="bold"
+            textDecoration="underline"
+            color="blue.500"
+            cursor="pointer"
+            onClick={() => handleOpenForm(row.id)}
+          >
+            {row.name}
+          </Text>
+        );
       },
     },
     {
@@ -160,13 +184,13 @@ export function ProductsTable() {
   return (
     <>
       <ImageGalleryModal
-        isOpen={isOpen}
-        onClose={onClose}
+        isOpen={isImageOpen}
+        onClose={onCloseImage}
         images={modalImages}
         startIndex={modalStartIndex}
         title="Fotos del Producto"
         onViewDetails={(index) => {
-          onClose();
+          onCloseImage();
           if (modalProductId) navigate(`/product/detail/${modalProductId}`);
         }}
       />
@@ -190,6 +214,19 @@ export function ProductsTable() {
         <strong>Productos:</strong> {products.length}
       </Box>
       <DataTable columns={columns} data={products} rowKey="id" />
+
+      <ReusableFormModal
+        isOpen={isFormOpen}
+        onClose={onCloseForm}
+        title="Editar producto"
+      >
+        <ProductForm
+          productId={selectedProductId}
+          mode="update"
+          onSuccess={handleSuccess}
+          onCancel={onCloseForm}
+        />
+      </ReusableFormModal>
     </>
   );
 }

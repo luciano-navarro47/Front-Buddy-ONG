@@ -1,6 +1,6 @@
 import {
   GET_ALL_PRODUCTS,
-  GET_PRODUCT_DETAIL,
+  GET_PRODUCT,
   POST_PRODUCT,
   UPDATE_PRODUCT,
   SHOP_FILTER_VALUE,
@@ -32,7 +32,6 @@ export function postOrUpdateProduct(formInput, value, id) {
           type: POST_PRODUCT,
         });
       } else {
-        // console.log("FORM INPUT: ", formInput);
         await axios.put(`${API_URL}/products/${id}`, formInput);
         dispatch({
           type: UPDATE_PRODUCT,
@@ -51,7 +50,7 @@ export function getProductDetail(obj) {
       productDetail.data[0].handlerSetCart = obj.handlerSetCart;
       productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
       return dispatch({
-        type: GET_PRODUCT_DETAIL,
+        type: GET_PRODUCT,
         payload: productDetail.data,
       });
     } catch (error) {
@@ -60,12 +59,12 @@ export function getProductDetail(obj) {
   };
 }
 
-export function getProductDetailAdmin(id) {
+export function getProductDescription(id) {
   return async function (dispatch) {
     try {
       const productDetail = await axios.get(`${API_URL}/products/${id}`);
       return dispatch({
-        type: GET_PRODUCT_DETAIL,
+        type: GET_PRODUCT,
         payload: productDetail.data,
       });
     } catch (error) {
