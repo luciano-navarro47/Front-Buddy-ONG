@@ -3,6 +3,7 @@ import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
 import { UsersTable } from "components/account/admin/users/UsersTable";
 import AccountLayout from "components/account/AccountLayout";
 import { PetsTable } from "components/account/admin/pets/PetsTable";
+import { ProductsTable } from "components/account/admin/products/ProductsTable";
 
 export const adminRoutes = ({ user, setUser, handleLogout }) => [
   {
@@ -30,6 +31,14 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
         element: (
           <PrivateRoute roles={["admin"]}>
             <PetsTable />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manageProducts",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <ProductsTable />
           </PrivateRoute>
         ),
       },

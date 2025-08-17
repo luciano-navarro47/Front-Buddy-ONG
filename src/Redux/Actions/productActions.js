@@ -6,7 +6,6 @@ import {
   SHOP_FILTER_VALUE,
   SHOP_SEARCH_INPUT_NAME,
 } from "../../redux/ActionTypes";
-// import { header } from "../../utils";
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 

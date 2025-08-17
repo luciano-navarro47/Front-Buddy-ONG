@@ -26,7 +26,7 @@ export default function Sidebar({ user, handleLogout }) {
   const adminLinks = [
     { to: "manageUsers", label: "Usuarios", icon: FaUsers },
     { to: "managePets", label: "Gestionar mascotas", icon: SiDatadog },
-    { to: "products", label: "Productos", icon: FaBoxOpen },
+    { to: "manageProducts", label: "Productos", icon: FaBoxOpen },
     { to: "veterinaries", label: "Veterinarias", icon: FaClinicMedical },
   ];
 
