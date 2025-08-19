@@ -8,14 +8,22 @@ import {
   Text,
   Tooltip,
   useDisclosure,
+  Input,
   Link,
+  InputRightElement,
+  Spinner,
+  InputGroup,
 } from "@chakra-ui/react";
-import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { CopyIcon, ExternalLinkIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
+import PriceCell from "./PriceCell";
 import DataTable from "../../common/table/DataTable";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
-import { getAllProducts } from "redux/Actions/productActions";
+import {
+  getAllProducts,
+  postOrUpdateProduct,
+} from "redux/Actions/productActions";
 import ReusableFormModal from "components/account/common/ReusableFormModal";
 import ProductForm from "components/account/common/ProductForm";
 
@@ -26,8 +34,16 @@ export function ProductsTable() {
   const products = useSelector((s) => s.products.allProducts);
   const [copiedProductId, setCopiedProductId] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
-  const { isOpen: isImageOpen, onOpen: onOpenImage, onClose: onCloseImage } = useDisclosure();
-  const { isOpen: isFormOpen, onOpen: onOpenForm, onClose: onCloseForm } = useDisclosure();
+  const {
+    isOpen: isImageOpen,
+    onOpen: onOpenImage,
+    onClose: onCloseImage,
+  } = useDisclosure();
+  const {
+    isOpen: isFormOpen,
+    onOpen: onOpenForm,
+    onClose: onCloseForm,
+  } = useDisclosure();
   const [modalImages, setModalImages] = useState([]);
   const [modalStartIndex, setModalStartIndex] = useState(0);
   const [modalProductId, setModalProductId] = useState(null);
@@ -151,9 +167,7 @@ export function ProductsTable() {
       key: "price",
       header: "PRECIO",
       initialWidth: 25,
-      renderCell: (_, row) => {
-        return <Text align="center">{`$${Math.round(row.price)}`}</Text>;
-      },
+      renderCell: (_, row) => <PriceCell row={row} />,
     },
     {
       key: "stock",

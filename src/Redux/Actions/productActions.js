@@ -27,14 +27,17 @@ export function postOrUpdateProduct(formInput, value, id) {
   return async function (dispatch) {
     try {
       if (value === undefined) {
-        await axios.post(`${API_URL}/products`, formInput);
+        const {data} = await axios.post(`${API_URL}/products`, formInput);
         return dispatch({
           type: POST_PRODUCT,
+          payload: data,
         });
       } else {
-        await axios.put(`${API_URL}/products/${id}`, formInput);
+        const { data } = await axios.put(`${API_URL}/products/${id}`, formInput);
+        console.log("DATA????: ", data)
         dispatch({
           type: UPDATE_PRODUCT,
+          payload: data,
         });
       }
     } catch (error) {
