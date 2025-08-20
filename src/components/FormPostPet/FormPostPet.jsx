@@ -18,7 +18,7 @@ import { SelectField, selectConfigs } from "./FormFields/SelectField";
 import { InputField, inputConfigs } from "./FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
-import { usePetForm } from "utils/hooks/usePetForm";
+import { usePetForm } from "utils/hooks/pet/usePetForm";
 
 export default function FormPostPet({ isUpdating, userRole }) {
   const dispatch = useDispatch();

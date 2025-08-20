@@ -24,9 +24,10 @@ export function getAllProducts() {
   };
 }
 export function postOrUpdateProduct(formInput, value, id) {
+  console.log("FORM INPUT: ", formInput)
   return async function (dispatch) {
     try {
-      if (value === undefined) {
+      if (value === undefined && id === undefined) {
         const { data } = await axios.post(`${API_URL}/products`, formInput);
         return dispatch({
           type: POST_PRODUCT,
@@ -37,7 +38,6 @@ export function postOrUpdateProduct(formInput, value, id) {
           `${API_URL}/products/${id}`,
           formInput
         );
-        console.log("DATA????: ", data);
         dispatch({
           type: UPDATE_PRODUCT,
           payload: data,
@@ -82,7 +82,6 @@ export function getProductDescription(id) {
 export function deleteProducts(idsToDelete) {
   return async function (dispatch) {
     try {
-      console.log("IDS: ", idsToDelete)
       await axios.delete(
         `${API_URL}/products/bulk-delete-products`,
         {data: {idsToDelete}},
@@ -90,7 +89,6 @@ export function deleteProducts(idsToDelete) {
       const { data: allProducts } = await axios.get(
         `http://localhost:3001/products`
       );
-      console.log("PROD: ", allProducts);
       return dispatch({
         type: GET_ALL_PRODUCTS,
         payload: allProducts,

@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getProductDescription,
-  postOrUpdateProduct,
-} from "../../../../redux/Actions/productActions";
-import UploadImage from "../../common/UploadImage";
-import {
   Box,
   FormControl,
   FormLabel,
@@ -19,10 +14,14 @@ import {
   useToast,
   InputLeftElement,
   InputGroup,
-  Textarea,
 } from "@chakra-ui/react";
 import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
+import UploadImages from "../../common/UploadImage";
 import { CATEGORIES } from "constants/categories";
+import {
+  getProductDescription,
+  postOrUpdateProduct,
+} from "../../../../redux/Actions/productActions";
 
 export default function ProductForm({
   productId,
@@ -36,12 +35,12 @@ export default function ProductForm({
   const product = useSelector((state) => state.products.product);
 
   const [isIncomplete, setIsIncomplete] = useState(false);
-  const [image_url, setImage] = useState("");
+  const [images, setImages] = useState([]);
   const [input, setInput] = useState({
     name: "",
     description: "",
     category: "",
-    image_url: "",
+    images: [],
     price: "",
     stock: "",
   });
@@ -58,7 +57,7 @@ export default function ProductForm({
         name: product?.name || "",
         description: product?.description || "",
         category: product?.category || "",
-        image_url: product?.image_url || "",
+        images: product?.images || "",
         price: Math.round(product?.price) || 0,
         stock: product?.stock || 0,
       });
@@ -66,8 +65,8 @@ export default function ProductForm({
   }, [product, mode]);
 
   useEffect(() => {
-    setInput((prev) => ({ ...prev, image_url }));
-  }, [image_url]);
+    setInput((prev) => ({ ...prev, images }));
+  }, [images]);
 
   const handleChange = (e) => {
     setInput({
@@ -78,12 +77,10 @@ export default function ProductForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (
       !input.name ||
       !input.description ||
       !input.category ||
-      !input.image_url ||
       input.price < 0 ||
       input.stock < 0
     ) {
@@ -138,7 +135,7 @@ export default function ProductForm({
 
         <HStack>
           <FormControl id="stock" isRequired>
-            <FormLabel>Stock</FormLabel>
+            <FormLabel>Stock disponible</FormLabel>
             <Input
               placeholder="Cantidad disponible"
               name="stock"
@@ -171,10 +168,20 @@ export default function ProductForm({
           />
         </FormControl>
 
-        <FormControl id="image_url" isRequired>
+        <FormControl id="images" isRequired>
           <Container>
-            <FormLabel>Imágenes del producto</FormLabel>
-            <UploadImage setImage={setImage} />
+            <FormLabel>Cargar imágenes del producto</FormLabel>
+            <UploadImages
+              setImages={(urls) =>
+                setInput((p) => ({
+                  ...p,
+                  images: Array.isArray(p.images)
+                    ? [...p.images, ...urls]
+                    : [...urls],
+                }))
+              }
+              multiple
+            />
           </Container>
         </FormControl>
 

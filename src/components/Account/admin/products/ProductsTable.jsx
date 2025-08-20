@@ -1,13 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  Flex,
-  Image,
-  Text,
-  Tooltip,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
@@ -128,7 +122,7 @@ export function ProductsTable() {
         },
       },
       {
-        key: "image_url",
+        key: "images",
         header: "IMAGEN",
         initialWidth: 75,
         renderCell: (value, row) => {
@@ -259,20 +253,22 @@ export function ProductsTable() {
         title='Gestionar productos de la "Tienda Virtual"'
         subtitle={`Tabla con información de los productos. Editá el stock, añadí imagenes, actualizá datos o eliminá productos de la tienda.`}
       />
-      <ActionPill colorScheme="orange" count={products.length}>
-        <strong>Productos:</strong>
-      </ActionPill>
+      <Flex align="center" justify="space-between" wrap="wrap">
+        <ActionPill colorScheme="orange" count={products.length}>
+          <strong>Productos:</strong>
+        </ActionPill>
 
-      <ActionPill
-        icon={<DeleteIcon boxSize={5} mb={1} mr={1} color="white" />}
-        bg="red.500"
-        color="white"
-        onClick={onOpen}
-        isDisabled={selection.count === 0}
-        _hover={{ bg: "red.600" }}
-      >
-        Borrar ({selection.count})
-      </ActionPill>
+        <ActionPill
+          icon={<DeleteIcon boxSize={4} mb={1} color="white" />}
+          bg="red.500"
+          color="white"
+          onClick={onOpen}
+          isDisabled={selection.count === 0}
+          _hover={{ bg: "red.600" }}
+        >
+          Borrar ({selection.count})
+        </ActionPill>
+      </Flex>
 
       <DataTable columns={memoColumns} data={products} rowKey="id" />
 
