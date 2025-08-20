@@ -3,15 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Flex,
-  Box,
-  Button,
-  HStack,
   Image,
   Text,
   Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
 import SectionHeader from "components/account/common/SectionHeader";
@@ -19,6 +16,8 @@ import ProductForm from "./ProductForm";
 import ReusableFormModal from "components/account/common/ReusableFormModal";
 import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
+import ActionPill from "components/account/common/buttons/ActionPill";
+import { CATEGORY_LABEL_BY_VALUE } from "constants/categories";
 import { deleteProducts, getAllProducts } from "redux/Actions/productActions";
 import { useSelection, makeSelectColumn } from "utils/hooks/useSelection";
 
@@ -204,7 +203,8 @@ export function ProductsTable() {
         header: "CATEGORIA",
         initialWidth: 25,
         renderCell: (_, row) => {
-          return <Text align="center">{row.category}</Text>;
+          const label = CATEGORY_LABEL_BY_VALUE[row.category] || row.category;
+          return <Text align="left">{label}</Text>;
         },
       },
       {
@@ -259,41 +259,21 @@ export function ProductsTable() {
         title='Gestionar productos de la "Tienda Virtual"'
         subtitle={`Tabla con información de los productos. Editá el stock, añadí imagenes, actualizá datos o eliminá productos de la tienda.`}
       />
-      <Box
-        bg="orange.100"
-        borderRadius="md"
-        px={4}
-        py={2}
-        mb={4}
-        maxW="fit-content"
-        boxShadow="sm"
-        whiteSpace="normal"
-        textAlign="center"
-        w={{ base: "100%", sm: "auto" }}
-        fontSize={{ base: "xs", sm: "md" }}
-      >
-        <strong>Productos:</strong> {products.length}
-      </Box>
+      <ActionPill colorScheme="orange" count={products.length}>
+        <strong>Productos:</strong>
+      </ActionPill>
 
-      <Button
+      <ActionPill
+        icon={<DeleteIcon boxSize={5} mb={1} mr={1} color="white" />}
         bg="red.500"
         color="white"
-        borderRadius="md"
-        px={4}
-        py={2}
-        mb={4}
-        maxW="fit-content"
-        boxShadow="sm"
-        whiteSpace="normal"
-        textAlign="center"
-        w={{ base: "100%", sm: "auto" }}
-        fontSize={{ base: "xs", sm: "md" }}
         onClick={onOpen}
         isDisabled={selection.count === 0}
         _hover={{ bg: "red.600" }}
       >
-        Eliminar seleccionados ({selection.count})
-      </Button>
+        Borrar ({selection.count})
+      </ActionPill>
+
       <DataTable columns={memoColumns} data={products} rowKey="id" />
 
       <ReusableFormModal

@@ -22,6 +22,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
+import { CATEGORIES } from "constants/categories";
 
 export default function ProductForm({
   productId,
@@ -127,17 +128,11 @@ export default function ProductForm({
             value={input.category}
             onChange={handleChange}
           >
-            <option value="clothing">Ropa</option>
-            <option value="toys">Juguetes</option>
-            <option value="food">Comida</option>
-            <option value="accessories">Accesorios</option>
-            <option value="beds">Camas</option>
-            <option value="hygiene">Higiene</option>
-            <option value="healthcare">Salud</option>
-            <option value="bowls">Platos</option>
-            <option value="carriers">Transportadoras</option>
-            <option value="litter">Piedritas</option>
-            <option value="other">Otros</option>
+            {CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
           </Select>
         </FormControl>
 
