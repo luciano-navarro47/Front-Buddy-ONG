@@ -22,7 +22,6 @@ function PriceCell({ row }) {
   }, [row.price]);
 
   const handleBlur = async () => {
-
     if (price !== originalPrice) {
       try {
         setStatus("loading");

@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getProductDescription,
   postOrUpdateProduct,
-} from "../../../redux/Actions/productActions";
-import UploadImage from "../../DashboardAdmin/Dashboard/UploadImage";
+} from "../../../../redux/Actions/productActions";
+import UploadImage from "../../../DashboardAdmin/Dashboard/UploadImage";
 import {
   Box,
   FormControl,
@@ -17,7 +17,11 @@ import {
   Select,
   Container,
   useToast,
+  InputLeftElement,
+  InputGroup,
+  Textarea,
 } from "@chakra-ui/react";
+import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
 
 export default function ProductForm({
   productId,
@@ -105,32 +109,16 @@ export default function ProductForm({
   return (
     <Box as="form">
       <Stack spacing={4}>
-        <HStack>
-          <Box flex="1">
-            <FormControl id="name" isRequired>
-              <FormLabel>Nombre</FormLabel>
-              <Input
-                placeholder="¿Qué vas a vender?"
-                type="text"
-                name="name"
-                value={input.name}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Box>
-          <Box flex="1">
-            <FormControl id="price" isRequired>
-              <FormLabel>Precio (ARS)</FormLabel>
-              <Input
-                placeholder="¿Cuánto cuesta?"
-                name="price"
-                type="number"
-                value={input.price}
-                onChange={handleChange}
-              />
-            </FormControl>
-          </Box>
-        </HStack>
+        <FormControl id="name" isRequired>
+          <FormLabel>Nombre</FormLabel>
+          <Input
+            placeholder="¿Qué vas a vender?"
+            type="text"
+            name="name"
+            value={input.name}
+            onChange={handleChange}
+          />
+        </FormControl>
 
         <FormControl id="category" isRequired>
           <FormLabel>Categoría</FormLabel>
@@ -139,38 +127,58 @@ export default function ProductForm({
             value={input.category}
             onChange={handleChange}
           >
-            <option value="indumentaria">Indumentaria</option>
-            <option value="tazas">Tazas</option>
-            <option value="alimentos">Alimentos</option>
-            <option value="otros">Otros</option>
+            <option value="clothing">Ropa</option>
+            <option value="toys">Juguetes</option>
+            <option value="food">Comida</option>
+            <option value="accessories">Accesorios</option>
+            <option value="beds">Camas</option>
+            <option value="hygiene">Higiene</option>
+            <option value="healthcare">Salud</option>
+            <option value="bowls">Platos</option>
+            <option value="carriers">Transportadoras</option>
+            <option value="litter">Piedritas</option>
+            <option value="other">Otros</option>
           </Select>
         </FormControl>
 
-        <FormControl id="stock" isRequired>
-          <FormLabel>Stock</FormLabel>
-          <Input
-            placeholder="Cantidad disponible"
-            name="stock"
-            value={input.stock}
-            type="number"
-            onChange={handleChange}
-          />
-        </FormControl>
+        <HStack>
+          <FormControl id="stock" isRequired>
+            <FormLabel>Stock</FormLabel>
+            <Input
+              placeholder="Cantidad disponible"
+              name="stock"
+              value={input.stock}
+              type="number"
+              onChange={handleChange}
+            />
+          </FormControl>
+          <FormControl id="price" isRequired>
+            <FormLabel>Precio (ARS)</FormLabel>
+            <InputGroup>
+              <InputLeftElement>$</InputLeftElement>
+              <Input
+                placeholder="¿Cuánto cuesta?"
+                name="price"
+                type="number"
+                value={input.price}
+                onChange={handleChange}
+              />
+            </InputGroup>
+          </FormControl>
+        </HStack>
 
         <FormControl id="description">
-          <FormLabel>Descripción</FormLabel>
-          <Input
-            placeholder="Algún comentario sobre el producto"
-            name="description"
+          <FormLabel>Descripción del producto</FormLabel>
+          <DescriptionEditor
             value={input.description}
-            type="text"
-            onChange={handleChange}
+            onChange={(val) => setInput({ ...input, description: val })}
+            placeholder="Algún comentario sobre el producto"
           />
         </FormControl>
 
         <FormControl id="image_url" isRequired>
           <Container>
-            <FormLabel>Imagen del producto</FormLabel>
+            <FormLabel>Imágenes del producto</FormLabel>
             <UploadImage setImage={setImage} />
           </Container>
         </FormControl>

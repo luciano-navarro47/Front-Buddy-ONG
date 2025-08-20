@@ -14,7 +14,6 @@ export default function ReusableFormModal({
   title,
   children,
   onSubmit,
-  isSubmitting = false,
 }) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
