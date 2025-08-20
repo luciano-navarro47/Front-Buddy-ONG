@@ -100,7 +100,7 @@ export function ProductsTable() {
       {
         key: "id",
         header: "Id",
-        initialWidth: 5,
+        initialWidth: 50,
 
         renderCell: (value, row) => {
           const productId = row.id;
@@ -130,7 +130,7 @@ export function ProductsTable() {
       {
         key: "image_url",
         header: "IMAGEN",
-        initialWidth: 50,
+        initialWidth: 75,
         renderCell: (value, row) => {
           const images =
             row.images && row.images.length ? row.images : [row.img || value];
@@ -168,7 +168,7 @@ export function ProductsTable() {
       {
         key: "name",
         header: "NOMBRE",
-        initialWidth: 50,
+        initialWidth: 175,
         renderCell: (_, row) => {
           return (
             <Text
@@ -187,13 +187,13 @@ export function ProductsTable() {
       {
         key: "price",
         header: "PRECIO",
-        initialWidth: 25,
+        initialWidth: 125,
         renderCell: (_, row) => <PriceCell row={row} />,
       },
       {
         key: "stock",
         header: "STOCK",
-        initialWidth: 25,
+        initialWidth: 100,
         renderCell: (_, row) => {
           return <Text align="center">{row.stock}</Text>;
         },
@@ -201,7 +201,7 @@ export function ProductsTable() {
       {
         key: "category",
         header: "CATEGORIA",
-        initialWidth: 25,
+        initialWidth: 150,
         renderCell: (_, row) => {
           const label = CATEGORY_LABEL_BY_VALUE[row.category] || row.category;
           return <Text align="left">{label}</Text>;
@@ -210,7 +210,7 @@ export function ProductsTable() {
       {
         key: "description",
         header: "DESCRIPCIÓN",
-        initialWidth: 25,
+        initialWidth: 250,
         renderCell: (_, row) => {
           return <Text align="left">{row.description}</Text>;
         },

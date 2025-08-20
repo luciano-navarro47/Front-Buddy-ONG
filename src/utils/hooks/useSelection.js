@@ -116,7 +116,7 @@ export function makeSelectColumn({
         aria-label={`${ariaLabelPrefix} seleccionar todos`}
       />
     ),
-    initialWidth: 6,
+    initialWidth: 25,
     renderCell: (_, row) => {
       const id = row[rowKey];
       return (

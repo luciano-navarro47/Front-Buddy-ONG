@@ -116,7 +116,7 @@ export function PetsTable() {
     {
       key: "specie",
       header: "Especie",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex justify="center">
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -126,7 +126,7 @@ export function PetsTable() {
     {
       key: "sex",
       header: "Sexo",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex justify="center">
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -136,7 +136,7 @@ export function PetsTable() {
     {
       key: "age",
       header: "Edad",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex justify="center">
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -146,7 +146,7 @@ export function PetsTable() {
     {
       key: "size",
       header: "Tamaño",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex justify="center">
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -156,7 +156,7 @@ export function PetsTable() {
     {
       key: "status",
       header: "Estado",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex justify="center">
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -166,7 +166,7 @@ export function PetsTable() {
     {
       key: "area",
       header: "Ubicacion",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (value) => (
         <Flex>
           <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
@@ -176,7 +176,7 @@ export function PetsTable() {
     {
       key: "detail",
       header: "Detalles",
-      initialWidth: 100,
+      initialWidth: 125,
       renderCell: (value, row) => (
         <Flex>
           <ExternalLinkIcon
@@ -193,7 +193,7 @@ export function PetsTable() {
     {
       key: "user",
       header: "Publicado por",
-      initialWidth: 50,
+      initialWidth: 75,
       renderCell: (_, row) => {
         const user = row.user;
 
