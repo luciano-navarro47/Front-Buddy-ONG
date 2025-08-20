@@ -4,7 +4,7 @@ import {
   getProductDescription,
   postOrUpdateProduct,
 } from "../../../../redux/Actions/productActions";
-import UploadImage from "../../../DashboardAdmin/Dashboard/UploadImage";
+import UploadImage from "../../common/UploadImage";
 import {
   Box,
   FormControl,
