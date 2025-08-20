@@ -24,7 +24,7 @@ export function useSelection(items = [], opts = {}) {
       if (onChange) onChange(arr);
       return next;
     });
-  }, [items, rowKey]);
+  }, [items, rowKey, onChange]);
 
   const isSelected = useCallback(
     (id) => selectedSet.has(String(id)),
@@ -112,6 +112,7 @@ export function makeSelectColumn({
           if (isAllSelected) unselectAll();
           else selectAll();
         }}
+        borderColor={"blue.300"}
         aria-label={`${ariaLabelPrefix} seleccionar todos`}
       />
     ),
@@ -122,6 +123,7 @@ export function makeSelectColumn({
         <Checkbox
           isChecked={isSelected(id)}
           onChange={() => toggleOne(id)}
+          borderColor={"blue.300"}
           aria-label={`${ariaLabelPrefix} seleccionar ${id}`}
         />
       );

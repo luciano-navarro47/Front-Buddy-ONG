@@ -275,16 +275,25 @@ export function ProductsTable() {
         <strong>Productos:</strong> {products.length}
       </Box>
 
-      <HStack spacing={3} mb={3}>
-        <Button
-          colorScheme="red"
-          onClick={onOpen}
-          isDisabled={selection.count === 0}
-          size="sm"
-        >
-          Eliminar seleccionados ({selection.count})
-        </Button>
-      </HStack>
+      <Button
+        bg="red.500"
+        color="white"
+        borderRadius="md"
+        px={4}
+        py={2}
+        mb={4}
+        maxW="fit-content"
+        boxShadow="sm"
+        whiteSpace="normal"
+        textAlign="center"
+        w={{ base: "100%", sm: "auto" }}
+        fontSize={{ base: "xs", sm: "md" }}
+        onClick={onOpen}
+        isDisabled={selection.count === 0}
+        _hover={{ bg: "red.600" }}
+      >
+        Eliminar seleccionados ({selection.count})
+      </Button>
       <DataTable columns={memoColumns} data={products} rowKey="id" />
 
       <ReusableFormModal
