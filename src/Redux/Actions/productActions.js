@@ -1,4 +1,6 @@
+import { ReactReduxContext } from "react-redux";
 import {
+  CLEAR_PRODUCT,
   GET_ALL_PRODUCTS,
   GET_PRODUCT,
   POST_PRODUCT,
@@ -9,22 +11,27 @@ import {
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
+export const clearProduct = () => ({
+  type: "CLEAR_PRODUCT",
+});
+
 export function getAllProducts() {
   return async function (dispatch) {
     try {
-      const allProducts = await axios.get(`${API_URL}/products`);
+      const { data } = await axios.get(`${API_URL}/products`);
 
-      return dispatch({
+
+      dispatch({
         type: GET_ALL_PRODUCTS,
-        payload: allProducts.data,
+        payload: data,
       });
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
 }
 export function postOrUpdateProduct(formInput, value, id) {
-  console.log("FORM INPUT: ", formInput)
   return async function (dispatch) {
     try {
       if (value === undefined && id === undefined) {
@@ -38,7 +45,7 @@ export function postOrUpdateProduct(formInput, value, id) {
           `${API_URL}/products/${id}`,
           formInput
         );
-        dispatch({
+        return dispatch({
           type: UPDATE_PRODUCT,
           payload: data,
         });
@@ -68,13 +75,15 @@ export function getProductDetail(obj) {
 export function getProductDescription(id) {
   return async function (dispatch) {
     try {
-      const productDetail = await axios.get(`${API_URL}/products/${id}`);
+      const { data } = await axios.get(`${API_URL}/products/${id}`);
+      console.log("PROD. DETAIL: ", data)
       return dispatch({
         type: GET_PRODUCT,
-        payload: productDetail.data,
+        payload: data,
       });
     } catch (error) {
       console.log(error);
+      throw error;
     }
   };
 }
@@ -82,10 +91,9 @@ export function getProductDescription(id) {
 export function deleteProducts(idsToDelete) {
   return async function (dispatch) {
     try {
-      await axios.delete(
-        `${API_URL}/products/bulk-delete-products`,
-        {data: {idsToDelete}},
-      );
+      await axios.delete(`${API_URL}/products/bulk-delete-products`, {
+        data: { idsToDelete },
+      });
       const { data: allProducts } = await axios.get(
         `http://localhost:3001/products`
       );

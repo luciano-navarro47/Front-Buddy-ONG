@@ -2,6 +2,7 @@ import {
   GET_ALL_PRODUCTS,
   GET_PRODUCT,
   UPDATE_PRODUCT,
+  CLEAR_PRODUCT,
   // POST_PRODUCT,
   // UPDATE_PRODUCT,
   // DELETE_PRODUCT,
@@ -11,20 +12,25 @@ import {
 
 const initialState = {
   allProducts: [],
-  product: {},
+  product: null,
 };
 
 export default function productsReducer(state = initialState, action) {
   switch (action.type) {
+    case CLEAR_PRODUCT:
+      return {
+        ...state,
+        product: null,
+      };
     case GET_ALL_PRODUCTS:
       return {
         ...state,
-        allProducts: action.payload,
+        allProducts: Array.isArray(action.payload) ? action.payload : [],
       };
     case GET_PRODUCT:
       return {
         ...state,
-        product: action.payload,
+        product: action.payload || null,
       };
     // case POST_PRODUCT:
     //   return {

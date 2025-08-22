@@ -12,7 +12,11 @@ import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
 import ActionPill from "components/account/common/buttons/ActionPill";
 import { CATEGORY_LABEL_BY_VALUE } from "constants/categories";
-import { deleteProducts, getAllProducts } from "redux/Actions/productActions";
+import {
+  clearProduct,
+  deleteProducts,
+  getAllProducts,
+} from "redux/Actions/productActions";
 import { useSelection, makeSelectColumn } from "utils/hooks/useSelection";
 
 export function ProductsTable() {
@@ -69,10 +73,11 @@ export function ProductsTable() {
 
   const handleOpenForm = useCallback(
     (productId) => {
+      dispatch(clearProduct());
       setSelectedProductId(productId);
       onOpenForm();
     },
-    [onOpenForm]
+    [onOpenForm, dispatch]
   );
 
   const handleCopy = useCallback(
@@ -172,6 +177,7 @@ export function ProductsTable() {
               color="blue.500"
               cursor="pointer"
               onClick={() => handleOpenForm(row.id)}
+              _hover={{ color: "blue.400" }}
             >
               {row.name}
             </Text>
@@ -181,7 +187,7 @@ export function ProductsTable() {
       {
         key: "price",
         header: "PRECIO",
-        initialWidth: 125,
+        initialWidth: 100,
         renderCell: (_, row) => <PriceCell row={row} />,
       },
       {

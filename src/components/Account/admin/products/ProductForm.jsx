@@ -14,9 +14,10 @@ import {
   useToast,
   InputLeftElement,
   InputGroup,
+  Spinner,
 } from "@chakra-ui/react";
 import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
-import UploadImages from "../../common/UploadImage";
+import UploadImages from "../../common/UploadImages";
 import { CATEGORIES } from "constants/categories";
 import {
   getProductDescription,
@@ -33,6 +34,7 @@ export default function ProductForm({
   const toast = useToast();
 
   const product = useSelector((state) => state.products.product);
+  const [loadingProduct, setLoadingProduct] = useState(mode === "update");
 
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [images, setImages] = useState([]);
@@ -47,32 +49,43 @@ export default function ProductForm({
 
   useEffect(() => {
     if (mode === "update" && productId) {
+      setInput({
+        name: "",
+        description: "",
+        category: "",
+        images: [],
+        price: "",
+        stock: "",
+      });
+      setLoadingProduct(true);
       dispatch(getProductDescription(productId));
     }
   }, [dispatch, productId, mode]);
 
   useEffect(() => {
-    if (mode === "update" && product) {
+    if (mode === "update" && product && product.id === productId) {
       setInput({
         name: product?.name || "",
         description: product?.description || "",
         category: product?.category || "",
         images: product?.images || "",
         price: Math.round(product?.price) || 0,
-        stock: product?.stock || 0,
+        stock: product.stock ?? "",
       });
+      setLoadingProduct(false);
     }
-  }, [product, mode]);
+  }, [product, mode, productId]);
 
   useEffect(() => {
     setInput((prev) => ({ ...prev, images }));
   }, [images]);
 
   const handleChange = (e) => {
-    setInput({
-      ...input,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -104,8 +117,16 @@ export default function ProductForm({
     if (onSuccess) onSuccess();
   };
 
+  if (mode === "update" && loadingProduct) {
+    return (
+      <Box p={6} textAlign="center">
+        <Spinner />
+      </Box>
+    );
+  }
+
   return (
-    <Box as="form">
+    <Box>
       <Stack spacing={4}>
         <FormControl id="name" isRequired>
           <FormLabel>Nombre</FormLabel>
@@ -175,9 +196,10 @@ export default function ProductForm({
               setImages={(urls) =>
                 setInput((p) => ({
                   ...p,
-                  images: Array.isArray(p.images)
-                    ? [...p.images, ...urls]
-                    : [...urls],
+                  images: [
+                    ...(Array.isArray(p.images) ? p.images : []),
+                    ...urls,
+                  ],
                 }))
               }
               multiple

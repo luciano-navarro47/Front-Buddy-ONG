@@ -30,7 +30,7 @@ export default function ActionPill({
   colorScheme = "orange",
   bg,
   color,
-//   size = "md",
+  // size = "md",
   ...rest
 }) {
   const defaultBg =
