@@ -5,7 +5,6 @@ import {
   HStack,
   Text,
   useColorModeValue,
-  Tooltip,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
@@ -30,7 +29,6 @@ export default function ActionPill({
   colorScheme = "orange",
   bg,
   color,
-  // size = "md",
   ...rest
 }) {
   const defaultBg =
@@ -40,14 +38,13 @@ export default function ActionPill({
   const content = (
     <HStack spacing={1} px={1} py={1} borderRadius="md">
       {icon && (
-        <Box as="span" aria-hidden>
+        <Box as="span" aria-hidden display="flex" alignItems="center" justifyContent="center">
           {icon}
         </Box>
       )}
       <Text
         as="span"
         fontSize={{ base: "xs", sm: "md" }}
-        // fontWeight="semibold"
         color={color || "inherit"}
       >
         {children}
@@ -74,7 +71,7 @@ export default function ActionPill({
         _hover={{ bg: hoverBg }}
         _active={{ transform: "scale(0.99)" }}
         borderRadius="md"
-        boxShadow="sm"
+        // boxShadow="sm"
         px={2}
         py={2}
         mb={4}
@@ -89,9 +86,8 @@ export default function ActionPill({
       </Button>
     );
 
-    return  btn;
+    return btn;
   }
-
 
   const box = (
     <Box
@@ -126,5 +122,4 @@ ActionPill.propTypes = {
   colorScheme: PropTypes.string,
   bg: PropTypes.string,
   color: PropTypes.string,
-//   size: PropTypes.string,
 };

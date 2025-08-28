@@ -3,8 +3,7 @@ import {
   GET_PRODUCT,
   UPDATE_PRODUCT,
   CLEAR_PRODUCT,
-  // POST_PRODUCT,
-  // UPDATE_PRODUCT,
+  POST_PRODUCT,
   // DELETE_PRODUCT,
   // SHOP_FILTER_VALUE,
   // SHOP_SEARCH_INPUT_NAME,
@@ -32,10 +31,10 @@ export default function productsReducer(state = initialState, action) {
         ...state,
         product: action.payload || null,
       };
-    // case POST_PRODUCT:
-    //   return {
-    //     ...state,
-    //   };
+    case POST_PRODUCT:
+      return {
+        ...state,
+      };
     case UPDATE_PRODUCT:
       const payload = action.payload;
       if (!payload || !payload.id) return state;

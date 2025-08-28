@@ -14,6 +14,7 @@ import SectionHeader from "components/account/common/SectionHeader";
 import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
 import { bulkSetStatusUser, getAllUsers } from "redux/Actions/userActions";
+import ActionPill from "components/account/common/buttons/ActionPill";
 
 export function UsersTable() {
   const dispatch = useDispatch();
@@ -178,21 +179,9 @@ export function UsersTable() {
         message={`¿Estás seguro/a de aplicar todos los cambios realizados?\n\nEsta acción no se puede deshacer.`}
         onConfirm={() => handleSave()}
       />
-      <Box
-        bg="gray.200"
-        borderRadius="md"
-        px={4}
-        py={2}
-        mb={4}
-        maxW="fit-content"
-        boxShadow="sm"
-        whiteSpace="normal"
-        textAlign="center"
-        w={{ base: "100%", sm: "auto" }}
-        fontSize={{ base: "xs", sm: "md" }}
-      >
-        <strong>Usuarios Registrados:</strong> {users.length}
-      </Box>
+        <ActionPill colorScheme="orange" count={users.length}>
+          <strong>Usuarios:</strong>
+        </ActionPill>
       <Flex justify="flex-end" mb={6} mr={8}>
         <Button
           colorScheme="teal"

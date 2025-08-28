@@ -11,7 +11,7 @@ import {
 export default function ReusableFormModal({
   isOpen,
   onClose,
-  title,
+  formMode,
   children,
   onSubmit,
 }) {
@@ -19,7 +19,9 @@ export default function ReusableFormModal({
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader textDecoration="underline">{title}</ModalHeader>
+        <ModalHeader textDecoration="underline">
+          {formMode === "create" ? "Crear producto" : "Editar producto"}
+        </ModalHeader>
         <ModalCloseButton />
         <form
           onSubmit={(e) => {

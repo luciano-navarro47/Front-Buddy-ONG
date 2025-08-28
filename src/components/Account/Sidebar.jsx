@@ -87,6 +87,7 @@ export default function Sidebar({ user, handleLogout }) {
         color="red.500"
         onClick={handleLogout}
         _hover={{ bg: "red.50" }}
+        bg="white"
       >
         <Icon as={FaSignOutAlt} mr="2" />
         <Text fontSize="sm">Cerrar sesión</Text>

@@ -30,11 +30,12 @@ export default function ProductForm({
   onSuccess,
   onCancel,
 }) {
+  
   const dispatch = useDispatch();
   const toast = useToast();
 
   const product = useSelector((state) => state.products.product);
-  const [loadingProduct, setLoadingProduct] = useState(mode === "update");
+  const [loadingProduct, setLoadingProduct] = useState(mode);
 
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [images, setImages] = useState([]);
@@ -145,6 +146,7 @@ export default function ProductForm({
             name="category"
             value={input.category}
             onChange={handleChange}
+            placeholder="Seleccioná una"
           >
             {CATEGORIES.map((c) => (
               <option key={c.value} value={c.value}>
@@ -219,7 +221,7 @@ export default function ProductForm({
               Cancelar
             </Button>
           )}
-          <Button type="submit" colorScheme="orange" onClick={handleSubmit}>
+          <Button type="submit" colorScheme="orange" onClick={handleSubmit} isDisabled={input.images.length === 0}>
             {mode === "create" ? "Publicar producto" : "Actualizar"}
           </Button>
         </Stack>

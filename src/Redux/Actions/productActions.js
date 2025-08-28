@@ -20,7 +20,6 @@ export function getAllProducts() {
     try {
       const { data } = await axios.get(`${API_URL}/products`);
 
-
       dispatch({
         type: GET_ALL_PRODUCTS,
         payload: data,
@@ -35,7 +34,9 @@ export function postOrUpdateProduct(formInput, value, id) {
   return async function (dispatch) {
     try {
       if (value === undefined && id === undefined) {
-        const { data } = await axios.post(`${API_URL}/products`, formInput);
+        const { data } = await axios.post(`${API_URL}/products`, formInput, {
+          withCredentials: true,
+        });
         return dispatch({
           type: POST_PRODUCT,
           payload: data,
@@ -76,7 +77,6 @@ export function getProductDescription(id) {
   return async function (dispatch) {
     try {
       const { data } = await axios.get(`${API_URL}/products/${id}`);
-      console.log("PROD. DETAIL: ", data)
       return dispatch({
         type: GET_PRODUCT,
         payload: data,

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
-import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
+import { AddIcon, CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
 import SectionHeader from "components/account/common/SectionHeader";
@@ -26,6 +26,7 @@ export function ProductsTable() {
 
   const products = useSelector((s) => s.products.allProducts);
 
+  const [formMode, setFormMode] = useState("create");
   const [copiedProductId, setCopiedProductId] = useState(null);
   const [selectedProductId, setSelectedProductId] = useState(null);
   const {
@@ -57,10 +58,6 @@ export function ProductsTable() {
     selection.clear();
   };
 
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
-
   const openImagesModal = useCallback(
     (images, idx = 0, productId = null) => {
       setModalImages(images || []);
@@ -75,6 +72,7 @@ export function ProductsTable() {
     (productId) => {
       dispatch(clearProduct());
       setSelectedProductId(productId);
+      setFormMode("update");
       onOpenForm();
     },
     [onOpenForm, dispatch]
@@ -93,6 +91,10 @@ export function ProductsTable() {
     dispatch(getAllProducts());
     onCloseForm();
   }, [dispatch, onCloseForm]);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
 
   const baseColumns = useMemo(
     () => [
@@ -265,6 +267,16 @@ export function ProductsTable() {
         </ActionPill>
 
         <ActionPill
+          icon={<AddIcon boxSize={4} ml={0.5} color="white" />}
+          onClick={() => {
+            dispatch(clearProduct());
+            setSelectedProductId(null);
+            setFormMode("create");
+            onOpenForm();
+          }}
+        ></ActionPill>
+
+        <ActionPill
           icon={<DeleteIcon boxSize={4} mb={1} color="white" />}
           bg="red.500"
           color="white"
@@ -281,11 +293,11 @@ export function ProductsTable() {
       <ReusableFormModal
         isOpen={isFormOpen}
         onClose={onCloseForm}
-        title="Editar producto"
+        formMode={formMode}
       >
         <ProductForm
           productId={selectedProductId}
-          mode="update"
+          mode={formMode}
           onSuccess={handleSuccess}
           onCancel={onCloseForm}
         />
