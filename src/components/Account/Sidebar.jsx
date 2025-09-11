@@ -27,7 +27,7 @@ export default function Sidebar({ user, handleLogout }) {
     { to: "manageUsers", label: "Usuarios", icon: FaUsers },
     { to: "managePets", label: "Gestionar mascotas", icon: SiDatadog },
     { to: "manageProducts", label: "Productos", icon: FaBoxOpen },
-    { to: "veterinaries", label: "Veterinarias", icon: FaClinicMedical },
+    { to: "manageVets", label: "Veterinarias", icon: FaClinicMedical },
   ];
 
   const renderLink = ({ to, label, icon }) => {

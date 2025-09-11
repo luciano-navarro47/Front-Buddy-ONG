@@ -20,7 +20,7 @@ export default function DescriptionEditor({
   const defaultModules = {
     toolbar: [
       [{ header: [1, 2, 3, false] }],
-      ["bold", "italic", "underlines", "strike"],
+      ["bold", "italic", "strike"],
       [{ list: "ordered" }, { list: "bullet" }],
       ["link", "image"],
       ["clean"],
