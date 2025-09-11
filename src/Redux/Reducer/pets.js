@@ -46,7 +46,7 @@ const petReducer = (state = initialState, action) => {
     case GET_PET_BY_ID:
       return {
         ...state,
-        petDetails: action.payload[0],
+        petDetails: action.payload,
       };
     case POST_PET:
       return {
@@ -59,7 +59,8 @@ const petReducer = (state = initialState, action) => {
     case DELETE_PET:
       return {
         ...state,
-        allPets: state.allPets.filter((pet) => pet.id !== action.payload),
+        allPets: action.payload.allPets,
+        userPets: action.payload.userPets
       };
     case FILTER_ADOPTION_VALUES:
       let all;

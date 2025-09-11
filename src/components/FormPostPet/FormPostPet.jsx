@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { ErrorForm, SuccedForm } from "./AlertForm/AlertForm";
-import "./FormPostPet.css";
 import {
   Flex,
   Box,
@@ -13,17 +13,18 @@ import {
   Text,
   Icon,
 } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
 import { postOrUpdatePet } from "../../redux/Actions/petActions";
 import { SelectField, selectConfigs } from "./FormFields/SelectField";
 import { InputField, inputConfigs } from "./FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
-import { resetForm } from "utils/formUtils";
-import { usePetForm } from "utils/hooks/usePetForm";
+import { resetForm } from "utils/formValidations/profileForm";
+import { usePetForm } from "utils/hooks/pet/usePetForm";
 
-export default function FormPostPet({ isUpdating }) {
+export default function FormPostPet({ isUpdating, userRole }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const pageParam = parseInt(searchParams.get("page")) || 1;
 
   const paramsId = useParams().id;
 
@@ -45,7 +46,8 @@ export default function FormPostPet({ isUpdating }) {
 
   // Hook
   usePetForm(paramsId, initialInputState, setInput, isUpdating);
-  const handlerChange = (e) => {
+
+  const handleChange = (e) => {
     e.preventDefault();
 
     const { name, value } = e.target;
@@ -74,37 +76,39 @@ export default function FormPostPet({ isUpdating }) {
       setInfoSend(false);
       return;
     }
-    if (isUpdating !== "update") {
+    if (isUpdating !== true) {
       dispatch(postOrUpdatePet(input));
       setIsIncomplete(false);
       setInfoSend(true);
       resetForm(setInput, setInputError, initialInputState);
-      navigate("/myPets");
+      navigate("/account/myPets");
     } else {
       dispatch(postOrUpdatePet(input, isUpdating, paramsId.id));
       setIsIncomplete(false);
       setInfoSend(true);
-      resetForm(setInput, setInputError, initialInputState);
+      // resetForm(setInput, setInputError, initialInputState);
     }
   };
 
   return (
     <Box>
+      {userRole === "admin" && (
+        <Text color="gray.500" fontSize="sm" textAlign={"center"}>
+          Editando como administrador
+        </Text>
+      )}
       {isIncomplete ? <ErrorForm /> : null}
       {infoSend ? <SuccedForm /> : null}
       <form onSubmit={(e) => handlerSubmit(e)} id="myForm">
-        <Flex
-          minH={"100%"}
-          align={"center"}
-          justify={"center"}
-        //   bg="brand.green.200"
-        >
+        <Flex minH={"100%"} align={"center"} justify={"center"}>
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
             <Stack align={"center"}>
-              <Heading fontSize={"4xl"} textAlign={"center"}>
-                {isUpdating === "update"
-                  ? "Editá la mascota"
-                  : "Registrar mascota"}
+              <Heading fontSize={"2xl"} textAlign={"center"}>
+                {isUpdating
+                  ? userRole === "admin"
+                    ? "Editar mascota del usuario"
+                    : "Editar mi mascota"
+                  : "Publicar"}
               </Heading>
               <Text fontSize={"lg"} color={"gray.600"}>
                 ¡Gracias por cuidar a los animales!
@@ -119,7 +123,7 @@ export default function FormPostPet({ isUpdating }) {
                       {...cfg}
                       value={input[cfg.name]}
                       error={inputError[cfg.name]}
-                      onChange={handlerChange}
+                      onChange={handleChange}
                     />
                   ))}
                 </HStack>
@@ -130,7 +134,7 @@ export default function FormPostPet({ isUpdating }) {
                     {...cfg}
                     value={input[cfg.name]}
                     error={inputError[cfg.name]}
-                    onChange={handlerChange}
+                    onChange={handleChange}
                   />
                 ))}
 
@@ -140,48 +144,36 @@ export default function FormPostPet({ isUpdating }) {
                     {...cfg}
                     value={input[cfg.name]}
                     error={inputError[cfg.name]}
-                    onChange={handlerChange}
+                    onChange={handleChange}
                   />
                 ))}
 
                 <Button
-                  onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
-                  loadingText="Post or Edit"
-                  fontFamily={"body"}
-                  size="lg"
+                  type="submit"
                   bg={"orange.300"}
                   color={"white"}
                   _hover={{
                     bg: "orange.400",
                   }}
+                  onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
                 >
-                  {isUpdating === "update" ? "Modificar" : "Publicar"}
+                  {isUpdating ? "Actualizar" : "Publicar"}
                 </Button>
               </Stack>
             </Box>
-            <Link to={"/"}>
-              <Icon
-                as={MdArrowBackIosNew}
-                color="orange.400"
-                boxSize={5}
-                _hover={{
-                  color: "grey",
-                  boxSize: "7",
-                }}
-              />
-              <Button
-                fontFamily={"body"}
-                bg="base.green.100"
-                color={"grey"}
-                _hover={{
-                  color: "orange.400",
-                }}
-                p="0"
-                mr="1rem"
-              >
-                Atrás
-              </Button>
-            </Link>
+            <Button
+              leftIcon={<Icon as={MdArrowBackIosNew} />}
+              onClick={() => {
+                navigate(`/account/myPets?page=${pageParam}`);
+              }}
+              bg="base.green.100"
+              color={"grey"}
+              _hover={{
+                color: "orange.400",
+              }}
+            >
+              Atrás
+            </Button>
           </Stack>
         </Flex>
       </form>

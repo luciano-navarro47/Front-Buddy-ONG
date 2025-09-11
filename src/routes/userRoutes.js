@@ -2,16 +2,15 @@ import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
 import FormPostPet from "../components/FormPostPet/FormPostPet";
 import FormPostUser from "../components/FormPostUser/FormPostUser";
-import MyPets from "../components/MyPets/MyPets";
-import AccountLayout from "components/Account/AccountLayout";
+import MyPetsList from "components/account/pets/MyPetsList";
+import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
+import ProfileForm from "components/account/profile/ProfileForm";
 
 export const userRoutes = ({
   user,
   setUser,
   handleLogout,
-  // isAuthenticated,
-  // loginWithRedirect,
 }) => [
   // Only to registered users
   {
@@ -31,14 +30,6 @@ export const userRoutes = ({
     ),
   },
   {
-    path: "/myPets",
-    element: (
-      <PrivateRoute roles={["user", "admin"]}>
-        <MyPets user={user} setUser={setUser} />
-      </PrivateRoute>
-    ),
-  },
-  {
     path: "/account",
     element: (
       <PrivateRoute roles={["user", "admin"]}>
@@ -51,40 +42,18 @@ export const userRoutes = ({
     ),
     children: [
       // Redirect to profile from /account
-      { index: true, element: <FormPostUser user={user} setUser={setUser} /> },
+      { index: true, element: <ProfileForm user={user} setUser={setUser} /> },
 
       // Common user section
-      { path: "pets", element: <MyPets user={user} /> },
+      { path: "myPets", element: <MyPetsList user={user} /> },
+      {
+        path: "myPets/:id",
+        element: <FormPostPet isUpdating={true} userRole={user?.role} />,
+      },
       {
         path: "profile",
-        element: <FormPostUser user={user} setUser={setUser} />,
+        element: <ProfileForm user={user} setUser={setUser} />,
       },
-
-      // // Admin section
-      // {
-      //   path: "users",
-      //   element: (
-      //     <PrivateRoute roles={["user", "admin"]}>
-      //       <Users />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "users/banned",
-      //   element: (
-      //     <PrivateRoute roles={["admin"]}>
-      //       <BannedUsers />
-      //     </PrivateRoute>
-      //   ),
-      // },
-      // {
-      //   path: "products",
-      //   element: (
-      //     <PrivateRoute roles={["admin"]}>
-      //       <Products />
-      //     </PrivateRoute>
-      //   ),
-      // },
       {
         path: "veterinaries",
         element: (
@@ -92,6 +61,10 @@ export const userRoutes = ({
             <Veterinaries />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "*",
+        element: <div>No match for nested route</div>,
       },
     ],
   },

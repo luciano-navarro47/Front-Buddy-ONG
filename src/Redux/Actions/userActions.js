@@ -13,7 +13,7 @@ import { setAccessToken } from "./auth";
 export const getAllUsers = () => {
   return async function (dispatch) {
     try {
-      const json = await axios.get("http://localhost:3001/user");
+      const json = await axios.get(`${HOST}/user`);
       return dispatch({
         type: GET_ALL_USERS,
         payload: json.data,
@@ -64,29 +64,26 @@ export const postUser = (user) => {
   };
 };
 
-export const updateUser = (userID, formInput) => {
+export const updateUser = (userId, formInput) => {
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/users/${userID}`, formInput);
+      await axios.put(`${HOST}/user/${userId}`, formInput);
 
       dispatch({
         type: UPDATE_USER,
       });
     } catch (error) {
-      console.log("Action updateUSER", userID, formInput);
+      console.log("Something went wrong: ", error);
     }
   };
 };
 
-export const getUserId = (id) => {
+export const getUserById = (id) => {
   return async function (dispatch) {
-    if (!id) {
-      console.warn("getUserId was called without an valid Id");
-      return;
-    }
+    if (!id) return;
     try {
-      const json = await axios.get(`http://localhost:3001/users/${id}`);
-      return dispatch({ type: GET_USER_ID, payload: json.data });
+      const userInfo = await axios.get(`${HOST}/user/${id}`);
+      dispatch({ type: GET_USER_ID, payload: userInfo.data[0] });
     } catch (error) {
       console.log(error);
     }
@@ -106,10 +103,10 @@ export const setUserState = (userData) => {
   };
 };
 
-export function setStatusUser(id) {
+export function bulkSetStatusUser(changesArray) {
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/user/setStatusUser/${id}`);
+      await axios.put(`${HOST}/user/bulk-set-status`, changesArray);
       const updatedUsers = await axios.get(`${HOST}/user`);
       dispatch({
         type: GET_ALL_USERS,
@@ -142,6 +139,17 @@ export function checkUsernameAvailability(username) {
   };
 }
 
+export function checkUserPassword(userId, currentPassword) {
+  return async function () {
+    const response = await axios.post(`${HOST}/user/check-password`, {
+      userId,
+      currentPassword,
+    });
+
+    return response.data.ok;
+  };
+}
+
 export const loginUser = async (
   userData,
   dispatch,
@@ -166,7 +174,7 @@ const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
   dispatch(setUserState(data.user));
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
   setUser(data.user);
-  
+
   navigate("/");
 };
 

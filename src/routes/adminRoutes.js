@@ -1,52 +1,56 @@
 import React from "react";
+import AccountLayout from "components/account/AccountLayout";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
-import DashboardAdmin from "../components/DashboardAdmin/DashboardAdmin/DashboardAdmin";
-import FormPostProduct from "../components/DashboardAdmin/Dashboard/FormPostProduct";
-import FormAffiliateVets from "../components/DashboardAdmin/Dashboard/FormAffiliateVets";
+import { UsersTable } from "components/account/admin/users/UsersTable";
+import { PetsTable } from "components/account/admin/pets/PetsTable";
+import { ProductsTable } from "components/account/admin/products/ProductsTable";
+import { VeterinariesTable } from "components/account/admin/veterinaries/VeterinariesTable";
 
-export const adminRoutes = ({
-  user,
-  setUser,
-  closeSession,
-  isAuthenticated,
-  loginWithRedirect,
-}) => [
+export const adminRoutes = ({ user, setUser, handleLogout }) => [
   {
-    path: "/dashboard",
+    path: "/account",
     element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <DashboardAdmin
+      <PrivateRoute roles={["admin"]}>
+        <AccountLayout
           user={user}
           setUser={setUser}
-          closeSession={closeSession}
-          isAuthenticated={isAuthenticated}
-          loginWithRedirect={loginWithRedirect}
+          handleLogout={handleLogout}
         />
       </PrivateRoute>
     ),
+    children: [
+      {
+        path: "manageUsers",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <UsersTable />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "managePets",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <PetsTable />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manageProducts",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <ProductsTable />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "manageVets",
+        element: (
+          <PrivateRoute roles={["admin"]}>
+            <VeterinariesTable />
+          </PrivateRoute>
+        ),
+      },
+    ],
   },
-  {
-    path: "/dashboard/createProduct",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormPostProduct />
-      </PrivateRoute>
-    )
-  },
-  {
-    path: "/dashboard/updateProduct/:id",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormPostProduct />
-      </PrivateRoute>
-    )
-  },
-  {
-    path: "/dashboard/createVet",
-    element: (
-      <PrivateRoute roles={["admin"]} redirectPath="/">
-        <FormAffiliateVets/>
-      </PrivateRoute>
-    )
-  }
 ];

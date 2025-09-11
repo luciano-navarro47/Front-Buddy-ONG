@@ -9,7 +9,6 @@ import petReducer  from "../Reducer/pets";
 import vetsReducer from "../Reducer/vets";
 
 const rootReducer = combineReducers({
-	// root: RootReducer,
 	auth: authReducer,
 	pets: petReducer,
 	products: productReducer,

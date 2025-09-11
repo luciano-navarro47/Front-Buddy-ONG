@@ -1,24 +1,30 @@
+import { ReactReduxContext } from "react-redux";
 import {
+  CLEAR_PRODUCT,
   GET_ALL_PRODUCTS,
-  GET_PRODUCT_DETAIL,
+  GET_PRODUCT,
   POST_PRODUCT,
   UPDATE_PRODUCT,
   SHOP_FILTER_VALUE,
   SHOP_SEARCH_INPUT_NAME,
 } from "../../redux/ActionTypes";
-// import { header } from "../../utils";
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
+
+export const clearProduct = () => ({
+  type: "CLEAR_PRODUCT",
+});
 
 export function getAllProducts() {
   return async function (dispatch) {
     try {
-      const allProducts = await axios.get(`${API_URL}/products`);
+      const { data } = await axios.get(`${API_URL}/products`);
 
-      return dispatch({
+      dispatch({
         type: GET_ALL_PRODUCTS,
-        payload: allProducts.data,
+        payload: data,
       });
+      return data;
     } catch (error) {
       console.log(error);
     }
@@ -27,16 +33,22 @@ export function getAllProducts() {
 export function postOrUpdateProduct(formInput, value, id) {
   return async function (dispatch) {
     try {
-      if (value === undefined) {
-        await axios.post(`${API_URL}/products`, formInput);
+      if (value === undefined && id === undefined) {
+        const { data } = await axios.post(`${API_URL}/products`, formInput, {
+          withCredentials: true,
+        });
         return dispatch({
           type: POST_PRODUCT,
+          payload: data,
         });
       } else {
-        // console.log("FORM INPUT: ", formInput);
-        await axios.put(`${API_URL}/products/${id}`, formInput);
-        dispatch({
+        const { data } = await axios.put(
+          `${API_URL}/products/${id}`,
+          formInput
+        );
+        return dispatch({
           type: UPDATE_PRODUCT,
+          payload: data,
         });
       }
     } catch (error) {
@@ -52,7 +64,7 @@ export function getProductDetail(obj) {
       productDetail.data[0].handlerSetCart = obj.handlerSetCart;
       productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
       return dispatch({
-        type: GET_PRODUCT_DETAIL,
+        type: GET_PRODUCT,
         payload: productDetail.data,
       });
     } catch (error) {
@@ -61,28 +73,33 @@ export function getProductDetail(obj) {
   };
 }
 
-export function getProductDetailAdmin(id) {
+export function getProductDescription(id) {
   return async function (dispatch) {
     try {
-      const productDetail = await axios.get(`${API_URL}/products/${id}`);
+      const { data } = await axios.get(`${API_URL}/products/${id}`);
       return dispatch({
-        type: GET_PRODUCT_DETAIL,
-        payload: productDetail.data,
+        type: GET_PRODUCT,
+        payload: data,
       });
     } catch (error) {
       console.log(error);
+      throw error;
     }
   };
 }
 
-export function deleteProductAdmin(id) {
+export function deleteProducts(idsToDelete) {
   return async function (dispatch) {
     try {
-      await axios.delete(`${API_URL}/products/${id}`);
-      const json = await axios.get(`http://localhost:3001/products`);
+      await axios.delete(`${API_URL}/products/bulk-delete-products`, {
+        data: { idsToDelete },
+      });
+      const { data: allProducts } = await axios.get(
+        `http://localhost:3001/products`
+      );
       return dispatch({
         type: GET_ALL_PRODUCTS,
-        payload: json.data,
+        payload: allProducts,
       });
     } catch (error) {
       console.log(error.message);

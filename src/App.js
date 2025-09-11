@@ -11,7 +11,7 @@ import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 import NotFound from "./components/NotFound/NotFound";
 import { Layout } from "./components/Layout";
-import EmailFallBackModal from "./components/Modal/EmailFallbackModal";
+import EmailModal from "./components/Modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
@@ -80,7 +80,7 @@ export const App = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (user) return; 
+    if (user) return;
     if (!auth0User) {
       setIsUserLoading(false);
       return;
@@ -120,19 +120,22 @@ export const App = () => {
 
   return (
     <>
-      <EmailFallBackModal
+      <EmailModal
         isOpen={isWaitingEmail}
-        onClose={() => setIsWaitingEmail(false)}
-        onSave={(email) => {
-          const completeUser = {
-            ...pendingAuth0User,
-            email,
-          };
-
-          const normalizedUser = normalizeAuth0User(completeUser);
-          handleUserFlow(normalizedUser);
-          setPendingAuth0User(null);
+        onClose={() => {
           setIsWaitingEmail(false);
+          setPendingAuth0User(null);
+        }}
+        onSave={async (email) => {
+          try {
+            const completeUser = { ...pendingAuth0User, email };
+            const normalizedUser = normalizeAuth0User(completeUser);
+            await handleUserFlow(normalizedUser);
+            setPendingAuth0User(null);
+            setIsWaitingEmail(false);
+          } catch (error) {
+            console.error("No se pudo completar el registro: ", error);
+          }
         }}
       />
       <Routes>
@@ -142,8 +145,17 @@ export const App = () => {
             ...userRoutes(routeProps),
             ...adminRoutes(routeProps),
             ...publicRoutes(routeProps),
-          ].map(({ path, element }, idx) => (
-            <Route key={idx} path={path} element={element} />
+          ].map((route, idx) => (
+            <Route key={idx} path={route.path} element={route.element}>
+              {route.children?.map((child, cidx) => (
+                <Route
+                  key={`${idx}-${cidx}`}
+                  path={child.path}
+                  index={child.index}
+                  element={child.element}
+                />
+              ))}
+            </Route>
           ))}
         </Route>
         <Route path="*" element={<NotFound />} />
