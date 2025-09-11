@@ -11,14 +11,17 @@ export const PrivateRoute = ({
   const dispatch = useDispatch();
   const { token, expiresAt } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.user.role);
+
+  const now = Math.floor(Date.now() / 1000);
+  const expNum = expiresAt ? Number(expiresAt) : null;
   const isAuthenticated = Boolean(token && Date.now() / 1000 < expiresAt);
   const isAuthorized = roles.length === 0 || roles.includes(userRole);
 
   useEffect(() => {
-    if (token && !isAuthenticated) {
+    if (token && expNum && now >= expNum) {
       dispatch(logout());
     }
-  }, [token, isAuthenticated, dispatch]);
+  }, [token, expNum, now, dispatch]);
 
   if (!isAuthenticated || !isAuthorized) {
     return <Navigate to={redirectPath} replace />;

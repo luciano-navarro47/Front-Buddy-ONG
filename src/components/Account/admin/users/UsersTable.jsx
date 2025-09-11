@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
-  Box,
   Flex,
   Select,
   Tooltip,
@@ -16,9 +15,10 @@ import DataTable from "../../common/table/DataTable";
 import { bulkSetStatusUser, getAllUsers } from "redux/Actions/userActions";
 import ActionPill from "components/account/common/buttons/ActionPill";
 
-export function UsersTable() {
+export function UsersTable(user) {
   const dispatch = useDispatch();
   const toast = useToast();
+  const userRole = user.user.role;
   const users = useSelector((s) => s.users);
 
   const showCustomerColumn = users.some((u) => u.customer != null);
@@ -44,6 +44,7 @@ export function UsersTable() {
     if (changesArray.length === 0) return;
 
     try {
+      if (userRole !== "admin") throw new Error();
       dispatch(bulkSetStatusUser(changesArray));
       toast({
         title: "Cambios guardados",
@@ -54,13 +55,13 @@ export function UsersTable() {
       });
 
       setPendingChanges({});
-      dispatch(getAllUsers());
     } catch (error) {
       console.error(error);
       toast({
         title: "Error",
-        description: "No se pudieron guardar los cambios.",
-        status: "error",
+        description:
+          "Modo demo-admin activado. No se pudieron guardar los cambios.",
+        status: "info",
         duration: 3000,
         isClosable: true,
       });
@@ -179,23 +180,22 @@ export function UsersTable() {
         message={`¿Estás seguro/a de aplicar todos los cambios realizados?\n\nEsta acción no se puede deshacer.`}
         onConfirm={() => handleSave()}
       />
-        <ActionPill colorScheme="orange" count={users.length}>
-          <strong>Usuarios:</strong>
-        </ActionPill>
-      <Flex justify="flex-end" mb={6} mr={8}>
-        <Button
-          colorScheme="teal"
-          onClick={onOpen}
-          isDisabled={!hasChanges}
-          whiteSpace="normal"
-          textAlign="center"
-          boxShadow="sm"
-          w={{ base: "100%", sm: "auto" }}
-          fontSize={{ base: "xs", sm: "md" }}
-        >
-          Aplicar ({changesArray.length})
-        </Button>
-      </Flex>
+      <ActionPill colorScheme="orange" count={users.length}>
+        <strong>Usuarios:</strong>
+      </ActionPill>
+      <Button
+        colorScheme="teal"
+        onClick={onOpen}
+        isDisabled={!hasChanges}
+        whiteSpace="normal"
+        textAlign="center"
+        boxShadow="sm"
+        w={{ base: "100%", sm: "auto" }}
+        fontSize={{ base: "xs", sm: "md" }}
+        mb={6}
+      >
+        Aplicar ({changesArray.length})
+      </Button>
 
       <DataTable columns={columns} data={users} rowKey="id" />
     </>

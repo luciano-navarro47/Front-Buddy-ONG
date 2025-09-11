@@ -17,6 +17,8 @@ import {
   postUser,
   setUserState,
 } from "./redux/Actions/userActions";
+import { jwtDecode } from "jwt-decode";
+import { isTokenValid } from "utils/auth";
 
 export const App = () => {
   const dispatch = useDispatch();
@@ -66,17 +68,36 @@ export const App = () => {
   );
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
-    const storedToken = localStorage.getItem("token");
+    const initFromStorage = async () => {
+      const storedToken = localStorage.getItem("token");
+      const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
 
-    if (storedToken) dispatch(setAccessToken(storedToken));
-    if (storedUser) {
-      setUser(storedUser);
-      dispatch(setUserState(storedUser));
-      setIsUserLoading(false);
-    } else {
-      setIsUserLoading(true);
-    }
+      if (storedToken) {
+        try {
+          if (isTokenValid(storedToken)) {
+            dispatch(setAccessToken(storedToken));
+          } else {
+            dispatch(logoutAction());
+            return;
+          }
+        } catch (error) {
+          console.error("Invalid token in storage: ", error);
+          dispatch(logoutAction());
+          return;
+        }
+        dispatch(setAccessToken(storedToken));
+      }
+
+      if (storedUser) {
+        setUser(storedUser);
+        dispatch(setUserState(storedUser));
+        setIsUserLoading(false);
+      } else {
+        setIsUserLoading(true);
+      }
+    };
+
+    initFromStorage();
   }, [dispatch]);
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
+import ActionPill from "components/account/common/buttons/ActionPill";
 import { getPets } from "redux/Actions/petActions";
 
 export function PetsTable() {
@@ -246,6 +247,9 @@ export function PetsTable() {
         title="Gestionar mascotas publicadas"
         subtitle="Tabla con información básica de las mascotas publicadas por los usuarios."
       />
+      <ActionPill colorScheme="orange" count={pets.length}>
+        <strong>Publicados:</strong>
+      </ActionPill>
       <DataTable columns={columns} data={pets} rowKey="id" />
     </>
   );

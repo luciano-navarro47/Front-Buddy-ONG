@@ -7,12 +7,13 @@ export const setAccessToken = (token) => async (dispatch) => {
       return console.warn("Token not provided");
     }
     const decoded = jwtDecode(token);
+    const exp = Number(decoded.exp);
     dispatch({
       type: SET_TOKEN,
-      payload: { token: token, exp: decoded.exp },
+      payload: { token, exp },
     });
   } catch (error) {
-    console.error({ error: error.message });
+    console.error({ message: "setAccessToken error: ", error });
   }
 };
 

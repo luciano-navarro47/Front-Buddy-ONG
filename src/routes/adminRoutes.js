@@ -10,7 +10,7 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
   {
     path: "/account",
     element: (
-      <PrivateRoute roles={["admin"]}>
+      <PrivateRoute roles={["admin", "user"]}>
         <AccountLayout
           user={user}
           setUser={setUser}
@@ -22,15 +22,15 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
       {
         path: "manageUsers",
         element: (
-          <PrivateRoute roles={["admin"]}>
-            <UsersTable />
+          <PrivateRoute roles={["admin", "user"]}>
+            <UsersTable user={user} />
           </PrivateRoute>
         ),
       },
       {
         path: "managePets",
         element: (
-          <PrivateRoute roles={["admin"]}>
+          <PrivateRoute roles={["admin", "user"]}>
             <PetsTable />
           </PrivateRoute>
         ),
@@ -38,15 +38,15 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
       {
         path: "manageProducts",
         element: (
-          <PrivateRoute roles={["admin"]}>
-            <ProductsTable />
+          <PrivateRoute roles={["admin", "user"]}>
+            <ProductsTable user={user} />
           </PrivateRoute>
         ),
       },
       {
         path: "manageVets",
         element: (
-          <PrivateRoute roles={["admin"]}>
+          <PrivateRoute roles={["admin", "user"]}>
             <VeterinariesTable />
           </PrivateRoute>
         ),

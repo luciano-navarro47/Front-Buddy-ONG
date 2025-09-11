@@ -33,7 +33,7 @@ export default function ActionPill({
 }) {
   const defaultBg =
     bg || (colorScheme === "orange" ? "orange.100" : `${colorScheme}.100`);
-  const hoverBg = useColorModeValue("gray.100", "gray.700");
+  const hoverBg = useColorModeValue("orange.200", "gray.700");
 
   const content = (
     <HStack spacing={1} px={1} py={1} borderRadius="md">

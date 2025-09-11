@@ -5,13 +5,15 @@ import {
   InputLeftElement,
   InputRightElement,
   Spinner,
+  useToast,
 } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 import { useDispatch } from "react-redux";
 import { postOrUpdateProduct } from "redux/Actions/productActions";
 
-function PriceCell({ row }) {
+function PriceCell({ row, userRole }) {
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const [status, setStatus] = useState("idle"); // idle | loading | success
   const [price, setPrice] = useState(Math.round(row.price));
@@ -29,6 +31,17 @@ function PriceCell({ row }) {
   const handleBlur = async () => {
     if (price !== originalPrice) {
       try {
+        if (userRole !== "admin") {
+          setPrice(originalPrice);
+          return toast({
+            title: "INFO",
+            status: "info",
+            description:
+              "Modo demo-admin activado. No puedes cambiar el precio de los productos.",
+            duration: 2000,
+            isClosable: true,
+          });
+        }
         setStatus("loading");
         await dispatch(postOrUpdateProduct({ ...row, price }, price, row.id));
         setStatus("success");
