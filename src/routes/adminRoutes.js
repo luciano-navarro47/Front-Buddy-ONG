@@ -23,7 +23,7 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
         path: "manageUsers",
         element: (
           <PrivateRoute roles={["admin", "user"]}>
-            <UsersTable />
+            <UsersTable user={user} />
           </PrivateRoute>
         ),
       },
@@ -39,7 +39,7 @@ export const adminRoutes = ({ user, setUser, handleLogout }) => [
         path: "manageProducts",
         element: (
           <PrivateRoute roles={["admin", "user"]}>
-            <ProductsTable />
+            <ProductsTable user={user} />
           </PrivateRoute>
         ),
       },

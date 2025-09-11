@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
+import {
+  Flex,
+  Image,
+  Text,
+  Tooltip,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import { AddIcon, CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
 import ImageGalleryModal from "components/Modal/ImageGalleryModal";
@@ -19,9 +26,11 @@ import {
 } from "redux/Actions/productActions";
 import { useSelection, makeSelectColumn } from "utils/hooks/useSelection";
 
-export function ProductsTable() {
+export function ProductsTable(user) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toast = useToast();
+  const userRole = user.user?.role;
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const products = useSelector((s) => s.products.allProducts);
@@ -52,9 +61,25 @@ export function ProductsTable() {
   const handleDeleteSelected = () => {
     const idsToDelete = selection.selectedArray;
     if (idsToDelete.length === 0) return;
+    if (userRole !== "admin") {
+      return toast({
+        title: "Error",
+        description:
+          "Modo demo-admin activado. No se pudieron borrar los productos.",
+        status: "info",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
 
     dispatch(deleteProducts(idsToDelete));
-
+    toast({
+      title: "¡Hecho!",
+      description: "Se borraron uno o más productos correctamente.",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
     selection.clear();
   };
 
@@ -190,7 +215,7 @@ export function ProductsTable() {
         key: "price",
         header: "PRECIO",
         initialWidth: 100,
-        renderCell: (_, row) => <PriceCell row={row} />,
+        renderCell: (_, row) => <PriceCell row={row} userRole={userRole} />,
       },
       {
         key: "stock",
@@ -267,7 +292,7 @@ export function ProductsTable() {
         </ActionPill>
 
         <ActionPill
-          icon={<AddIcon boxSize={4} ml={0.5} color="white" />}
+          icon={<AddIcon boxSize={4} ml={0.5} color="blackAlpha.600" />}
           onClick={() => {
             dispatch(clearProduct());
             setSelectedProductId(null);
@@ -300,6 +325,7 @@ export function ProductsTable() {
           mode={formMode}
           onSuccess={handleSuccess}
           onCancel={onCloseForm}
+          userRole={userRole}
         />
       </ReusableFormModal>
     </>

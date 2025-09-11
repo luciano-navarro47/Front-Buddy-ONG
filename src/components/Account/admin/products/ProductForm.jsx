@@ -29,10 +29,10 @@ export default function ProductForm({
   mode = "create",
   onSuccess,
   onCancel,
+  userRole,
 }) {
-  
   const dispatch = useDispatch();
-  const toast = useToast();
+  const toast = useToast(); 
 
   const product = useSelector((state) => state.products.product);
   const [loadingProduct, setLoadingProduct] = useState(mode);
@@ -100,6 +100,16 @@ export default function ProductForm({
     ) {
       setIsIncomplete(true);
       return;
+    }
+
+    if (userRole !== "admin") {
+      return toast({
+        title: "Error",
+        status: "info",
+        description: "Modo demo-admin activado. No se pueden crear productos.",
+        duration: 2000,
+        isClosable: true,
+      });
     }
 
     if (mode === "create") {
@@ -221,7 +231,12 @@ export default function ProductForm({
               Cancelar
             </Button>
           )}
-          <Button type="submit" colorScheme="orange" onClick={handleSubmit} isDisabled={input.images.length === 0}>
+          <Button
+            type="submit"
+            colorScheme="orange"
+            onClick={handleSubmit}
+            isDisabled={input.images.length === 0}
+          >
             {mode === "create" ? "Publicar producto" : "Actualizar"}
           </Button>
         </Stack>
