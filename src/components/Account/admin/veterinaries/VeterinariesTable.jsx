@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-//   Button,
+  //   Button,
   //   Box,
   Flex,
   Image,
+  Link,
   //   Select,
   Tooltip,
   //   useToast,
@@ -158,11 +159,11 @@ export function VeterinariesTable() {
     { key: "address", header: "Calles", initialWidth: 100 },
     {
       key: "location",
-      header: "Latitud/Longitud",
-      initialWidth: 100,
+      header: "MAPA ",
+      initialWidth: 75,
       renderCell: (value) => (
-        <Flex align="center">
-          <Tooltip
+        <Flex align="center" justify="center">
+          {/* <Tooltip
             label="Copiado"
             placement="top"
             hasArrow
@@ -176,8 +177,18 @@ export function VeterinariesTable() {
               color={copiedValue === value ? "orange" : "black"}
               onClick={() => handleCopy(value)}
             />
-          </Tooltip>
-          {value}
+          </Tooltip> */}
+          <Link
+            pl={2}
+            href={`https://www.google.com/maps?q=${value}`}
+            color="blue.500"
+            textDecoration="underline"
+            fontWeight="bold"
+            _hover={{ color: "blue.600" }}
+            isExternal
+          >
+            Ver
+          </Link>
         </Flex>
       ),
     },
@@ -208,15 +219,16 @@ export function VeterinariesTable() {
     },
     {
       key: "url",
-      header: "Visitar",
-      initialWidth: 25,
+      header: "Visitar Perfil",
+      initialWidth: 75,
       renderCell: (_, row) => (
         <ExternalLinkIcon
           cursor="pointer"
-          boxSize={6}
-          color="gray.500"
+          boxSize={5}
+          color="blackAlpha.800"
+          fontWeight="black"
           onClick={() => navigate(`/veterinary/detail/${row.id}`)}
-          _hover={{ color: "orange", boxSize: "1.6rem" }}
+          _hover={{ color: "orange" }}
         />
       ),
     },
