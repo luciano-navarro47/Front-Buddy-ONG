@@ -44,7 +44,7 @@ const Login = ({
     }
   };
 
-  if (isAuthenticated || (user && Object.keys(user).length > 0)) {
+  if (isAuthenticated) {
     return (
       <Box display="flex" flexDirection="column">
         <Button

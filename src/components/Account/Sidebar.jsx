@@ -67,7 +67,7 @@ export default function Sidebar({ user, handleLogout }) {
       <Box flex="1" overflowY="auto">
         {baseLinks.map(renderLink)}
 
-        {user?.role === "admin" && (
+        {(user?.role === "admin" || user?.role === "user") && (
           <>
             <Text pt={4} pb={1} pl={3} fontSize="sm" color="gray.500">
               Panel Administrador

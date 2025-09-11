@@ -21,14 +21,14 @@ export const userRoutes = ({
       </PrivateRoute>
     ),
   },
-  {
-    path: "/updateUser",
-    element: (
-      <PrivateRoute roles={["user", "admin"]}>
-        <FormPostUser />
-      </PrivateRoute>
-    ),
-  },
+  // {
+  //   path: "/updateUser",
+  //   element: (
+  //     <PrivateRoute roles={["user", "admin"]}>
+  //       <FormPostUser />
+  //     </PrivateRoute>
+  //   ),
+  // },
   {
     path: "/account",
     element: (
