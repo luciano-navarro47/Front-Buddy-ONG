@@ -17,7 +17,6 @@ import {
   postUser,
   setUserState,
 } from "./redux/Actions/userActions";
-import { jwtDecode } from "jwt-decode";
 import { isTokenValid } from "utils/auth";
 
 export const App = () => {
