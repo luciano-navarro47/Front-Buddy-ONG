@@ -1,4 +1,3 @@
-import { ReactReduxContext } from "react-redux";
 import {
   CLEAR_PRODUCT,
   GET_ALL_PRODUCTS,
@@ -12,7 +11,7 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const clearProduct = () => ({
-  type: "CLEAR_PRODUCT",
+  type: CLEAR_PRODUCT,
 });
 
 export function getAllProducts() {
@@ -94,9 +93,7 @@ export function deleteProducts(idsToDelete) {
       await axios.delete(`${API_URL}/products/bulk-delete-products`, {
         data: { idsToDelete },
       });
-      const { data: allProducts } = await axios.get(
-        `http://localhost:3001/products`
-      );
+      const { data: allProducts } = await axios.get(`${API_URL}/products`);
       return dispatch({
         type: GET_ALL_PRODUCTS,
         payload: allProducts,

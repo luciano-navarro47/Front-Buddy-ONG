@@ -6,14 +6,13 @@ import {
 } from "../ActionTypes";
 import { 
   HOST,
-  // header
 } from "../../utils";
 import axios from "axios";
 
 export function getAllVeterinaries() {
   return async function (dispatch) {
     try {
-      const response = await axios.get("http://localhost:3001/veterinary");
+      const response = await axios.get(`${HOST}/veterinary`);
       return dispatch({
         type: GET_VETERINARIES,
         payload: response.data,
