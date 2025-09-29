@@ -6,14 +6,15 @@ import {
   UPDATE_USER,
   SET_USER,
 } from "../ActionTypes";
-import { HOST } from "../../utils";
 import axios from "axios";
 import { setAccessToken } from "./auth";
+
+const API_URL = process.env.REACT_APP_API_URL;
 
 export const getAllUsers = () => {
   return async function (dispatch) {
     try {
-      const json = await axios.get(`${HOST}/user`);
+      const json = await axios.get(`${API_URL}/user`);
       return dispatch({
         type: GET_ALL_USERS,
         payload: json.data,
@@ -28,7 +29,7 @@ export const fetchAuth0User = (auth0Sub) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${HOST}/user/oauth-user?id=${auth0Sub}`
+        `${API_URL}/user/oauth-user?id=${auth0Sub}`
       );
       const existingUser = response.data.user;
       dispatch({
@@ -48,9 +49,9 @@ export const postUser = (user) => {
       let response;
       // Auth0Sub: provided by OAuth service
       if (user.auth0Sub) {
-        response = await axios.post(`${HOST}/user/oauth-upsert`, user);
+        response = await axios.post(`${API_URL}/user/oauth-upsert`, user);
       } else {
-        response = await axios.post(`${HOST}/user/register`, user);
+        response = await axios.post(`${API_URL}/user/register`, user);
       }
       const savedUser = response.data;
       dispatch({
@@ -67,7 +68,7 @@ export const postUser = (user) => {
 export const updateUser = (userId, formInput) => {
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/user/${userId}`, formInput);
+      await axios.put(`${API_URL}/user/${userId}`, formInput);
 
       dispatch({
         type: UPDATE_USER,
@@ -82,7 +83,7 @@ export const getUserById = (id) => {
   return async function (dispatch) {
     if (!id) return;
     try {
-      const userInfo = await axios.get(`${HOST}/user/${id}`);
+      const userInfo = await axios.get(`${API_URL}/user/${id}`);
       dispatch({ type: GET_USER_ID, payload: userInfo.data[0] });
     } catch (error) {
       console.log(error);
@@ -106,8 +107,8 @@ export const setUserState = (userData) => {
 export function bulkSetStatusUser(changesArray) {
   return async function (dispatch) {
     try {
-      await axios.put(`${HOST}/user/bulk-set-status`, changesArray);
-      const updatedUsers = await axios.get(`${HOST}/user`);
+      await axios.put(`${API_URL}/user/bulk-set-status`, changesArray);
+      const updatedUsers = await axios.get(`${API_URL}/user`);
       dispatch({
         type: GET_ALL_USERS,
         payload: updatedUsers.data,
@@ -122,7 +123,7 @@ export function checkUsernameAvailability(username) {
   return async function (dispatch) {
     try {
       const response = await axios.get(
-        `${HOST}/users/check-username?username=${username}`,
+        `${API_URL}/users/check-username?username=${username}`,
         {
           headers: { "Cache-control": "no-cache" },
         }
@@ -141,7 +142,7 @@ export function checkUsernameAvailability(username) {
 
 export function checkUserPassword(userId, currentPassword) {
   return async function () {
-    const response = await axios.post(`${HOST}/user/check-password`, {
+    const response = await axios.post(`${API_URL}/user/check-password`, {
       userId,
       currentPassword,
     });
@@ -158,7 +159,7 @@ export const loginUser = async (
   navigate
 ) => {
   try {
-    const response = await axios.post(`${HOST}/login`, userData, {
+    const response = await axios.post(`${API_URL}/login`, userData, {
       withCredentials: true,
     });
     handleSuccessfulLogin(response.data, dispatch, setUser, navigate);

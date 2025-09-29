@@ -7,9 +7,10 @@ import ShopNavbar from "./ShopNavbar/ShopNavbar";
 import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
 import Pagination from "../Pagination/Pagination";
 
-export default function Shop({ handleSetUserFlag }) {
+export default function Shop() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products);
+  const products = useSelector((state) => state.products.allProducts);
+  console.log("PROD: ", products)
 
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
