@@ -9,9 +9,7 @@ import Pagination from "../Pagination/Pagination";
 
 export default function Shop() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products.allProducts);
-  console.log("PROD: ", products)
-
+  const products = useSelector((state) => state.products.filteredProducts);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
   const indexOfLastProduct = currentPage * productsPerPage;

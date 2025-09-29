@@ -1,9 +1,7 @@
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { getProductDetail } from "../../../redux/Actions/productActions";
-import "./CardProduct.css"
+import "./CardProduct.css";
 import {
   Box,
   useColorModeValue,
@@ -14,7 +12,6 @@ import {
   HStack,
   Button,
 } from "@chakra-ui/react";
-
 import {
   AlertDialog,
   AlertDialogBody,
@@ -38,19 +35,23 @@ export default function CardProduct({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+
+  const product = JSON.parse(localStorage.getItem("cart"))?.filter(
+    (pr) => pr.id === id
+  )[0];
+
   const handleNavigateProduct = (e) => {
     e.preventDefault();
-    let obj = { id, handlerSetCart, handleRemoveItemCart };
-    dispatch(getProductDetail(obj));
-    setTimeout(() => navigate(`/shop/product/${id}`), 200);
+    navigate(`/shop/product/${id}`);
   };
-  const product = JSON.parse(localStorage.getItem("cart"))?.filter((pr)=>pr.id===id)[0]
+
   return (
     <>
-      <Box >
-        <Center  py={6}>
-          <Box className="boxCardContainer"
+      <Box>
+        <Center py={6}>
+          <Box
+            className="boxCardContainer"
             maxW={"320px"}
             w={"full"}
             h={"450px"}
@@ -83,10 +84,12 @@ export default function CardProduct({
               fontSize={".9rem"}
               fontWeight={500}
               color={"gray.500"}
-              mb={.5}
+              mb={0.5}
               fontFamily={"body"}
             >
-              {description.length>50?description.slice(0, 50)+"...":description}
+              {description.length > 50
+                ? description.slice(0, 50) + "..."
+                : description}
             </Text>
             <Text
               fontWeight={500}
@@ -118,9 +121,9 @@ export default function CardProduct({
                   Ver detalles
                 </Button>
 
-                  <Box>
+                <Box>
                   <Button
-                    onClick={onOpen} 
+                    onClick={onOpen}
                     fontFamily={"body"}
                     borderRadius={"full"}
                     // size="md"
@@ -132,8 +135,12 @@ export default function CardProduct({
                       boxShadow: "lg",
                     }}
                   >
-                    {/* {stock===0?"No hay stock":"Agregar"} */} 
-                    {stock === 0 ?"No hay stock":product?.amount === stock?"Max":"Agregar"} 
+                    {/* {stock===0?"No hay stock":"Agregar"} */}
+                    {stock === 0
+                      ? "No hay stock"
+                      : product?.amount === stock
+                      ? "Max"
+                      : "Agregar"}
                   </Button>
                   <AlertDialog
                     isOpen={isOpen}
@@ -143,31 +150,46 @@ export default function CardProduct({
                     <AlertDialogOverlay>
                       <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    {stock === 0 ?"No hay stock":product?.amount === stock?"No nos queda más stock":"Agregar al carrito"} 
+                          {stock === 0
+                            ? "No hay stock"
+                            : product?.amount === stock
+                            ? "No nos queda más stock"
+                            : "Agregar al carrito"}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                    {stock === 0 ?"Lo sentimos, pronto habrá stock del producto":product?.amount === stock?"Llegaste al limite actual de stock, próximamente repondremos el producto.":"¿Querés agregar este producto a tu carrito?"} 
+                          {stock === 0
+                            ? "Lo sentimos, pronto habrá stock del producto"
+                            : product?.amount === stock
+                            ? "Llegaste al limite actual de stock, próximamente repondremos el producto."
+                            : "¿Querés agregar este producto a tu carrito?"}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                           <Button ref={cancelRef} onClick={onClose}>
-                            {stock === 0 || product?.amount === stock ?"Volver":"Cancelar"}
+                            {stock === 0 || product?.amount === stock
+                              ? "Volver"
+                              : "Cancelar"}
                           </Button>
-  
-                    {
-                    stock === 0 || product?.amount === stock ?
-                    null
-                    :<Button
-                      color={"white"}
-                      bg={"brand.orange"}
-                      onClick={(e) => {
-                        handlerSetCart(e, id, price, image, name, stock);
-                        onClose();
-                      }}
-                      ml={3}
-                      >
-                      Si, agregar
-                    </Button>
-                    }  
+
+                          {stock === 0 || product?.amount === stock ? null : (
+                            <Button
+                              color={"white"}
+                              bg={"brand.orange"}
+                              onClick={(e) => {
+                                handlerSetCart(
+                                  e,
+                                  id,
+                                  price,
+                                  image,
+                                  name,
+                                  stock
+                                );
+                                onClose();
+                              }}
+                              ml={3}
+                            >
+                              Si, agregar
+                            </Button>
+                          )}
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialogOverlay>

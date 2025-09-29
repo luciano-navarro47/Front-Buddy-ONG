@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  shopSearchInputName,
-  shopFilterValue,
-  getAllProducts,
-} from "../../../redux/Actions/productActions";
-
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Heading,
@@ -15,8 +10,11 @@ import {
   SimpleGrid,
   Icon,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import {
+  shopSearchInputName,
+  filterProducts,
+} from "../../../redux/Actions/productActions";
 
 export default function ShopNavbar({
   handlerSetCart,
@@ -43,11 +41,9 @@ export default function ShopNavbar({
     }
   };
 
-  const handlerShopFilterValue = (e) => {
+  const handleFilterProducts = (e) => {
     e.preventDefault();
-    e.target.value !== "todos"
-      ? dispatch(shopFilterValue(e.target.value))
-      : dispatch(getAllProducts());
+    dispatch(filterProducts(e.target.value));
     paginate(1);
   };
 
@@ -125,8 +121,8 @@ export default function ShopNavbar({
           >
             <Center>
               <Button
-                value="alimentos"
-                onClick={(e) => handlerShopFilterValue(e)}
+                value="food"
+                onClick={(e) => handleFilterProducts(e)}
                 fontFamily={"body"}
                 borderRadius={"full"}
                 size="md"
@@ -141,8 +137,8 @@ export default function ShopNavbar({
             </Center>
             <Center>
               <Button
-                value="tazas"
-                onClick={(e) => handlerShopFilterValue(e)}
+                value="beds"
+                onClick={(e) => handleFilterProducts(e)}
                 fontFamily={"body"}
                 borderRadius={"full"}
                 size="md"
@@ -152,13 +148,13 @@ export default function ShopNavbar({
                   bg: "orange.400",
                 }}
               >
-                Tazas
+                Camas
               </Button>
             </Center>
             <Center>
               <Button
-                value="indumentaria"
-                onClick={(e) => handlerShopFilterValue(e)}
+                value="clothing"
+                onClick={(e) => handleFilterProducts(e)}
                 fontFamily={"body"}
                 borderRadius={"full"}
                 size="md"
@@ -173,8 +169,8 @@ export default function ShopNavbar({
             </Center>
             <Center>
               <Button
-                value="otros"
-                onClick={(e) => handlerShopFilterValue(e)}
+                value="other"
+                onClick={(e) => handleFilterProducts(e)}
                 fontFamily={"body"}
                 borderRadius={"full"}
                 size="md"
@@ -189,8 +185,8 @@ export default function ShopNavbar({
             </Center>
             <Center>
               <Button
-                value="todos"
-                onClick={(e) => handlerShopFilterValue(e)}
+                value="all-products"
+                onClick={(e) => handleFilterProducts(e)}
                 fontFamily={"body"}
                 borderRadius={"full"}
                 size="md"
