@@ -1,10 +1,7 @@
 import { Flex } from "@chakra-ui/layout";
-import { Button, Text, Center, SimpleGrid, Box, Image, Stack, useColorModeValue as mode } from "@chakra-ui/react";
+import { Button, Text, Center, Box, Image, Stack, useColorModeValue } from "@chakra-ui/react";
 import React from "react";
-import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import "./CartCard.css"
-// import { Product } from "./Product";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -18,7 +15,7 @@ import {
 export default function CartCards({
   amount,
   id,
-  image,
+  images,
   name,
   price,
   total,
@@ -56,7 +53,7 @@ export default function CartCards({
             width="9rem"
             height="9rem"
             fit="cover"
-            src={image}
+            src={images?.length > 0 ? images[0] : null}
             alt={name}
             draggable="false"
             loading="lazy"
@@ -64,13 +61,13 @@ export default function CartCards({
           </Box>   
           <Box pt="4">
             <Stack  spacing="8" w={"30vw"} h={"10rem"}>
-              <Text className="priceText" color={mode("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
+              <Text className="priceText" color={useColorModeValue("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
                 Stock:{stock}
               </Text>
-              <Text className="priceText" color={mode("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
+              <Text className="priceText" color={useColorModeValue("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
                 Cantidad:{amount}
               </Text>
-              <Text className="priceText" color={mode("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
+              <Text className="priceText" color={useColorModeValue("gray.600", "gray.400")} fontSize="md" fontWeight={"600"}>
                 Precio:${price}
               </Text>
             </Stack>
@@ -109,7 +106,7 @@ export default function CartCards({
                         transform: "translateY(2px)",
                         boxShadow: "lg",
                       }}
-                    onClick={amount === stock ?onOpen: (e)=>handlerSetCart(e, id, price, image, name, stock)} 
+                    onClick={amount === stock ?onOpen: (e)=>handlerSetCart(e, id, price, images, name, stock)} 
                   >
                     {stock===amount?"x":"+"} 
                   </Button>
@@ -139,7 +136,7 @@ export default function CartCards({
                       bg={"brand.orange"}
                       ml={3}
                       onClick={(e) =>{
-                        handlerSetCart(e, id, price, image, name, stock)
+                        handlerSetCart(e, id, price, images, name, stock)
                         onClose();
                       }}
                       >

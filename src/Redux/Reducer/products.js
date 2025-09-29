@@ -28,7 +28,6 @@ export default function productsReducer(state = initialState, action) {
         allProducts: Array.isArray(action.payload) ? action.payload : [],
       };
     case GET_PRODUCT:
-      // console.log("PAY: ", action.payload);
       return {
         ...state,
         product: action.payload || null,

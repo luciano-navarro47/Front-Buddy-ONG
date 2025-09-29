@@ -47,13 +47,13 @@ export default function Shop() {
     }
   }
 
-  const handlerSetCart = (e, id, price, image, name, stock) => {
+  const handlerSetCart = (e, id, price, images, name, stock) => {
     e.preventDefault();
 
     try {
       let product = {
         name,
-        image,
+        images,
         price,
         id,
         stock,

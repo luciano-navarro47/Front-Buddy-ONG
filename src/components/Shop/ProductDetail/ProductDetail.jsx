@@ -241,7 +241,7 @@ export default function ProductDetail({ handleSetUserFlag }) {
                                 e,
                                 product.id,
                                 product.price,
-                                product.image,
+                                product.images,
                                 product.name,
                                 product.stock
                               );
