@@ -1,4 +1,3 @@
-
 import {
   Box,
   Container,
@@ -39,10 +38,8 @@ export default function ProductDetail({ handleSetUserFlag }) {
   const product = useSelector((s) => s.products.product);
   const { id } = useParams();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  console.log("DET", product);
 
   useEffect(() => {
-    console.log("ENTREEEE")
     dispatch(getProductDescription(id));
   }, [dispatch, id]);
 
@@ -60,7 +57,6 @@ export default function ProductDetail({ handleSetUserFlag }) {
   //     });
   // };
 
-  
   // console.log("DETAIL PRODUCT STOCK :", product[0].stock);
 
   // let product = JSON.parse(localStorage.getItem("cart"))?.filter(
@@ -69,7 +65,7 @@ export default function ProductDetail({ handleSetUserFlag }) {
 
   return (
     <>
-      {!product ? <Spinner /> : null} 
+      {!product ? <Spinner /> : null}
       <br />
       <Button
         fontFamily={"body"}
@@ -98,8 +94,8 @@ export default function ProductDetail({ handleSetUserFlag }) {
             <Flex>
               <Image
                 rounded={"md"}
-                alt={product.name}
-                src={product.images[0]}
+                alt={"Sin imagen"}
+                src={product?.images?.length > 0 ? product.images[0] : null}
                 fit={"cover"}
                 align={"center"}
                 w={"100%"}

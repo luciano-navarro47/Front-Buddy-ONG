@@ -1,13 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import "./CardProduct.css";
 import {
   Box,
   useColorModeValue,
   Image,
   Heading,
-  Text,
   Center,
   HStack,
   Button,
@@ -25,17 +23,16 @@ import {
 export default function CardProduct({
   id,
   name,
-  image,
+  images,
   price,
   stock,
   description,
   handlerSetCart,
   handleRemoveItemCart,
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const product = JSON.parse(localStorage.getItem("cart"))?.filter(
     (pr) => pr.id === id
@@ -63,13 +60,11 @@ export default function CardProduct({
           >
             <Center>
               <Image
-                // size={"lg"}
-                src={image}
+                src={images[0]}
                 borderRadius="7px"
-                alt="img not found"
+                alt="Sin imagen"
                 width={"12rem"}
                 h={"8.5rem"}
-                // mb={".4rem"}
                 pos={"relative"}
               />
             </Center>
@@ -80,42 +75,23 @@ export default function CardProduct({
             >
               {name}
             </Heading>
-            <Text
-              fontSize={".9rem"}
-              fontWeight={500}
-              color={"gray.500"}
-              mb={0.5}
-              fontFamily={"body"}
-            >
-              {description.length > 50
-                ? description.slice(0, 50) + "..."
-                : description}
-            </Text>
-            <Text
-              fontWeight={500}
-              fontSize={".9rem"}
-              color={"gray.500"}
-              mb={1}
-              fontFamily={"body"}
-            >
-              Stock: {stock}u
-            </Text>
+
             <Heading
               fontSize={"1.3rem"}
               fontWeight={"bold"}
               fontFamily={"heading"}
               textTransform="uppercase"
-              color={"brand.orange"}
+              color={"orange.400"}
             >
               ${price}
             </Heading>
+
             <Center>
               <HStack py={0}>
                 <Button
                   onClick={(e) => handleNavigateProduct(e)}
                   fontFamily={"body"}
                   borderRadius={"full"}
-                  // size="md"
                   width={"7rem"}
                 >
                   Ver detalles
@@ -126,7 +102,6 @@ export default function CardProduct({
                     onClick={onOpen}
                     fontFamily={"body"}
                     borderRadius={"full"}
-                    // size="md"
                     width={"7rem"}
                     bg={"brand.green.300"}
                     color={"white"}
@@ -135,7 +110,6 @@ export default function CardProduct({
                       boxShadow: "lg",
                     }}
                   >
-                    {/* {stock===0?"No hay stock":"Agregar"} */}
                     {stock === 0
                       ? "No hay stock"
                       : product?.amount === stock
@@ -179,7 +153,7 @@ export default function CardProduct({
                                   e,
                                   id,
                                   price,
-                                  image,
+                                  images,
                                   name,
                                   stock
                                 );

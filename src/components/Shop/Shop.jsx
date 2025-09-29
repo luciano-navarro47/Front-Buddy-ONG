@@ -118,7 +118,7 @@ export default function Shop() {
 
   useEffect(() => {
     dispatch(getAllProducts());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

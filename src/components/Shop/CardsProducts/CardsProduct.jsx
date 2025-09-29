@@ -13,7 +13,7 @@ export default function CardsProduct({
       handleRemoveItemCart={handleRemoveItemCart}
       name={el.name}
       id={el.id}
-      image={el.image}
+      images={el.images}
       stock={el.stock}
       description={el.description}
       price={el.price}
