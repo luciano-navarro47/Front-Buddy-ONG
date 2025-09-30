@@ -49,5 +49,9 @@ export const NEXT_PAGE = "NEXT_PAGE";
 export const PREV_PAGE = "PREV_PAGE";
 export const ACTUAL_PAGE = "ACTUAL_PAGE";
 
+// PAYMENT
+export const CREATE_CHECKOUT = "CREATE_CHECKOUT";
+export const CREATE_CHECKOUT_ERROR = "CREATE_CHECKOUT_ERROR";
+
 // IMAGE
 export const SET_IMAGE = "SET_IMAGE";

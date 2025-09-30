@@ -313,7 +313,7 @@ export default function Cart({ handleSetUserFlag }) {
                           boxShadow: "lg",
                         }}
                       >
-                        Ir a pagar
+                        Continuar compra
                       </Button>
                       <AlertDialog
                         isOpen={isOpen}
@@ -362,7 +362,7 @@ export default function Cart({ handleSetUserFlag }) {
                                   }}
                                   ml={3}
                                 >
-                                  Ir a pagar
+                                  Continuar compra
                                 </Button>
                               </AlertDialogFooter>
                             ) : (
