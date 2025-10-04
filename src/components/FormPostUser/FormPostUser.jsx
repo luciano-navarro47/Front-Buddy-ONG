@@ -1,5 +1,5 @@
 import logo from "../../assets/imagenes/logo_negro.png";
-import { MdArrowBackIosNew, MdCancel, MdCheckCircle } from "react-icons/md";
+import { MdCancel, MdCheckCircle } from "react-icons/md";
 import {
   Flex,
   Box,
@@ -14,14 +14,13 @@ import {
   InputGroup,
   InputRightElement,
   InputLeftAddon,
-  Icon,
   Image,
 } from "@chakra-ui/react";
 
 import { ErrorForm, SuccedForm } from "../FormPostPet/AlertForm/AlertForm";
 
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   postUser,
@@ -35,17 +34,17 @@ let isEmail = new RegExp("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
 const validateForm = (input) => {
   let inputError = {};
 
-  const name = input.name || "";
-  const surname = input.surname || "";
+  const first_name = input.first_name || "";
+  const last_name = input.last_name || "";
   const email = input.email || "";
   const username = input.username || "";
   const phone = input.phone || "";
 
-  if (name === "" || name.length === 0) {
-    inputError.name = "Debes ingresar tu nombre";
+  if (first_name === "" || first_name.length === 0) {
+    inputError.first_name = "Debes ingresar tu nombre";
   }
-  if (surname === "" || surname.length === 0) {
-    inputError.surname = "Debes ingresar tu apellido";
+  if (last_name === "" || last_name.length === 0) {
+    inputError.last_name = "Debes ingresar tu apellido";
   }
   if (email === "" || email.length === 0) {
     inputError.email = "Debes ingresar tu e-mail";
@@ -75,8 +74,8 @@ export default function FormPostUser({ id, value }) {
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [input, setInput] = useState({
-    name: "",
-    surname: "",
+    first_name: "",
+    last_name: "",
     email: "",
     username: "",
     phone: "",
@@ -104,20 +103,27 @@ export default function FormPostUser({ id, value }) {
     }
   };
 
-  const handlerSubmit = (e, value) => {
+  const handlerSubmit = async (e, value) => {
     e.preventDefault();
     if (
-      input.name &&
-      input.surname &&
+      input.first_name &&
+      input.last_name &&
       input.email &&
       input.username &&
       input.phone
     ) {
       if (value === undefined) {
-        dispatch(postUser(input));
-        navigate("/");
+        const res = await dispatch(postUser(input));
+        if (res.status === 200) {
+          localStorage.setItem("loggedUser", JSON.stringify(res.data));
+          navigate("/");
+        }
       } else {
-        dispatch(updateUser(userInfo[0]?.id, input));
+        const res = await dispatch(updateUser(userInfo[0]?.id, input));
+        if (res.status === 200) {
+          localStorage.setItem("loggedUser", JSON.stringify(res.data));
+          navigate("/");
+        }
       }
 
       setIsIncomplete(false);
@@ -153,13 +159,13 @@ export default function FormPostUser({ id, value }) {
   }, []);
   useEffect(() => {
     if (value === "update" && user.length) dispatch(getUserById(user[0]?.id));
-  }, [dispatch, user]);
+  }, [dispatch, user, value]);
 
   useEffect(() => {
     if (value === "update" && userInfo[0]) {
       setInput({
-        name: userInfo[0].name || "",
-        surname: userInfo[0].surname || "",
+        first_name: userInfo[0].first_name || "",
+        last_name: userInfo[0].last_name || "",
         email: userInfo[0].email || "",
         username: userInfo[0].username || "",
         role: userInfo[0].role || "",
@@ -170,7 +176,7 @@ export default function FormPostUser({ id, value }) {
 
   useEffect(() => {
     if (usernameAvailable === false) {
-      setUsernameError("Este aoidi ya está en uso.");
+      setUsernameError("Este apodo ya está en uso.");
     } else {
       setUsernameError("");
     }
@@ -189,40 +195,24 @@ export default function FormPostUser({ id, value }) {
           bg="brand.green.200"
         >
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-            <Link to={value === "update" ? "/" : "/"}>
-              <Icon
-                as={MdArrowBackIosNew}
-                color="orange.400"
-                boxSize={7}
-                _hover={{
-                  color: "grey",
-                  boxSize: "8",
-                }}
-              />
-              <Icon
-                as={MdArrowBackIosNew}
-                color="orange.400"
-                boxSize={7}
-                _hover={{
-                  color: "grey",
-                  boxSize: "8",
-                }}
-              />
-              <Button
-                fontFamily={"body"}
-                bg="base.green.100"
-                color={"grey"}
-                fontSize={"1.4rem"}
-                _hover={{
-                  color: "orange.400",
-                }}
-                p="0"
-                mr="1rem"
-              >
-                {" "}
-                Atrás
-              </Button>
-            </Link>
+            <Button
+              onClick={() => navigate("/login")}
+              type="submit"
+              fontFamily={"body"}
+              border="1px solid"
+              borderColor="gray.300"
+              size="lg"
+              color={"black"}
+              mt={4}
+              w={"100%"}
+              shadow={"md"}
+              _hover={{
+                bg: "brand.green.300",
+                color: "white",
+              }}
+            >
+              Atrás
+            </Button>
             {value === undefined ? (
               <Stack align={"center"}>
                 <Text
@@ -254,40 +244,40 @@ export default function FormPostUser({ id, value }) {
               <Stack spacing={4}>
                 <HStack>
                   <Box>
-                    <FormControl id="name" isRequired>
+                    <FormControl id="first_name" isRequired>
                       <FormLabel>Nombre: </FormLabel>
                       <Input
                         autoComplete="off"
                         type="text"
                         value={input.name}
-                        name="name"
-                        key="name"
+                        name="first_name"
+                        key="first_name"
                         focusBorderColor={"brand.green.300"}
                         fontFamily={"body"}
                         onChange={(e) => handleChange(e)}
                       />
-                      {inputError.name && (
+                      {inputError.first_name && (
                         <Text className="text_inputError">
-                          {inputError.name}
+                          {inputError.first_name}
                         </Text>
                       )}
                     </FormControl>
 
-                    <FormControl id="surname" isRequired>
+                    <FormControl id="last_name" isRequired>
                       <FormLabel>Apellido: </FormLabel>
                       <Input
                         autoComplete="off"
-                        value={input.surname}
-                        name="surname"
+                        value={input.name}
+                        name="last_name"
                         type="text"
-                        key="surname"
+                        key="last_name"
                         focusBorderColor={"brand.green.300"}
                         fontFamily={"body"}
                         onChange={(e) => handleChange(e)}
                       />
-                      {inputError.surname && (
+                      {inputError.last_name && (
                         <Text className="text_inputError">
-                          {inputError.surname}
+                          {inputError.last_name}
                         </Text>
                       )}
                     </FormControl>
@@ -410,7 +400,7 @@ export default function FormPostUser({ id, value }) {
                   {value === undefined ? (
                     <Button
                       onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
-                      loadingText="Post mascota"
+                      loadingText="Registrarse"
                       fontFamily={"body"}
                       size="lg"
                       bg={"orange.300"}

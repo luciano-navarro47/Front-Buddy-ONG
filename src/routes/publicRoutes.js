@@ -8,6 +8,7 @@ import Veterinaries from "../components/Veterinaries/Veterinaries";
 import VetsDetail from "../components/VetsDetail/VetsDetail"
 import Pets from "../components/Adoption/Pets"
 import PetDetail from "../components/pets/details/PetDetail";
+import FormPostUser from "components/FormPostUser/FormPostUser";
 
 export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect, handleLogout }) => [
   {
@@ -21,6 +22,10 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
         handleLogout={handleLogout}
       />
     ),
+  },
+  {
+    path: "/register",
+    element: <FormPostUser />,
   },
   {
     path: "/aboutUs",

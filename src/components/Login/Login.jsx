@@ -9,6 +9,7 @@ import {
   Button,
   Divider,
   Center,
+  HStack,
 } from "@chakra-ui/react";
 import { loginUser } from "../../redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
@@ -107,36 +108,50 @@ const Login = ({
             </Stack>
           </Box>
         </form>
-        <Box py="1rem">
-          <Button
-            onClick={handlerSubmit}
-            type="submit"
-            fontFamily={"body"}
-            size="lg"
-            bg={"orange.300"}
-            color={"white"}
-            w="40%"
-            px="3rem"
-            _hover={{
-              bg: "orange.400",
-            }}
-          >
-            Iniciar sesión
-          </Button>
-        </Box>
-        <Box py="1rem">
-          <Text fontFamily={"body"}></Text>
-          <Link to={`/createUser`}>
-            <Text
+        <HStack
+          align={"center"}
+          justify={"center"}
+          gap={4}
+          flexWrap={"wrap"}
+          width={"100%"}
+        >
+          <Box py="1rem" flex={1} minW={{ base: "100%", sm: "45%" }}>
+            <Button
+              onClick={handlerSubmit}
+              type="submit"
+              fontFamily={"body"}
+              size="lg"
+              bg={"orange.300"}
+              color={"white"}
+              mt={4}
+              w={"100%"}
               _hover={{
-                color: "brand.green.300",
-                fontWeight: "bold",
+                bg: "orange.400",
               }}
             >
-              ¿No estás registrado?
-            </Text>
-          </Link>
-        </Box>
+              Iniciar sesión
+            </Button>
+          </Box>
+          <Box py="1rem" flex={1} minW={{ base: "100%", sm: "45%" }}>
+            <Button
+              onClick={() => navigate("/register")}
+              type="submit"
+              fontFamily={"body"}
+              border="1px solid"
+              borderColor="gray.300"
+              size="lg"
+              color={"black"}
+              mt={4}
+              w={"100%"}
+              _hover={{
+                bg: "orange.400",
+                color: "white",
+              }}
+            >
+              Crear cuenta
+            </Button>
+          </Box>
+        </HStack>
       </div>
       <Divider
         orientation="horizontal"
