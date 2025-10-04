@@ -103,10 +103,10 @@ export default function Shop() {
           product.total = product.price;
           window.localStorage.setItem("cart", JSON.stringify([product]));
           dispatch(getAllProducts);
-          console.log(
-            "CASO NO EXISTE CARRITO",
-            JSON.parse(localStorage.getItem("cart"))
-          );
+          // console.log(
+          //   "CASO NO EXISTE CARRITO",
+          //   JSON.parse(localStorage.getItem("cart"))
+          // );
         } else {
           return alert("El producto no tiene stock");
         }

@@ -1,8 +1,8 @@
-import axios from "axios";
+// import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import CartCards from "./CartCards";
 import { MdArrowBackIosNew } from "react-icons/md";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import {
@@ -24,8 +24,14 @@ import {
   AlertDialogOverlay,
   useDisclosure,
 } from "@chakra-ui/react";
-
+import CartCards from "./CartCards";
+import PaymentCheckout from "components/PaymentCheckout";
+import { createCheckout } from "redux/Actions/paymentsActions";
 export default function Cart({ handleSetUserFlag }) {
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [preferenceId, setPreferenceId] = useState(null);
+  const dispatch = useDispatch();
+
   const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
   const cart = JSON.parse(window.localStorage.getItem("cart"));
   const [cartFlag, setCartFlag] = useState(false);
@@ -138,12 +144,12 @@ export default function Cart({ handleSetUserFlag }) {
             oldCart[index].amount += 1;
             oldCart[index].total = oldCart[index].price * oldCart[index].amount;
             window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            console.log(
-              "OLDCART AMOUNT: ",
-              oldCart[index].amount,
-              "--- STOCK: ",
-              stock
-            );
+            // console.log(
+            //   "OLDCART AMOUNT: ",
+            //   oldCart[index].amount,
+            //   "--- STOCK: ",
+            //   stock
+            // );
             // alert(`Agregaste de nuevo el producto ${name}`);
             return handleStateChange();
           }
@@ -172,21 +178,38 @@ export default function Cart({ handleSetUserFlag }) {
   //   alert("Tenes que logearte");
   // }
   const total = cart?.reduce((acc, el) => acc + el.total, 0);
-  const payMp = () => {
-    console.log("CART PAYMP: ", cart);
-    isLogged
-      ? axios
-          .post(`http://localhost:3001/donation`, {
-            cart,
-          })
-          .then((response) => {
-            window.open(response.data, "_blank");
-          })
-          .catch((error) => {
-            console.error(error);
-          })
-      : alert("Tenés que logearte");
+
+  const handleCheckout = async () => {
+    try {
+      // pedir preferenceId al backend
+      const urlOrPref = await dispatch(createCheckout(cart));
+      setPreferenceId(urlOrPref.id || urlOrPref); // depende de qué devuelva tu backend
+      setShowCheckout(true); // mostrar PaymentCheckout
+    } catch (err) {
+      console.error("Error iniciando checkout:", err);
+    }
   };
+
+  const handleDialogCheckout = async () => {
+    await handleCheckout();
+    onClose();
+  };
+
+  // const payMp = () => {
+  //   console.log("CART PAYMP: ", cart);
+  //   isLogged
+  //     ? axios
+  //         .post(`http://localhost:3001/donation`, {
+  //           cart,
+  //         })
+  //         .then((response) => {
+  //           window.open(response.data, "_blank");
+  //         })
+  //         .catch((error) => {
+  //           console.error(error);
+  //         })
+  //     : alert("Tenés que logearte");
+  // };
 
   useEffect(() => {}, [cartFlag]);
 
@@ -356,10 +379,7 @@ export default function Cart({ handleSetUserFlag }) {
                                 <Button
                                   color={"white"}
                                   bg={"brand.orange"}
-                                  onClick={(e) => {
-                                    payMp();
-                                    onClose();
-                                  }}
+                                  onClick={handleDialogCheckout}
                                   ml={3}
                                 >
                                   Continuar compra
@@ -389,6 +409,20 @@ export default function Cart({ handleSetUserFlag }) {
                     </Box>
                   </SimpleGrid>
                 </Center>
+
+                {!showCheckout ? (
+                  // --- Vista del carrito normal ---
+                  <Box
+                    minHeight={"90vh"}
+                    bg="brand.backgorund"
+                    paddingBottom={"3rem"}
+                  >
+                    {/* ... toda tu UI del carrito */}
+                  </Box>
+                ) : (
+                  // --- Vista del pago ---
+                  <PaymentCheckout preferenceId={preferenceId} amount={total} />
+                )}
 
                 <Link to={"/shop"}>
                   <Icon

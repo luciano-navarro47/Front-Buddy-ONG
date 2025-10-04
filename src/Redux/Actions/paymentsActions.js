@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_API_URL;
 export function createCheckout(cart) {
   return async function (dispatch) {
     try {
-      const { data } = await axios.post(`${API_URL}/donation`, { cart });
+      const { data } = await axios.post(`${API_URL}/preference`, { cart });
       console.log("DATA: ", data);
       dispatch({
         type: CREATE_CHECKOUT,
