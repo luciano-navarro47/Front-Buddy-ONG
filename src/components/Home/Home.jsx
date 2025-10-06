@@ -20,6 +20,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 const Home = ({ user, setUser, isAuthenticated, handleLogout }) => {
+  console.log("user", user);
   const navigate = useNavigate();
 
   useEffect(() => {

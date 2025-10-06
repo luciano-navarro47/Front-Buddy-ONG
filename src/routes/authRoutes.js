@@ -1,5 +1,5 @@
 import React from "react";
-import LandingPage from "../components/LandingPage/LandingPage";
+import LandingPage from "../components/Landing/LandingPage";
 
 export const authRoutes = ({
   user,

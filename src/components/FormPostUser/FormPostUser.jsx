@@ -1,4 +1,3 @@
-import logo from "../../assets/imagenes/logo_negro.png";
 import { MdCancel, MdCheckCircle } from "react-icons/md";
 import {
   Flex,
@@ -9,15 +8,17 @@ import {
   HStack,
   Stack,
   Button,
-  Heading,
   Text,
   InputGroup,
   InputRightElement,
   InputLeftAddon,
-  Image,
 } from "@chakra-ui/react";
 
-import { ErrorForm, SuccedForm } from "../FormPostPet/AlertForm/AlertForm";
+import {
+  // ErrorForm,
+  // SuccedForm,
+  AlertForm,
+} from "../Alerts/AlertForm/AlertForm";
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -28,45 +29,15 @@ import {
   getUserById,
   checkUsernameAvailability,
 } from "../../redux/Actions/userActions";
-
-let isEmail = new RegExp("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$");
-
-const validateForm = (input) => {
-  let inputError = {};
-
-  const first_name = input.first_name || "";
-  const last_name = input.last_name || "";
-  const email = input.email || "";
-  const username = input.username || "";
-  const phone = input.phone || "";
-
-  if (first_name === "" || first_name.length === 0) {
-    inputError.first_name = "Debes ingresar tu nombre";
-  }
-  if (last_name === "" || last_name.length === 0) {
-    inputError.last_name = "Debes ingresar tu apellido";
-  }
-  if (email === "" || email.length === 0) {
-    inputError.email = "Debes ingresar tu e-mail";
-  } else if (!isEmail.test(email)) {
-    inputError.email = "Ingresa un formato de e-mail válido";
-  }
-  if (username === "" || username.length === 0) {
-    inputError.username = "Debes ingresar un nombre de usuario.";
-  }
-  if (phone !== "" && phone.length !== 10) {
-    inputError.phone = "Debe ser un número de 10 dígitos";
-  }
-  return inputError;
-};
+import { validateRegisterUserForm } from "../../utils/formValidations/registerUserForm";
 
 export default function FormPostUser({ id, value }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = () => setShow(!show);
-  const usernameAvailable = useSelector((state) => state.usernameAvailable);
   const userInfo = useSelector((state) => state.user);
   const [show, setShow] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [user, setUser] = useState([]);
   const [usernameError, setUsernameError] = useState("");
   const [typingTimeout, setTypingTimeout] = useState(null);
@@ -87,7 +58,7 @@ export default function FormPostUser({ id, value }) {
 
     setInput((prevInput) => {
       const updatedInput = { ...prevInput, [name]: trimmedValue };
-      setInputError(validateForm(updatedInput));
+      setInputError(validateRegisterUserForm(updatedInput));
       return updatedInput;
     });
 
@@ -110,7 +81,8 @@ export default function FormPostUser({ id, value }) {
       input.last_name &&
       input.email &&
       input.username &&
-      input.phone
+      input.phone &&
+      usernameError === ""
     ) {
       if (value === undefined) {
         const res = await dispatch(postUser(input));
@@ -128,9 +100,11 @@ export default function FormPostUser({ id, value }) {
 
       setIsIncomplete(false);
       setInfoSend(true);
+      setShowAlert(true);
     } else {
       setIsIncomplete(true);
       setInfoSend(false);
+      setShowAlert(true);
     }
   };
 
@@ -139,12 +113,7 @@ export default function FormPostUser({ id, value }) {
 
     try {
       const available = await dispatch(checkUsernameAvailability(username));
-
-      if (available === false) {
-        setUsernameError("Apodo no disponible.");
-      } else {
-        setUsernameError("");
-      }
+      setUsernameError(available ? "" : "Apodo no disponible.");
     } catch (error) {
       console.log("Username verification error: ", error);
     }
@@ -174,267 +143,239 @@ export default function FormPostUser({ id, value }) {
     }
   }, [userInfo, value]);
 
-  useEffect(() => {
-    if (usernameAvailable === false) {
-      setUsernameError("Este apodo ya está en uso.");
-    } else {
-      setUsernameError("");
-    }
-  }, [usernameAvailable]);
-
   return (
-    <div>
-      {isIncomplete ? <ErrorForm /> : null}
-      {infoSend ? <SuccedForm /> : null}
-
-      <form id="myForm">
-        <Flex
-          minH={"100vh"}
-          align={"center"}
-          justify={"center"}
-          bg="brand.green.200"
-        >
-          <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-            <Button
-              onClick={() => navigate("/login")}
-              type="submit"
-              fontFamily={"body"}
-              border="1px solid"
-              borderColor="gray.300"
-              size="lg"
-              color={"black"}
-              mt={4}
-              w={"100%"}
-              shadow={"md"}
-              _hover={{
-                bg: "brand.green.300",
-                color: "white",
-              }}
+    <form id="registerUserForm">
+      {isIncomplete && showAlert && (
+        <AlertForm
+          status="error"
+          title="Error: "
+          description="Asegurate de llenar todos los campos y de no tener errores en el formulario."
+          setShowAlert={setShowAlert}
+        />
+      )}
+      {infoSend && showAlert && (
+        <AlertForm
+          status="success"
+          title="Correcto: "
+          description="Te registraste correctamente. Ahora podés iniciar sesión."
+          setShowAlert={setShowAlert}
+        />
+      )}
+      <Flex
+        // minH={"100vh"}
+        align={"center"}
+        justify={"center"}
+        bg="brand.green.200"
+      >
+        <Stack spacing={8} mx={"auto"} maxW={"lg"}>
+          <Stack align={"center"}>
+            <Text
+              fontFamily="heading"
+              fontWeight={"bold"}
+              color="gray.600"
+              fontSize={"5xl"}
+              textAlign={"center"}
+              textShadow={""}
             >
-              Atrás
-            </Button>
-            {value === undefined ? (
-              <Stack align={"center"}>
-                <Text
-                  fontFamily="heading"
-                  fontWeight={"bold"}
-                  color="gray.600"
-                  fontSize={"5xl"}
-                  textAlign={"center"}
-                  textShadow={""}
-                >
-                  Crea tu cuenta!
-                </Text>
-                <Text fontSize={"lg"} color={"gray.600"}>
-                  Gracias por cuidar a los animales ✌️
-                </Text>
-                <Box width={20} height={20}>
-                  <Image src={logo}></Image>
-                </Box>
-              </Stack>
-            ) : (
-              <Stack align={"center"}>
-                <Heading fontSize={"4xl"} textAlign={"center"}>
-                  Actualizá la información de perfil
-                </Heading>
-              </Stack>
-            )}
+              Registrate
+            </Text>
+          </Stack>
 
-            <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
-              <Stack spacing={4}>
-                <HStack>
-                  <Box>
-                    <FormControl id="first_name" isRequired>
-                      <FormLabel>Nombre: </FormLabel>
-                      <Input
-                        autoComplete="off"
-                        type="text"
-                        value={input.name}
-                        name="first_name"
-                        key="first_name"
-                        focusBorderColor={"brand.green.300"}
-                        fontFamily={"body"}
-                        onChange={(e) => handleChange(e)}
-                      />
-                      {inputError.first_name && (
-                        <Text className="text_inputError">
-                          {inputError.first_name}
-                        </Text>
-                      )}
-                    </FormControl>
-
-                    <FormControl id="last_name" isRequired>
-                      <FormLabel>Apellido: </FormLabel>
-                      <Input
-                        autoComplete="off"
-                        value={input.name}
-                        name="last_name"
-                        type="text"
-                        key="last_name"
-                        focusBorderColor={"brand.green.300"}
-                        fontFamily={"body"}
-                        onChange={(e) => handleChange(e)}
-                      />
-                      {inputError.last_name && (
-                        <Text className="text_inputError">
-                          {inputError.last_name}
-                        </Text>
-                      )}
-                    </FormControl>
-                  </Box>
-                </HStack>
-
-                <FormControl id="username" isRequired>
-                  <FormLabel>Nombre de usuario: </FormLabel>
-                  <Input
-                    key="username"
-                    type="text"
-                    name="username"
-                    value={input.username}
-                    onChange={(e) => handleChange(e)}
-                    autoComplete="off"
-                    focusBorderColor={"brand.green.300"}
-                    fontFamily={"body"}
-                  />
-                  {inputError.username ? (
-                    <Text className="text_inputError">
-                      {inputError.username}
-                    </Text>
-                  ) : (
-                    input.username.length >= 3 &&
-                    (usernameError ? (
-                      <Text
-                        color="red.500"
-                        fontSize="sm"
-                        display="flex"
-                        alignItems="center"
-                      >
-                        <MdCancel style={{ marginRight: "0.5rem" }} /> En uso
-                      </Text>
-                    ) : (
-                      <Text
-                        color="green.500"
-                        fontSize="sm"
-                        display="flex"
-                        alignItems="center"
-                      >
-                        <MdCheckCircle style={{ marginRight: "0.5rem" }} />{" "}
-                        Disponible
-                      </Text>
-                    ))
-                  )}
-                </FormControl>
-
-                <FormControl id="email" isRequired>
-                  <FormLabel>Email: </FormLabel>
-                  <Input
-                    autoComplete="off"
-                    name="email"
-                    type="text"
-                    value={input.email}
-                    key="email"
-                    placeholder="tumail@mail.com"
-                    focusBorderColor={"brand.green.300"}
-                    fontFamily={"body"}
-                    onChange={(e) => handleChange(e)}
-                  ></Input>
-                  {inputError.email && (
-                    <Text className="text_inputError">{inputError.email}</Text>
-                  )}
-                </FormControl>
-
-                {value === null ? null : (
-                  <FormControl id="password" isRequired>
-                    <FormLabel>Contraseña: </FormLabel>
-                    <InputGroup size="md">
-                      <Input
-                        autoComplete="off"
-                        placeholder="Ingresar una contraseña"
-                        name="password"
-                        key="password"
-                        focusBorderColor={"brand.green.300"}
-                        fontFamily={"body"}
-                        type={show ? "text" : "password"}
-                        onChange={(e) => handleChange(e)}
-                      />
-                      <InputRightElement width="4.5rem">
-                        <Button h="1.75rem" size="sm" onClick={handleClick}>
-                          {show ? "Hide" : "Show"}
-                        </Button>
-                      </InputRightElement>
-                      {inputError.password && (
-                        <Text>{inputError.password}</Text>
-                      )}
-                    </InputGroup>
-                  </FormControl>
-                )}
-
-                <FormControl id="phone" isRequired>
-                  <FormLabel>Cel/Teléfono:</FormLabel>
-                  <InputGroup size="sm">
-                    <InputLeftAddon
-                      bg="gray.50"
-                      _dark={{
-                        bg: "gray.800",
-                      }}
-                      color="gray.500"
-                      rounded="md"
-                    >
-                      +54 9
-                    </InputLeftAddon>
+          <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
+            <Stack spacing={4}>
+              <HStack>
+                <Box>
+                  <FormControl id="first_name" isRequired>
+                    <FormLabel>Nombre: </FormLabel>
                     <Input
                       autoComplete="off"
-                      type="number"
-                      name="phone"
-                      value={input.phone}
+                      type="text"
+                      value={input.name}
+                      name="first_name"
+                      key="first_name"
                       focusBorderColor={"brand.green.300"}
                       fontFamily={"body"}
                       onChange={(e) => handleChange(e)}
                     />
-                  </InputGroup>
-                  {inputError.phone && (
-                    <Text className="text_inputError">{inputError.phone}</Text>
-                  )}
-                </FormControl>
-                <Stack spacing={10} pt={2}>
-                  {value === undefined ? (
-                    <Button
-                      onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
-                      loadingText="Registrarse"
+                    {inputError.first_name && (
+                      <Text className="text_inputError">
+                        {inputError.first_name}
+                      </Text>
+                    )}
+                  </FormControl>
+
+                  <FormControl id="last_name" isRequired>
+                    <FormLabel>Apellido: </FormLabel>
+                    <Input
+                      autoComplete="off"
+                      value={input.name}
+                      name="last_name"
+                      type="text"
+                      key="last_name"
+                      focusBorderColor={"brand.green.300"}
                       fontFamily={"body"}
-                      size="lg"
-                      bg={"orange.300"}
-                      color={"white"}
-                      _hover={{
-                        bg: "orange.400",
-                      }}
+                      onChange={(e) => handleChange(e)}
+                    />
+                    {inputError.last_name && (
+                      <Text className="text_inputError">
+                        {inputError.last_name}
+                      </Text>
+                    )}
+                  </FormControl>
+                </Box>
+              </HStack>
+
+              <FormControl id="username" isRequired>
+                <FormLabel>Nombre de usuario: </FormLabel>
+                <Input
+                  key="username"
+                  type="text"
+                  name="username"
+                  value={input.username}
+                  onChange={(e) => handleChange(e)}
+                  autoComplete="off"
+                  focusBorderColor={"brand.green.300"}
+                  fontFamily={"body"}
+                />
+                {inputError.username ? (
+                  <Text className="text_inputError">{inputError.username}</Text>
+                ) : (
+                  input.username.length >= 3 &&
+                  (usernameError ? (
+                    <Text
+                      color="red.500"
+                      fontSize="sm"
+                      display="flex"
+                      alignItems="center"
+                      mt={2}
                     >
-                      Registrarse
-                    </Button>
+                      <MdCancel /> Usuario no disponible
+                    </Text>
                   ) : (
-                    <Button
-                      onClick={(e) => [
-                        handlerSubmit(e, value, id),
-                        window.scrollTo(0, 0),
-                      ]}
-                      loadingText="Registrarse"
-                      fontFamily={"body"}
-                      size="lg"
-                      bg={"orange.300"}
-                      color={"white"}
-                      _hover={{
-                        bg: "orange.400",
-                      }}
+                    <Text
+                      color="green.500"
+                      fontSize="sm"
+                      display="flex"
+                      alignItems="center"
+                      mt={2}
                     >
-                      Guardar cambios
-                    </Button>
-                  )}
-                </Stack>
+                      <MdCheckCircle /> Usuario disponible
+                    </Text>
+                  ))
+                )}
+              </FormControl>
+
+              <FormControl id="email" isRequired>
+                <FormLabel>Email: </FormLabel>
+                <Input
+                  autoComplete="off"
+                  name="email"
+                  type="text"
+                  value={input.email}
+                  key="email"
+                  placeholder="tumail@mail.com"
+                  focusBorderColor={"brand.green.300"}
+                  fontFamily={"body"}
+                  onChange={(e) => handleChange(e)}
+                ></Input>
+                {inputError.email && (
+                  <Text className="text_inputError">{inputError.email}</Text>
+                )}
+              </FormControl>
+
+              {value === null ? null : (
+                <FormControl id="password" isRequired>
+                  <FormLabel>Contraseña: </FormLabel>
+                  <InputGroup size="md">
+                    <Input
+                      autoComplete="off"
+                      placeholder="Ingresar una contraseña"
+                      name="password"
+                      key="password"
+                      focusBorderColor={"brand.green.300"}
+                      fontFamily={"body"}
+                      type={show ? "text" : "password"}
+                      onChange={(e) => handleChange(e)}
+                    />
+                    <InputRightElement width="4.5rem">
+                      <Button h="1.75rem" size="sm" onClick={handleClick}>
+                        {show ? "Hide" : "Show"}
+                      </Button>
+                    </InputRightElement>
+                    {inputError.password && <Text>{inputError.password}</Text>}
+                  </InputGroup>
+                </FormControl>
+              )}
+
+              <FormControl id="phone" isRequired>
+                <FormLabel>Cel/Teléfono:</FormLabel>
+                <InputGroup size="sm">
+                  <InputLeftAddon
+                    bg="gray.50"
+                    _dark={{
+                      bg: "gray.800",
+                    }}
+                    color="gray.500"
+                    rounded="md"
+                    fontWeight={"bold"}
+                  >
+                    +54
+                  </InputLeftAddon>
+                  <Input
+                    autoComplete="off"
+                    type="number"
+                    name="phone"
+                    value={input.phone}
+                    focusBorderColor={"brand.green.300"}
+                    fontFamily={"body"}
+                    onChange={(e) => handleChange(e)}
+                  />
+                </InputGroup>
+                {inputError.phone && (
+                  <Text className="text_inputError">{inputError.phone}</Text>
+                )}
+              </FormControl>
+              <Stack spacing={10} pt={2}>
+                <Button
+                  onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
+                  disabled={usernameError !== ""}
+                  loadingText="Registrarse"
+                  fontFamily={"body"}
+                  size="lg"
+                  bg={"orange.300"}
+                  color={"white"}
+                  _hover={{
+                    bg: "orange.400",
+                  }}
+                >
+                  Registrarse
+                </Button>
+                <Button
+                  onClick={() => navigate("/login")}
+                  type="submit"
+                  fontFamily={"body"}
+                  border="1px solid"
+                  borderColor="gray.300"
+                  size="lg"
+                  color={"black"}
+                  w={"100%"}
+                  shadow={"md"}
+                  _hover={{
+                    bg: "brand.green.300",
+                    color: "white",
+                  }}
+                >
+                  Atrás
+                </Button>
+
+                <Text fontSize={"lg"} color={"gray.600"}>
+                  Gracias por cuidar a los animales ✌️
+                </Text>
               </Stack>
-            </Box>
-          </Stack>
-        </Flex>
-      </form>
-    </div>
+            </Stack>
+          </Box>
+        </Stack>
+      </Flex>
+    </form>
   );
 }

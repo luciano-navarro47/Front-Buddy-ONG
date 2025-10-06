@@ -10,7 +10,10 @@ import {
   Divider,
   Center,
   HStack,
+  InputGroup,
+  InputRightElement,
 } from "@chakra-ui/react";
+import { BiHide, BiShow } from "react-icons/bi";
 import { loginUser } from "../../redux/Actions/userActions";
 import { validateLoginForm } from "../../utils/formValidations/loginForm";
 
@@ -26,6 +29,7 @@ const Login = ({
 
   const [input, setInput] = useState({ email: "", password: "" });
   const [inputErrors, setInputErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -66,14 +70,14 @@ const Login = ({
     <div>
       <div>
         <form>
-          <Box mt={1}>
-            <Stack spacing={4}>
+          <Box mt={1} mb={"1rem"}>
+            <Stack spacing={6}>
               <Input
                 type="email"
                 name="email"
                 bg={"gray.100"}
                 focusBorderColor={"brand.green.300"}
-                placeholder="Ingresa tu Email"
+                placeholder="Correo electrónico"
                 border={1}
                 color={"gray.500"}
                 _placeholder={{
@@ -86,20 +90,31 @@ const Login = ({
                   {inputErrors.email}
                 </Text>
               )}
-
-              <Input
-                type="password"
-                name="password"
-                bg={"gray.100"}
-                focusBorderColor={"brand.green.300"}
-                placeholder="Ingresa tu contraseña"
-                border={1}
-                color={"gray.500"}
-                _placeholder={{
-                  color: "gray.500",
-                }}
-                onChange={handleChange}
-              />
+              <InputGroup size="md">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  bg={"gray.100"}
+                  focusBorderColor={"brand.green.300"}
+                  placeholder="Contraseña"
+                  border={1}
+                  color={"gray.500"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  onChange={handleChange}
+                />
+                <InputRightElement width="4.5rem">
+                  <Button
+                    h="1.75rem"
+                    size="sm"
+                    color={"gray.500"}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <BiHide size={25} /> : <BiShow size={25} />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
               {inputErrors.password && (
                 <Text className="text_inputError" fontSize={"0.8rem"}>
                   {inputErrors.password}
@@ -111,11 +126,11 @@ const Login = ({
         <HStack
           align={"center"}
           justify={"center"}
-          gap={4}
+          gap={1}
           flexWrap={"wrap"}
           width={"100%"}
         >
-          <Box py="1rem" flex={1} minW={{ base: "100%", sm: "45%" }}>
+          <Box flex={1} minW={{ base: "100%", sm: "45%" }}>
             <Button
               onClick={handlerSubmit}
               type="submit"
@@ -132,7 +147,7 @@ const Login = ({
               Iniciar sesión
             </Button>
           </Box>
-          <Box py="1rem" flex={1} minW={{ base: "100%", sm: "45%" }}>
+          <Box flex={1} minW={{ base: "100%", sm: "45%" }}>
             <Button
               onClick={() => navigate("/register")}
               type="submit"
@@ -140,7 +155,7 @@ const Login = ({
               border="1px solid"
               borderColor="gray.300"
               size="lg"
-              color={"black"}
+              color={"blackAlpha.600"}
               mt={4}
               w={"100%"}
               _hover={{
@@ -155,7 +170,7 @@ const Login = ({
       </div>
       <Divider
         orientation="horizontal"
-        mt="1rem"
+        mt="2rem"
         pt="6px"
         bg="gray.200"
         borderRadius="7px"
@@ -190,27 +205,20 @@ const Login = ({
         <Box
           py="1rem"
           mt="1rem"
-          borderRadius={7}
           color={"brand.green.300"}
           size="lg"
           w="50%"
           px="1rem"
-          _hover={{
-            bg: "orange.100",
-            fontWeight: "bold",
-          }}
         >
-          <Link to={`/`}>
-            <Text
-              fontFamily={"body"}
-              fontSize="1.2rem"
-              _hover={{
-                color: "brand.green.300",
-              }}
-            >
-              Ingresar como invitado
-            </Text>
-          </Link>
+          <Button
+            fontFamily={"body"}
+            fontSize="1rem"
+            fontWeight={"bold"}
+            onClick={() => navigate("/")}
+            textAlign={"center"}
+          >
+            Ingresar como invitado
+          </Button>
         </Box>
       </Center>
     </div>
