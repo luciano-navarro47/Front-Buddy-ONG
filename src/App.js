@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
 import { setAccessToken } from "./redux/Actions/auth";
@@ -10,7 +10,7 @@ import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 import NotFound from "./components/NotFound/NotFound";
-import { Layout } from "./components/Layout";
+import Layout from "./components/Layout";
 import EmailModal from "./components/Modal/EmailModal";
 import {
   fetchAuth0User,
@@ -25,6 +25,7 @@ export const App = () => {
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isWaitingEmail, setIsWaitingEmail] = useState(false);
   const [pendingAuth0User, setPendingAuth0User] = useState(null);
+  const reduxUser = useSelector((state) => state.user);
 
   const {
     isLoading,
@@ -65,6 +66,14 @@ export const App = () => {
     },
     [dispatch, getAccessTokenSilently]
   );
+
+  useEffect(() => {
+    if (reduxUser && Object.keys(reduxUser).length > 0) {
+      setUser(reduxUser);
+    } else {
+      setUser(null);
+    }
+  }, [reduxUser]);
 
   useEffect(() => {
     const initFromStorage = async () => {

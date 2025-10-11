@@ -6,6 +6,7 @@ import { PetsTable } from "components/account/admin/pets/PetsTable";
 import { ProductsTable } from "components/account/admin/products/ProductsTable";
 import { VeterinariesTable } from "components/account/admin/veterinaries/VeterinariesTable";
 
+
 export const adminRoutes = ({ user, setUser, handleLogout }) => [
   {
     path: "/account",

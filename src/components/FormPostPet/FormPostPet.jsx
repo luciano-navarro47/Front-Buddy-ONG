@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { ErrorForm, SuccedForm } from "./AlertForm/AlertForm";
+import { AlertForm } from "../Alerts/AlertForm/AlertForm";
 import {
   Flex,
   Box,
@@ -40,6 +40,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
   };
 
   const [isIncomplete, setIsIncomplete] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const [input, setInput] = useState(initialInputState);
@@ -86,7 +87,6 @@ export default function FormPostPet({ isUpdating, userRole }) {
       dispatch(postOrUpdatePet(input, isUpdating, paramsId.id));
       setIsIncomplete(false);
       setInfoSend(true);
-      // resetForm(setInput, setInputError, initialInputState);
     }
   };
 
@@ -97,8 +97,22 @@ export default function FormPostPet({ isUpdating, userRole }) {
           Editando como administrador
         </Text>
       )}
-      {isIncomplete ? <ErrorForm /> : null}
-      {infoSend ? <SuccedForm /> : null}
+      {isIncomplete && showAlert && (
+        <AlertForm
+          status="error"
+          title="Error: "
+          description="Asegurate de llenar todos los campos y de no tener errores en el formulario."
+          setShowAlert={setShowAlert}
+        />
+      )}
+      {infoSend && showAlert && (
+        <AlertForm
+          status="success"
+          title="Correcto: "
+          description="Mascota publicada correctamente."
+          setShowAlert={setShowAlert}
+        />
+      )}
       <form onSubmit={(e) => handlerSubmit(e)} id="myForm">
         <Flex minH={"100%"} align={"center"} justify={"center"}>
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>

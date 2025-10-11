@@ -46,17 +46,28 @@ export const postUser = (user) => {
   return async function (dispatch) {
     try {
       let response;
-      // Auth0Sub: provided by OAuth service
       if (user.auth0Sub) {
         response = await axios.post(`${HOST}/user/oauth-upsert`, user);
       } else {
         response = await axios.post(`${HOST}/user/register`, user);
       }
-      const savedUser = response.data;
-      dispatch({
-        type: POST_USER,
-      });
-      return savedUser;
+
+      const data = response.data;
+
+      if (data?.token) {
+        dispatch(setAccessToken(data.token));
+        localStorage.setItem("token", data.token);
+      }
+
+      const userObj = data?.user;
+      if (userObj) {
+        dispatch(setUserState(userObj));
+        localStorage.setItem("loggedUser", JSON.stringify(userObj));
+      }
+
+      dispatch({ type: POST_USER });
+
+      return response;
     } catch (error) {
       console.log(error);
       throw error;
@@ -90,19 +101,6 @@ export const getUserById = (id) => {
   };
 };
 
-export const setUserState = (userData) => {
-  return function (dispatch) {
-    try {
-      dispatch({
-        type: SET_USER,
-        payload: userData,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-
 export function bulkSetStatusUser(changesArray) {
   return async function (dispatch) {
     try {
@@ -122,7 +120,7 @@ export function checkUsernameAvailability(username) {
   return async function (dispatch) {
     try {
       const response = await axios.get(
-        `${HOST}/users/check-username?username=${username}`,
+        `${HOST}/user/check-username?username=${username}`,
         {
           headers: { "Cache-control": "no-cache" },
         }
@@ -149,6 +147,19 @@ export function checkUserPassword(userId, currentPassword) {
     return response.data.ok;
   };
 }
+
+export const setUserState = (userData) => {
+  return function (dispatch) {
+    try {
+      dispatch({
+        type: SET_USER,
+        payload: userData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
 
 export const loginUser = async (
   userData,

@@ -1,18 +1,14 @@
 import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
 import FormPostPet from "../components/FormPostPet/FormPostPet";
-import FormPostUser from "../components/FormPostUser/FormPostUser";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
 import ProfileForm from "components/account/profile/ProfileForm";
 
-export const userRoutes = ({
-  user,
-  setUser,
-  handleLogout,
-}) => [
+export const userRoutes = ({ user, setUser, handleLogout }) => [
   // Only to registered users
+  
   {
     path: "/createPet",
     element: (
@@ -21,14 +17,6 @@ export const userRoutes = ({
       </PrivateRoute>
     ),
   },
-  // {
-  //   path: "/updateUser",
-  //   element: (
-  //     <PrivateRoute roles={["user", "admin"]}>
-  //       <FormPostUser />
-  //     </PrivateRoute>
-  //   ),
-  // },
   {
     path: "/account",
     element: (
