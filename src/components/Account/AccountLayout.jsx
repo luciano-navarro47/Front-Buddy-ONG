@@ -3,8 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import logo from "../../assets/imagenes/logo_negro.png";
 
-export default function AccountLayout({ user, setUser, handleLogout }) {
-  console.log("ACOUNT LAY: ", user)
+export default function AccountLayout({ user, handleLogout }) {
   const navigate = useNavigate();
   return (
     <Flex h="100vh">
