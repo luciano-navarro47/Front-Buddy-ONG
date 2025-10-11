@@ -25,7 +25,7 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   },
   {
     path: "/register",
-    element: <RegisterUserForm />,
+    element: <RegisterUserForm setUser={setUser}/>,
   },
   {
     path: "/aboutUs",

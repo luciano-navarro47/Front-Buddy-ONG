@@ -11,7 +11,6 @@ export const PrivateRoute = ({
   const dispatch = useDispatch();
   const { token, expiresAt } = useSelector((state) => state.auth);
   const userRole = useSelector((state) => state.user.role);
-
   const now = Math.floor(Date.now() / 1000);
   const expNum = expiresAt ? Number(expiresAt) : null;
   const isAuthenticated = Boolean(token && Date.now() / 1000 < expiresAt);

@@ -19,7 +19,7 @@ import logo from "../../assets/imagenes/logo_negro.png";
 
 export default function LandingHero() {
   return (
-    <Stack spacing={{ base: 10, md: 20 }} align="center" justify="center">
+    <Stack spacing={{ base: 10, md: 5 }} align="center" justify="center">
       <Box textAlign="center">
         <Center>
           <Image src={logo} alt="logo" width="70%" />
@@ -31,14 +31,38 @@ export default function LandingHero() {
           fontSize={{ base: "2xl", sm: "3xl", md: "4xl", lg: "4xl" }}
           mt={4}
         >
-          ¡TU AYUDA SUMA!
+          ¡Tu ayuda suma!
         </Heading>
 
         <Center mt="2rem">
           <Stack direction="row" spacing={4}>
-            <Icon as={GiSittingDog} color="orange" boxShadow="lg" />
-            <Icon as={RiHeartAddLine} color="brand.green.300" boxShadow="lg" />
-            <Icon as={GiCat} color="orange" boxShadow="lg" />
+            <Icon
+              as={GiSittingDog}
+              p={1}
+              border="2px solid"
+              color="orange"
+              boxShadow="lg"
+              boxSize={10}
+              borderRadius={50}
+            />
+            <Icon
+              as={RiHeartAddLine}
+              p={1}
+              border="2px solid"
+              color="brand.green.300"
+              boxShadow="lg"
+              boxSize={10}
+              borderRadius={50}
+            />
+            <Icon
+              as={GiCat}
+              p={1}
+              border="2px solid"
+              color="orange"
+              boxShadow="lg"
+              boxSize={10}
+              borderRadius={50}
+            />
           </Stack>
         </Center>
       </Box>

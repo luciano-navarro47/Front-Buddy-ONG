@@ -4,6 +4,7 @@ import Sidebar from "./Sidebar";
 import logo from "../../assets/imagenes/logo_negro.png";
 
 export default function AccountLayout({ user, setUser, handleLogout }) {
+  console.log("ACOUNT LAY: ", user)
   const navigate = useNavigate();
   return (
     <Flex h="100vh">

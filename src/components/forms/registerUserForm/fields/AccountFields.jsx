@@ -15,16 +15,17 @@ export default function AccountFields({
   return (
     <>
       <FormControl id="username" isRequired>
-        <FormLabel>Nombre de usuario:</FormLabel>
+        <FormLabel mb={"0.25rem"}>Nombre de usuario:</FormLabel>
         <Input
           name="username"
           value={input.username}
           onChange={handleChange}
           autoComplete="off"
           focusBorderColor="brand.green.300"
+          bg={"white"}
         />
         {inputError.username ? (
-          <Text className="text_inputError">{inputError.username}</Text>
+          <Text className="text_inputError" color={"red.500"}>{inputError.username}</Text>
         ) : (
           input.username.length >= 3 &&
           (usernameError ? (
@@ -40,36 +41,37 @@ export default function AccountFields({
       </FormControl>
 
       <FormControl id="email" isRequired>
-        <FormLabel>E-mail:</FormLabel>
+        <FormLabel mb={"0.25rem"}>Correo electrónico:</FormLabel>
         <Input
           name="email"
           value={input.email}
           onChange={handleChange}
           autoComplete="email"
           focusBorderColor="brand.green.300"
+          bg={"white"}
         />
-        {inputError.email && <Text className="text_inputError">{inputError.email}</Text>}
+        {inputError.email && <Text className="text_inputError" color={"red.500"}>{inputError.email}</Text>}
       </FormControl>
 
       <FormControl id="password" isRequired>
-        <FormLabel>Contraseña:</FormLabel>
+        <FormLabel mb={"0.25rem"}>Contraseña:</FormLabel>
         <InputGroup size="md">
           <Input
             autoComplete="off"
-            placeholder="Ingresar una contraseña"
             name="password"
             type={showPassword ? "text" : "password"}
             value={input.password}
             onChange={handleChange}
             focusBorderColor="brand.green.300"
+            bg={"white"}
           />
           <InputRightElement width="4.5rem">
-            <Button h="1.75rem" size="sm" onClick={() => setShowPassword(!showPassword)}>
+            <Button h="1.75rem" color={"gray.500"} bg={"white"} size="sm" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <BiHide  size={20}/> : <BiShow size={20}/>}
             </Button>
           </InputRightElement>
         </InputGroup>
-        {inputError.password && <Text className="text_inputError">{inputError.password}</Text>}
+        {inputError.password && <Text className="text_inputError" color={"red.500"}>{inputError.password}</Text>}
       </FormControl>
     </>
   );

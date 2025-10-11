@@ -99,9 +99,6 @@ const Login = ({
                   placeholder="Contraseña"
                   border={1}
                   color={"gray.500"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
                   onChange={handleChange}
                 />
                 <InputRightElement width="4.5rem">

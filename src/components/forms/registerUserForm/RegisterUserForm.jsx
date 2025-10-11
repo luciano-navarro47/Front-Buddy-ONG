@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Flex, Box, Stack, Button, Text } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   postUser,
-//   updateUser,
-//   getUserById,
   checkUsernameAvailability,
 } from "../../../redux/Actions/userActions";
 import { validateRegisterUserForm } from "../../../utils/formValidations/registerUserForm";
@@ -14,14 +12,11 @@ import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AccountFields from "./fields/AccountFields";
 import ContactField from "./fields/ContactField";
 
-export default function RegisterUserForm() {
+export default function RegisterUserForm({ setUser }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-//   const userInfo = useSelector((state) => state.user);
-
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-//   const [user, setUser] = useState([]);
   const [usernameError, setUsernameError] = useState("");
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [inputError, setInputError] = useState({});
@@ -35,11 +30,43 @@ export default function RegisterUserForm() {
     phone: "",
     password: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const hasRequiredFields = (data) =>
+    Boolean(
+      data.first_name &&
+        data.last_name &&
+        data.email &&
+        data.username &&
+        data.phone &&
+        usernameError === ""
+    );
 
-  // ✅ Handle input changes
+  const extractApiErrors = (error) => {
+    const payload = error?.response?.data;
+    const errorsArray =
+      payload?.errors || (Array.isArray(payload) ? payload : null);
+
+    if (Array.isArray(errorsArray) && errorsArray.length > 0) {
+      const mapped = {};
+      errorsArray.forEach((it) => {
+        if (it.param) mapped[it.param] = it.msg || true;
+      });
+      if (mapped.hasOwnProperty("email")) {
+        mapped["email"] = "Este correo ya está en uso.";
+      }
+      return mapped;
+    }
+
+    return { general: "Ocurrió un error. Intentá nuevamente." };
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     const trimmedValue = value.trim();
+
+    if (name === "email") {
+      setInputError((prev) => ({ ...prev, email: "" }));
+    }
 
     setInput((prevInput) => {
       const updatedInput = { ...prevInput, [name]: trimmedValue };
@@ -53,7 +80,6 @@ export default function RegisterUserForm() {
     }
   };
 
-  // ✅ Username availability check
   const checkUserName = async (username) => {
     if (username.length < 3) return;
     try {
@@ -64,42 +90,57 @@ export default function RegisterUserForm() {
     }
   };
 
-  // ✅ Submit handler
-  const handlerSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
-    if (
-      input.first_name &&
-      input.last_name &&
-      input.email &&
-      input.username &&
-      input.phone &&
-      usernameError === ""
-    ) {
+    setShowAlert(false);
+    setInfoSend(false);
+
+    if (!hasRequiredFields(input)) {
+      setIsIncomplete(true);
+      setShowAlert(true);
+      return;
+    }
+
+    setIsIncomplete(false);
+    setIsSubmitting(true);
+
+    try {
       const res = await dispatch(postUser(input));
 
-      if (res.status === 200) {
-        localStorage.setItem("loggedUser", JSON.stringify(res.data));
+      if (res && res.status === 201 && res.data) {
+        setInfoSend(true);
+        setShowAlert(true);
         navigate("/");
+        return;
       }
+    } catch (err) {
+      console.error("Register error:", err);
 
-      setIsIncomplete(false);
-      setInfoSend(true);
-      setShowAlert(true);
-    } else {
-      setIsIncomplete(true);
-      setInfoSend(false);
-      setShowAlert(true);
+      const parsed = extractApiErrors(err);
+
+      if (parsed.email) {
+        setInputError((prev) => ({ ...prev, email: parsed.email }));
+        const el = document.querySelector('input[name="email"]');
+        if (el) el.focus();
+      } else if (parsed.general) {
+        setShowAlert(true);
+      } else {
+        setShowAlert(true);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <form id="registerUserForm">
-      {/* ✅ Alerts */}
+    <form id="registerUserForm" onSubmit={handleSubmit}>
+      {/* Alerts */}
       {isIncomplete && showAlert && (
         <AlertForm
           status="error"
-          title="Error"
+          title="Error: "
           description="Asegurate de llenar todos los campos correctamente."
           setShowAlert={setShowAlert}
         />
@@ -107,28 +148,29 @@ export default function RegisterUserForm() {
       {infoSend && showAlert && (
         <AlertForm
           status="success"
-          title="Correcto"
-          description="Te registraste correctamente. Ahora podés iniciar sesión."
+          title="Excelente: "
+          description={`Tu huella humana ha sido registrada. ¡Ahora podés iniciar sesión!`}
           setShowAlert={setShowAlert}
         />
       )}
 
-      <Flex align="center" justify="center" bg="brand.green.200">
+      <Flex align="center" justify="center" bg="white">
         <Stack spacing={8} mx="auto" maxW="lg" py={6}>
-          <Stack align="center">
-            <Text
-              fontFamily="heading"
-              fontWeight="bold"
-              color="gray.600"
-              fontSize="5xl"
-              textAlign="center"
-            >
-              Registrate
-            </Text>
-          </Stack>
+          <Box rounded="lg" bg="brand.green.200" boxShadow="lg" p={10}>
+            <Box align="left" mb={"1rem"}>
+              <Text
+                fontFamily="heading"
+                fontWeight="bold"
+                color="gray.600"
+                fontSize={35}
+                align={"left"}
+                textDecoration={"underline"}
+              >
+                Formulario de registro
+              </Text>
+            </Box>
 
-          <Box rounded="lg" bg="white" boxShadow="lg" p={8}>
-            <Stack spacing={4}>
+            <Stack spacing={8}>
               <PersonalInfoFields
                 input={input}
                 inputError={inputError}
@@ -148,12 +190,12 @@ export default function RegisterUserForm() {
                 handleChange={handleChange}
               />
 
-              {/* ✅ Buttons */}
+              {/* Buttons */}
               <Stack spacing={4} pt={2}>
                 <Button
-                  onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
+                  type="submit"
+                  isLoading={isSubmitting}
                   disabled={usernameError !== ""}
-                  loadingText="Registrarse"
                   size="lg"
                   bg="orange.300"
                   color="white"
@@ -165,14 +207,14 @@ export default function RegisterUserForm() {
                   onClick={() => navigate("/login")}
                   variant="outline"
                   size="lg"
-                  color="black"
+                  color="gray.500"
                   borderColor="gray.300"
                   _hover={{ bg: "brand.green.300", color: "white" }}
                 >
                   Atrás
                 </Button>
                 <Text fontSize="lg" color="gray.600">
-                  Gracias por cuidar a los animales ✌️
+                  Gracias por cuidar, respetar y amar a los animales.
                 </Text>
               </Stack>
             </Stack>

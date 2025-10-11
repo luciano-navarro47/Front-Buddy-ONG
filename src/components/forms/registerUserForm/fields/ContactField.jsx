@@ -4,9 +4,9 @@ import { FormControl, FormLabel, Input, InputGroup, InputLeftAddon, Text } from 
 export default function ContactField({ input, inputError, handleChange }) {
   return (
     <FormControl id="phone" isRequired>
-      <FormLabel>Cel/Teléfono:</FormLabel>
-      <InputGroup size="sm">
-        <InputLeftAddon bg="gray.50" color="gray.500" fontWeight="bold">
+      <FormLabel mb={"0.25rem"}>Cel/Teléfono:</FormLabel>
+      <InputGroup size="sm" >
+        <InputLeftAddon borderRadius={10}  color="gray.500" fontWeight="bold">
           +54
         </InputLeftAddon>
         <Input
@@ -14,10 +14,12 @@ export default function ContactField({ input, inputError, handleChange }) {
           name="phone"
           value={input.phone}
           onChange={handleChange}
+          borderRadius={10}
           focusBorderColor="brand.green.300"
+          bg={"white"}
         />
       </InputGroup>
-      {inputError.phone && <Text className="text_inputError">{inputError.phone}</Text>}
+      {inputError.phone && <Text className="text_inputError" color={"red"}>{inputError.phone}</Text>}
     </FormControl>
   );
 }
