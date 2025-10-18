@@ -2,15 +2,19 @@ import React from "react";
 import Home from "../components/Home/Home";
 import AboutUs from "../components/AboutUs/AboutUs";
 import DonationPage from "../components/Donation/DonationPage";
-import Shop from "../components/Shop/Shop";
-import Cart from "../components/Shop/Cart/Cart"
 import Veterinaries from "../components/Veterinaries/Veterinaries";
-import VetsDetail from "../components/VetsDetail/VetsDetail"
-import Pets from "../components/Adoption/Pets"
+import VetsDetail from "../components/VetsDetail/VetsDetail";
+import Pets from "../components/Adoption/Pets";
 import PetDetail from "../components/pets/details/PetDetail";
 import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
 
-export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect, handleLogout }) => [
+export const publicRoutes = ({
+  user,
+  setUser,
+  isAuthenticated,
+  loginWithRedirect,
+  handleLogout,
+}) => [
   {
     path: "/",
     element: (
@@ -29,11 +33,11 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   },
   {
     path: "/aboutUs",
-    element: <AboutUs/>
+    element: <AboutUs />,
   },
   {
     path: "/donate",
-    element: <DonationPage />
+    element: <DonationPage />,
   },
   {
     path: "/shop",
@@ -41,22 +45,26 @@ export const publicRoutes = ({ user, setUser, isAuthenticated, loginWithRedirect
   },
   {
     path: "/shop/cart",
-    element: <Cart />
+    element: <Cart />,
+  },
+  {
+    path: "/shop/product/:id",
+    element: <ProductDetail />,
   },
   {
     path: "/veterinary",
-    element: <Veterinaries />
+    element: <Veterinaries />,
   },
   {
     path: "/veterinary/:id",
-    element: <VetsDetail />
+    element: <VetsDetail />,
   },
   {
     path: "/pets",
-    element: <Pets />
+    element: <Pets />,
   },
   {
     path: "/pet/detail/:id",
-    element: <PetDetail />
-  }
+    element: <PetDetail />,
+  },
 ];

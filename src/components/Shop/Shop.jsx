@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../../redux/Actions/productActions";
 
+import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
 import CardsProduct from "./CardsProducts/CardsProduct";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
-import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
 import Pagination from "../Pagination/Pagination";
 
-export default function Shop({ handleSetUserFlag }) {
+export default function Shop() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.products);
-
+  const products = useSelector((state) => state.products.filteredProducts);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage, setProductsPerPage] = useState(6);
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -48,18 +47,20 @@ export default function Shop({ handleSetUserFlag }) {
     }
   }
 
-  const handlerSetCart = (e, id, price, image, name, stock) => {
+  const handleSetCart = (e, id, price, images, name, stock) => {
     e.preventDefault();
 
     try {
+
       let product = {
         name,
-        image,
+        images,
         price,
         id,
         stock,
         amount: 1,
       };
+
       let oldCart = JSON.parse(window.localStorage.getItem("cart"));
 
       if (oldCart) {
@@ -69,6 +70,7 @@ export default function Shop({ handleSetUserFlag }) {
             index = i;
           }
         });
+
         if (index !== false) {
           if (stock === oldCart[index].amount) {
             return alert("Se llegó al limite de stock actual");
@@ -78,10 +80,6 @@ export default function Shop({ handleSetUserFlag }) {
             oldCart[index].total = oldCart[index].price * oldCart[index].amount;
             window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
             dispatch(getAllProducts);
-            console.log(
-              "CASO SI EXISTE CARRITO Y SIIIII TENGO INDEX",
-              JSON.parse(localStorage.getItem("cart"))
-            );
           }
         } else {
           if (stock !== 0) {
@@ -91,10 +89,6 @@ export default function Shop({ handleSetUserFlag }) {
               JSON.stringify([...oldCart, product])
             );
             dispatch(getAllProducts);
-            console.log(
-              "CASO SI EXISTE CARRITO Y NOOOOO TENGO INDEX",
-              JSON.parse(localStorage.getItem("cart"))
-            );
           } else {
             return alert("El producto no tiene stock");
           }
@@ -104,10 +98,6 @@ export default function Shop({ handleSetUserFlag }) {
           product.total = product.price;
           window.localStorage.setItem("cart", JSON.stringify([product]));
           dispatch(getAllProducts);
-          console.log(
-            "CASO NO EXISTE CARRITO",
-            JSON.parse(localStorage.getItem("cart"))
-          );
         } else {
           return alert("El producto no tiene stock");
         }
@@ -119,13 +109,13 @@ export default function Shop({ handleSetUserFlag }) {
 
   useEffect(() => {
     dispatch(getAllProducts());
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
       <Box minHeight={"80vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <ShopNavbar
-          handlerSetCart={handlerSetCart}
+          handleSetCart={handleSetCart}
           handleRemoveItemCart={handleRemoveItemCart}
           paginate={paginate}
         />
@@ -141,7 +131,7 @@ export default function Shop({ handleSetUserFlag }) {
               {products.length ? (
                 <CardsProduct
                   products={currentProducts}
-                  handlerSetCart={handlerSetCart}
+                  handleSetCart={handleSetCart}
                   handleRemoveItemCart={handleRemoveItemCart}
                 />
               ) : (

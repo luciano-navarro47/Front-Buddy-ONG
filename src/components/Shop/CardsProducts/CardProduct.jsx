@@ -1,20 +1,15 @@
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getProductDetail } from "../../../redux/Actions/productActions";
-import "./CardProduct.css"
+import "./CardProduct.css";
 import {
   Box,
   useColorModeValue,
   Image,
   Heading,
-  Text,
   Center,
   HStack,
   Button,
 } from "@chakra-ui/react";
-
 import {
   AlertDialog,
   AlertDialogBody,
@@ -28,29 +23,32 @@ import {
 export default function CardProduct({
   id,
   name,
-  image,
+  images,
   price,
   stock,
   description,
-  handlerSetCart,
+  handleSetCart,
   handleRemoveItemCart,
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const product = JSON.parse(localStorage.getItem("cart"))?.filter(
+    (pr) => pr.id === id
+  )[0];
+
   const handleNavigateProduct = (e) => {
     e.preventDefault();
-    let obj = { id, handlerSetCart, handleRemoveItemCart };
-    dispatch(getProductDetail(obj));
-    setTimeout(() => navigate(`/shop/product/${id}`), 200);
+    navigate(`/shop/product/${id}`);
   };
-  const product = JSON.parse(localStorage.getItem("cart"))?.filter((pr)=>pr.id===id)[0]
+
   return (
     <>
-      <Box >
-        <Center  py={6}>
-          <Box className="boxCardContainer"
+      <Box>
+        <Center py={6}>
+          <Box
+            className="boxCardContainer"
             maxW={"320px"}
             w={"full"}
             h={"450px"}
@@ -62,13 +60,11 @@ export default function CardProduct({
           >
             <Center>
               <Image
-                // size={"lg"}
-                src={image}
+                src={images[0]}
                 borderRadius="7px"
-                alt="img not found"
+                alt="Sin imagen"
                 width={"12rem"}
                 h={"8.5rem"}
-                // mb={".4rem"}
                 pos={"relative"}
               />
             </Center>
@@ -79,51 +75,33 @@ export default function CardProduct({
             >
               {name}
             </Heading>
-            <Text
-              fontSize={".9rem"}
-              fontWeight={500}
-              color={"gray.500"}
-              mb={.5}
-              fontFamily={"body"}
-            >
-              {description.length>50?description.slice(0, 50)+"...":description}
-            </Text>
-            <Text
-              fontWeight={500}
-              fontSize={".9rem"}
-              color={"gray.500"}
-              mb={1}
-              fontFamily={"body"}
-            >
-              Stock: {stock}u
-            </Text>
+
             <Heading
               fontSize={"1.3rem"}
               fontWeight={"bold"}
               fontFamily={"heading"}
               textTransform="uppercase"
-              color={"brand.orange"}
+              color={"orange.400"}
             >
               ${price}
             </Heading>
+
             <Center>
               <HStack py={0}>
                 <Button
                   onClick={(e) => handleNavigateProduct(e)}
                   fontFamily={"body"}
                   borderRadius={"full"}
-                  // size="md"
                   width={"7rem"}
                 >
                   Ver detalles
                 </Button>
 
-                  <Box>
+                <Box>
                   <Button
-                    onClick={onOpen} 
+                    onClick={onOpen}
                     fontFamily={"body"}
                     borderRadius={"full"}
-                    // size="md"
                     width={"7rem"}
                     bg={"brand.green.300"}
                     color={"white"}
@@ -132,8 +110,11 @@ export default function CardProduct({
                       boxShadow: "lg",
                     }}
                   >
-                    {/* {stock===0?"No hay stock":"Agregar"} */} 
-                    {stock === 0 ?"No hay stock":product?.amount === stock?"Max":"Agregar"} 
+                    {stock === 0
+                      ? "No hay stock"
+                      : product?.amount === stock
+                      ? "Max"
+                      : "Agregar"}
                   </Button>
                   <AlertDialog
                     isOpen={isOpen}
@@ -143,31 +124,46 @@ export default function CardProduct({
                     <AlertDialogOverlay>
                       <AlertDialogContent>
                         <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                    {stock === 0 ?"No hay stock":product?.amount === stock?"No nos queda más stock":"Agregar al carrito"} 
+                          {stock === 0
+                            ? "No hay stock"
+                            : product?.amount === stock
+                            ? "No nos queda más stock"
+                            : "Agregar al carrito"}
                         </AlertDialogHeader>
                         <AlertDialogBody>
-                    {stock === 0 ?"Lo sentimos, pronto habrá stock del producto":product?.amount === stock?"Llegaste al limite actual de stock, próximamente repondremos el producto.":"¿Querés agregar este producto a tu carrito?"} 
+                          {stock === 0
+                            ? "Lo sentimos, pronto habrá stock del producto"
+                            : product?.amount === stock
+                            ? "Llegaste al limite actual de stock, próximamente repondremos el producto."
+                            : "¿Querés agregar este producto a tu carrito?"}
                         </AlertDialogBody>
                         <AlertDialogFooter>
                           <Button ref={cancelRef} onClick={onClose}>
-                            {stock === 0 || product?.amount === stock ?"Volver":"Cancelar"}
+                            {stock === 0 || product?.amount === stock
+                              ? "Volver"
+                              : "Cancelar"}
                           </Button>
-  
-                    {
-                    stock === 0 || product?.amount === stock ?
-                    null
-                    :<Button
-                      color={"white"}
-                      bg={"brand.orange"}
-                      onClick={(e) => {
-                        handlerSetCart(e, id, price, image, name, stock);
-                        onClose();
-                      }}
-                      ml={3}
-                      >
-                      Si, agregar
-                    </Button>
-                    }  
+
+                          {stock === 0 || product?.amount === stock ? null : (
+                            <Button
+                              color={"white"}
+                              bg={"brand.orange"}
+                              onClick={(e) => {
+                                handleSetCart(
+                                  e,
+                                  id,
+                                  price,
+                                  images,
+                                  name,
+                                  stock
+                                );
+                                onClose();
+                              }}
+                              ml={3}
+                            >
+                              Si, agregar
+                            </Button>
+                          )}
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialogOverlay>

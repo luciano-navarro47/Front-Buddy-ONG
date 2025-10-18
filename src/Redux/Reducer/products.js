@@ -5,13 +5,14 @@ import {
   CLEAR_PRODUCT,
   POST_PRODUCT,
   // DELETE_PRODUCT,
-  // SHOP_FILTER_VALUE,
-  // SHOP_SEARCH_INPUT_NAME,
+  FILTER_PRODUCTS,
+  // SEARCH_PRODUCT_BY_NAME,
 } from "../../redux/ActionTypes";
 
 const initialState = {
   allProducts: [],
-  product: null,
+  filteredProducts: [],
+  product: {},
 };
 
 export default function productsReducer(state = initialState, action) {
@@ -50,6 +51,14 @@ export default function productsReducer(state = initialState, action) {
           state.product && String(state.product.id) === updateId
             ? { ...state.product, ...payload }
             : state.product,
+      };
+    case FILTER_PRODUCTS:
+      return {
+        ...state,
+        filteredProducts:
+          action.payload === "all-products"
+            ? state.allProducts
+            : state.allProducts.filter((p) => p.category === action.payload),
       };
     default:
       return state;

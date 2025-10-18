@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 export const Product = (props) => {
-  const { image, name, stock, amount, price } = props;
+  const { images, name, stock, amount, price } = props;
 
   return (
     <Flex direction="row" display={"flex"} w={"100%"} bg={"lightskyblue"} justify="space-evenly" spacing="5" width="full">
@@ -17,7 +17,7 @@ export const Product = (props) => {
         width="9rem"
         height="9rem"
         fit="cover"
-        src={image}
+        src={images}
         alt={name}
         draggable="false"
         loading="lazy"

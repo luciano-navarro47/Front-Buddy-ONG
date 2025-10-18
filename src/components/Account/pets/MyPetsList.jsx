@@ -11,6 +11,8 @@ export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
   const userPets = useSelector((state) => state.pets.userPets) || [];
 
+  // console.log("UserPets: ", userPets);
+
   // Use query-params ?page= to remember the page
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;

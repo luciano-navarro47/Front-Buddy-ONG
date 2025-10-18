@@ -7,6 +7,7 @@ import currentUserReducer from "../Reducer/currentUser";
 import usersListReducer from "../Reducer/usersList";
 import petReducer  from "../Reducer/pets";
 import vetsReducer from "../Reducer/vets";
+import paymentReducer from "redux/Reducer/payments";
 
 const rootReducer = combineReducers({
 	auth: authReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
 	user: currentUserReducer,
 	users: usersListReducer,
 	vets: vetsReducer,
+	payment: paymentReducer,
 });
 
 export const store = createStore(

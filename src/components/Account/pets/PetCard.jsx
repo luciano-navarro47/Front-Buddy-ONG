@@ -126,7 +126,7 @@ const PetCard = ({
             isOpen={isOpen}
             onClose={onClose}
             title="Eliminar Mascota"
-            message={`¿Está seguro/a de querer dejar de publicar la mascota ubicada en el área de "${area}"?\n\nEsta acción no se puede deshacer.`}
+            message={`¿Querés dejar de publicar la mascota ubicada en el área de "${area}"?\n\nEsta acción no se puede deshacer.`}
             onConfirm={() => handleDeletePet(id)}
           />
         </ButtonGroup>

@@ -13,7 +13,7 @@ import {
   Text,
   Icon,
 } from "@chakra-ui/react";
-import { postOrUpdatePet } from "../../redux/Actions/petActions";
+import { getPetsByUser, postOrUpdatePet } from "../../redux/Actions/petActions";
 import { SelectField, selectConfigs } from "./FormFields/SelectField";
 import { InputField, inputConfigs } from "./FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
@@ -44,6 +44,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const [input, setInput] = useState(initialInputState);
+  const [isSubmitting, setIsSubmitting] = useState(false); // <-- loading state
 
   // Hook
   usePetForm(paramsId, initialInputState, setInput, isUpdating);
@@ -66,8 +67,11 @@ export default function FormPostPet({ isUpdating, userRole }) {
       [name]: errors[name] || "",
     }));
   };
-  const handlerSubmit = (e) => {
+
+  const handlerSubmit = async (e) => {
     e.preventDefault();
+
+    if (isSubmitting) return;
 
     const errors = validateForm(input);
     setInputError(errors);
@@ -77,16 +81,49 @@ export default function FormPostPet({ isUpdating, userRole }) {
       setInfoSend(false);
       return;
     }
+
+    setIsIncomplete(false);
+    setInfoSend(false);
+    setIsSubmitting(true);
+
+    console.log("IS UPDATING: ", isUpdating);
+
     if (isUpdating !== true) {
-      dispatch(postOrUpdatePet(input));
-      setIsIncomplete(false);
-      setInfoSend(true);
-      resetForm(setInput, setInputError, initialInputState);
-      navigate("/account/myPets");
+      try {
+        window.scrollTo(0, 0);
+
+        // IMPORTANT: postOrUpdatePet debe retornar una promesa (thunk que retorna respuesta)
+        const created = await dispatch(postOrUpdatePet(input));
+
+        resetForm(setInput, setInputError, initialInputState);
+
+        const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+        if (loggedUser?.id) {
+          await dispatch(getPetsByUser(loggedUser.id));
+        }
+
+        setInfoSend(true);
+        navigate("/account/myPets");
+      } catch (error) {
+        console.error("Error creando mascota:", error);
+        setInfoSend(false);
+        setIsSubmitting(false);
+      }
     } else {
-      dispatch(postOrUpdatePet(input, isUpdating, paramsId.id));
-      setIsIncomplete(false);
-      setInfoSend(true);
+      // update case
+      try {
+        window.scrollTo(0, 0);
+        await dispatch(postOrUpdatePet(input, isUpdating, paramsId));
+        setInfoSend(true);
+        const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+        if (loggedUser?.id) {
+          await dispatch(getPetsByUser(loggedUser.id));
+        }
+        navigate(`/account/myPets?page=${pageParam}`);
+      } catch (err) {
+        console.error("Error actualizando mascota:", err);
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -97,30 +134,17 @@ export default function FormPostPet({ isUpdating, userRole }) {
           Editando como administrador
         </Text>
       )}
-      {isIncomplete && showAlert && (
-        <AlertForm
-          status="error"
-          title="Error: "
-          description="Asegurate de llenar todos los campos y de no tener errores en el formulario."
-          setShowAlert={setShowAlert}
-        />
-      )}
-      {infoSend && showAlert && (
-        <AlertForm
-          status="success"
-          title="Correcto: "
-          description="Mascota publicada correctamente."
-          setShowAlert={setShowAlert}
-        />
-      )}
-      <form onSubmit={(e) => handlerSubmit(e)} id="myForm">
+      {isIncomplete ? <ErrorForm /> : null}
+      {infoSend ? <SuccedForm /> : null}
+
+      <form onSubmit={handlerSubmit} id="myForm">
         <Flex minH={"100%"} align={"center"} justify={"center"}>
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
             <Stack align={"center"}>
               <Heading fontSize={"2xl"} textAlign={"center"}>
                 {isUpdating
                   ? userRole === "admin"
-                    ? "Editar mascota del usuario"
+                    ? "Editando la mascota del usuario"
                     : "Editar mi mascota"
                   : "Publicar"}
               </Heading>
@@ -128,6 +152,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
                 ¡Gracias por cuidar a los animales!
               </Text>
             </Stack>
+
             <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
               <Stack spacing={4}>
                 <HStack>
@@ -166,15 +191,18 @@ export default function FormPostPet({ isUpdating, userRole }) {
                   type="submit"
                   bg={"orange.300"}
                   color={"white"}
-                  _hover={{
-                    bg: "orange.400",
-                  }}
-                  onClick={(e) => [handlerSubmit(e), window.scrollTo(0, 0)]}
+                  _hover={{ bg: "orange.400" }}
+                  onClick={() => window.scrollTo(0, 0)}
+                  isLoading={isSubmitting} // <-- Chakra Button spinner
+                  loadingText={isUpdating ? "Actualizando..." : "Publicando..."} // texto durante carga
+                  spinnerPlacement="start"
+                  disabled={isSubmitting} // evita doble click
                 >
                   {isUpdating ? "Actualizar" : "Publicar"}
                 </Button>
               </Stack>
             </Box>
+
             <Button
               leftIcon={<Icon as={MdArrowBackIosNew} />}
               onClick={() => {
@@ -185,6 +213,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
               _hover={{
                 color: "orange.400",
               }}
+              disabled={isSubmitting} // no permitir navegar mientras se envía
             >
               Atrás
             </Button>

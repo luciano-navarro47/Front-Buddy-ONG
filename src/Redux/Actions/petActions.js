@@ -67,10 +67,10 @@ export function postPet(formInput, token) {
   };
 }
 
-export function postOrUpdatePet(formInput, value, petId) {
+export function postOrUpdatePet(formInput, isUpdating, petId) {
   return async function (dispatch) {
     try {
-      if (value === "update") {
+      if (isUpdating) {
         await axios.put(`${HOST}/pet/${petId}`, formInput);
         return dispatch({
           type: UPDATE_PET,
