@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { AlertForm } from "../Alerts/AlertForm/AlertForm";
+import { SuccedForm, ErrorForm } from "../Alerts/AlertForm/AlertForm";
 import {
   Flex,
   Box,
@@ -46,6 +46,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
   const [input, setInput] = useState(initialInputState);
   const [isSubmitting, setIsSubmitting] = useState(false); // <-- loading state
 
+  console.log("SHOW: ", showAlert)
   // Hook
   usePetForm(paramsId, initialInputState, setInput, isUpdating);
 
@@ -86,13 +87,11 @@ export default function FormPostPet({ isUpdating, userRole }) {
     setInfoSend(false);
     setIsSubmitting(true);
 
-    console.log("IS UPDATING: ", isUpdating);
 
     if (isUpdating !== true) {
       try {
         window.scrollTo(0, 0);
 
-        // IMPORTANT: postOrUpdatePet debe retornar una promesa (thunk que retorna respuesta)
         const created = await dispatch(postOrUpdatePet(input));
 
         resetForm(setInput, setInputError, initialInputState);
@@ -134,8 +133,8 @@ export default function FormPostPet({ isUpdating, userRole }) {
           Editando como administrador
         </Text>
       )}
-      {isIncomplete ? <ErrorForm /> : null}
-      {infoSend ? <SuccedForm /> : null}
+      {isIncomplete ? <ErrorForm setShowAlert={setShowAlert} onClose={() => setIsIncomplete(false)}/> : null}
+      {/* {infoSend ? <SuccedForm setShowAlert={setShowAlert} onClose={() => setInfoSend(false)}/> : null} */}
 
       <form onSubmit={handlerSubmit} id="myForm">
         <Flex minH={"100%"} align={"center"} justify={"center"}>

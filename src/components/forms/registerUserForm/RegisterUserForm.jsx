@@ -7,7 +7,7 @@ import {
   checkUsernameAvailability,
 } from "../../../redux/Actions/userActions";
 import { validateRegisterUserForm } from "../../../utils/formValidations/registerUserForm";
-import { AlertForm } from "../../Alerts/AlertForm/AlertForm";
+import AlertForm from "../../Alerts/AlertForm/AlertForm";
 import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AccountFields from "./fields/AccountFields";
 import ContactField from "./fields/ContactField";

@@ -121,7 +121,7 @@ export function checkUsernameAvailability(username) {
   return async function (dispatch) {
     try {
       const response = await axios.get(
-        `${HOST}/user/check-username?username=${username}`,
+        `${API_URL}/user/check-username?username=${username}`,
         {
           headers: { "Cache-control": "no-cache" },
         }

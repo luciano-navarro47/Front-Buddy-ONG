@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Alert,
   AlertIcon,
@@ -9,67 +8,75 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 
-function AlertForm({ status, title, description, setShowAlert }) {
+function AlertForm({
+  status = "info",
+  title = "",
+  description = "",
+  setShowAlert,
+  onClose,
+}) {
+  const handleClose = () => {
+    console.log("ENTRE")
+    if (typeof setShowAlert === "function") setShowAlert(false);
+    if (typeof onClose === "function") onClose();
+  };
+
   return (
-    <Box>
+    <Box mb={4} position="relative">
       <Alert
         status={status}
-        height="100px"
+        height="auto"
         alignItems="center"
         justifyContent="center"
         textAlign="center"
+        borderRadius="md"
+        py={4}
+        px={4}
       >
         <AlertIcon boxSize={6} />
-        <AlertTitle fontWeight="bold">{title}</AlertTitle>
-        <AlertDescription>{description}</AlertDescription>
-        <Box position="absolute" right={2} top={2} bg={"red.400"} borderRadius={"full"}>
-          <CloseButton onClick={() => setShowAlert(false)} color={"white"}/>
+        <Box textAlign="left" ml={2}>
+          {title ? (
+            <AlertTitle display="block" fontWeight="bold">
+              {title}
+            </AlertTitle>
+          ) : null}
+          {description ? (
+            <AlertDescription display="block">{description}</AlertDescription>
+          ) : null}
         </Box>
+
+        {(typeof setShowAlert === "function" ||
+          typeof onClose === "function") && (
+          <Box position="absolute" right={2} top={2}>
+            <CloseButton onClick={handleClose} />
+          </Box>
+        )}
       </Alert>
     </Box>
   );
 }
+function ErrorForm({ setShowAlert, onClose } = {}) {
+  return (
+    <AlertForm
+      status="error"
+      title="Hay errores en el formulario"
+      description="Asegurate de llenar todos los campos requeridos correctamente."
+      setShowAlert={setShowAlert}
+      onClose={onClose}
+    />
+  );
+}
+function SuccedForm({ setShowAlert, onClose } = {}) {
+  return (
+    <AlertForm
+      status="success"
+      title="Enviado correctamente"
+      description="Tu publicación se creó/actualizó correctamente."
+      setShowAlert={setShowAlert}
+      onClose={onClose}
+    />
+  );
+}
 
-// function ErrorForm() {
-//   return (
-//     <Box>
-//       <Alert
-//         status="error"
-//         height="100px"
-//         alignItems="center"
-//         justifyContent="center"
-//         textAlign="center"
-//       >
-//         <AlertIcon boxSize={6} />
-//         <Text fontWeight="bold">
-//           Asegurate de llenar todos los campos y de no tener errores en el
-//           formulario.
-//         </Text>
-//       </Alert>
-//     </Box>
-//   );
-// }
-
-// function SuccedForm() {
-//   return (
-//     <Box>
-//       <Alert
-//         status="success"
-//         height="100px"
-//         alignItems="center"
-//         justifyContent="center"
-//         textAlign="center"
-//       >
-//         <AlertIcon boxSize={6} />
-//         <Text fontWeight="bold">
-//           Te registraste correctamente. Ahora podés iniciar sesión.
-//         </Text>
-//       </Alert>
-//     </Box>
-//   );
-// }
-export {
-  // SuccedForm,
-  // ErrorForm,
-  AlertForm,
-};
+export default AlertForm;
+export { SuccedForm, ErrorForm };

@@ -7,6 +7,9 @@ import VetsDetail from "../components/VetsDetail/VetsDetail";
 import Pets from "../components/Adoption/Pets";
 import PetDetail from "../components/pets/details/PetDetail";
 import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
+import Shop from "components/Shop/Shop";
+import Cart from "components/Shop/Cart/Cart";
+import ProductDetail from "components/Shop/ProductDetail/ProductDetail";
 
 export const publicRoutes = ({
   user,

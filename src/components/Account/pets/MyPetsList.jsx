@@ -11,20 +11,15 @@ export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
   const userPets = useSelector((state) => state.pets.userPets) || [];
 
-  // console.log("UserPets: ", userPets);
-
-  // Use query-params ?page= to remember the page
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(pageParam);
   const petsPerPage = 4;
 
-  // Calculate index per page
   const indexOfLast = currentPage * petsPerPage;
   const indexOfFirst = indexOfLast - petsPerPage;
   const currentPets = userPets.slice(indexOfFirst, indexOfLast);
 
-  // Fn to change page
   const paginate = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > Math.ceil(userPets.length / petsPerPage))
       return;
