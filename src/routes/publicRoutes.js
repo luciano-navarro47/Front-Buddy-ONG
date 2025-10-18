@@ -6,9 +6,7 @@ import Veterinaries from "../components/Veterinaries/Veterinaries";
 import VetsDetail from "../components/VetsDetail/VetsDetail";
 import Pets from "../components/Adoption/Pets";
 import PetDetail from "../components/pets/details/PetDetail";
-import Cart from "../components/Shop/Cart/Cart";
-import ProductDetail from "components/Shop/ProductDetail/ProductDetail";
-import Shop from "../components/Shop/Shop";
+import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
 
 export const publicRoutes = ({
   user,
@@ -28,6 +26,10 @@ export const publicRoutes = ({
         handleLogout={handleLogout}
       />
     ),
+  },
+  {
+    path: "/register",
+    element: <RegisterUserForm setUser={setUser}/>,
   },
   {
     path: "/aboutUs",

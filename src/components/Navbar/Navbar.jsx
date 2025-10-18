@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../assets/imagenes/logo_negro.png";
 import {
@@ -20,9 +21,23 @@ import NavLinks from "./NavLinks";
 import { mainLinks } from "./navConfig";
 export default function Navbar({ user, isAuthenticated, handleLogout }) {
   const navigate = useNavigate();
-
+  // console.log("USERRRR: ", user);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const reduxUser = useSelector((s) => s.user);
+
+  const persistedUser = React.useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("loggedUser"));
+    } catch {
+      return null;
+    }
+  }, []);
+  
+  // console.log("NAVBAR CURRENTUSER: ", reduxUser, persistedUser)
+
+  const currentUser =
+    reduxUser && Object.keys(reduxUser).length > 0 ? reduxUser : persistedUser;
 
   const handleLinkClick = (link) => {
     if (link.requiresAuth) {
@@ -88,7 +103,7 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
           onClose={onClose}
         />
 
-        {user && Object.keys(user).length > 0 ? (
+        {currentUser && Object.keys(currentUser).length > 0 ? (
           <Menu>
             <MenuButton
               as={Button}
@@ -109,25 +124,18 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
             </MenuButton>
 
             <MenuList>
-              <>
-                <NavLink to="/account">
-                  <MenuItem fontSize="1srem">
-                    Cuenta
-                  </MenuItem>
-                  {/* <MenuItem hidden={user?.role === "admin" ? false : true}>
-                    Panel administrador
-                  </MenuItem> */}
-                </NavLink>
-                {/* <NavLink to="/updateUser">
-                  <MenuItem>Datos personales</MenuItem>
-                </NavLink>
-                <NavLink to="/myPets">
-                  <MenuItem>Mis mascotas</MenuItem>
-                </NavLink> */}
-                <MenuItem fontSize="1rem" onClick={() => handleLogout()}>
-                  Cerrar sesión
-                </MenuItem>
-              </>
+              <MenuItem as={NavLink} fontSize="1rem" to="/account">
+                Cuenta
+              </MenuItem>
+              <MenuItem
+                fontSize="1rem"
+                onClick={() => {
+                  onClose();
+                  handleLogout();
+                }}
+              >
+                Cerrar sesión
+              </MenuItem>
             </MenuList>
           </Menu>
         ) : (

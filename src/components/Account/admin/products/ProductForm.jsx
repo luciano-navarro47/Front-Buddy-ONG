@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
 import UploadImages from "../../common/UploadImages";
-import { CATEGORIES } from "constants/categories";
+import { CATEGORIES } from "components/constants/categories";
 import {
   getProductDescription,
   postOrUpdateProduct,

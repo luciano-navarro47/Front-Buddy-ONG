@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { ErrorForm, SuccedForm } from "./AlertForm/AlertForm";
+import { AlertForm } from "../Alerts/AlertForm/AlertForm";
 import {
   Flex,
   Box,
@@ -40,6 +40,7 @@ export default function FormPostPet({ isUpdating, userRole }) {
   };
 
   const [isIncomplete, setIsIncomplete] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const [input, setInput] = useState(initialInputState);
