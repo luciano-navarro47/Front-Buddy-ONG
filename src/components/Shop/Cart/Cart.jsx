@@ -1,10 +1,9 @@
-// import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import SectionHeader from "components/account/common/SectionHeader";
 import {
   Box,
   Icon,
@@ -13,7 +12,6 @@ import {
   SimpleGrid,
   Stack,
   Button,
-  // useColorModeValue,
 } from "@chakra-ui/react";
 import {
   AlertDialog,
@@ -27,164 +25,176 @@ import {
 import CartCards from "./CartCards";
 import PaymentCheckout from "components/PaymentCheckout";
 import { createCheckout } from "redux/Actions/paymentsActions";
-export default function Cart({ handleSetUserFlag }) {
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [preferenceId, setPreferenceId] = useState(null);
+
+// Refactor notes:
+// - The cart is now managed with React state (setCart) and persisted to localStorage in a single place.
+// - addItem / removeItem helpers centralize the cart mutation logic and avoid repeated branches.
+// - createCheckout dispatch now receives the full payload object: { cart, userInfo, currency_id, shipping_cost, metadata }
+// - Removed the previous "cartFlag" trick and unnecessary empty useEffect.
+
+export default function Cart() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-  const cart = JSON.parse(window.localStorage.getItem("cart"));
-  const [cartFlag, setCartFlag] = useState(false);
-  const [isLogged, setIsLogged] = useState(false);
-
-  useEffect(() => {
-    if (loggedUser) {
-      setIsLogged(true);
-    } else {
-      setIsLogged(false);
-    }
-  }, [loggedUser]);
+  const cancelRef = useRef();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
-  const navigate = useNavigate();
-  function handleStateChange() {
-    if (cartFlag === true) {
-      setCartFlag(false);
-    } else {
-      setCartFlag(true);
-    }
-  }
 
-  function handleRemoveItemCart(e, id) {
-    e.preventDefault();
+  // Try to read initial cart from localStorage safely
+  const readInitialCart = () => {
     try {
-      let currentCart = JSON.parse(window.localStorage.getItem("cart"));
-      let index;
-      let saveProduct = currentCart.find((pr, i) => {
-        if (pr.id === id) {
-          index = i;
-          return true;
-        }
-      });
-      if (saveProduct.amount !== 1) {
-        saveProduct.amount -= 1;
-        saveProduct.total = saveProduct.price * saveProduct.amount;
-        window.localStorage.setItem("cart", JSON.stringify(currentCart));
-        return handleStateChange();
-        // return alert("Eliminaste 1 unidad de este producto de tu carrito");
-      }
-      if (saveProduct.amount === 1 && currentCart.length === 1) {
-        let emptyArray = [];
-        window.localStorage.setItem("cart", JSON.stringify(emptyArray));
-        return handleStateChange();
-        // return alert("Eliminaste este producto de tu carrito");
-      }
-      if (saveProduct.amount === 1 && currentCart.length === 2) {
-        if (index === 0) {
-          let arrayResult = [currentCart[1]];
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else {
-          let array = [currentCart[0]];
-          window.localStorage.setItem("cart", JSON.stringify(array));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        }
-      }
-      if (saveProduct.amount === 1 && currentCart.length > 2) {
-        if (index === 0) {
-          let arrayResult = currentCart.slice(1);
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else if (index === currentCart.length - 1) {
-          let arrayResult = currentCart.slice(0, -1);
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else {
-          let first = currentCart.slice(0, index);
-          let second = currentCart.slice(index + 1);
-          let arrayResult = [...first, ...second];
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+      const raw = window.localStorage.getItem("cart");
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
 
-  const handlerSetCart = (e, id, price, image, name, stock) => {
-    e.preventDefault();
-    try {
-      let product = {
-        name,
-        image,
-        price,
-        id,
-        stock,
-        amount: 1,
+      const normalize = (p) => {
+        const price = Number(p.price);
+        const amount = Number(p.amount ?? 0);
+        const stock = Number(p.stock ?? 0);
+        const totalFromItem = Number(p.total);
+        const computedTotal = Number.isFinite(totalFromItem)
+          ? totalFromItem
+          : price * amount;
+
+        const total = Number.isFinite(computedTotal)
+          ? Math.round(computedTotal * 100) / 100
+          : 0;
+
+        return {
+          ...p,
+          price: Number.isFinite(price) ? price : 0,
+          amount: Number.isFinite(amount) ? amount : 0,
+          stock: Number.isFinite(stock) ? stock : 0,
+          total,
+        };
       };
-      let oldCart = JSON.parse(window.localStorage.getItem("cart"));
-      if (oldCart) {
-        let index = false;
-        oldCart.forEach((pr, i) => {
-          if (pr.id === product.id) {
-            index = i;
-          }
-        });
-        if (index !== false) {
-          if (stock === 0 || stock === oldCart[index].amount) {
-            return alert("Se llegó al limite de stock actual");
-          } else {
-            oldCart[index].amount += 1;
-            oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            // console.log(
-            //   "OLDCART AMOUNT: ",
-            //   oldCart[index].amount,
-            //   "--- STOCK: ",
-            //   stock
-            // );
-            // alert(`Agregaste de nuevo el producto ${name}`);
-            return handleStateChange();
-          }
-        } else {
-          product.total = product.price;
-          window.localStorage.setItem(
-            "cart",
-            JSON.stringify([...oldCart, product])
-          );
-          // alert(`Agregaste el producto ${name}`);
-          return handleStateChange();
-        }
-      } else {
-        product.total = product.price;
-        window.localStorage.setItem("cart", JSON.stringify([product]));
-        // alert(`Agregaste el producto ${name}`);
-        return handleStateChange();
-      }
 
-      // handleStateChange();
-    } catch (error) {
-      console.log(error);
+      return Array.isArray(parsed) ? parsed.map(normalize) : [];
+    } catch (err) {
+      console.error("Error parsing cart from localStorage:", err);
+      return [];
     }
   };
-  // function isNotLogged() {
-  //   alert("Tenes que logearte");
-  // }
-  const total = cart?.reduce((acc, el) => acc + el.total, 0);
 
+  const [cart, setCart] = useState(readInitialCart);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [preferenceId, setPreferenceId] = useState(null);
+
+  const loggedUser = React.useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("loggedUser"));
+    } catch (err) {
+      return null;
+    }
+  }, []);
+
+  const isLogged = Boolean(loggedUser);
+
+  // Persist cart changes to localStorage in one place
+  useEffect(() => {
+    try {
+      window.localStorage.setItem("cart", JSON.stringify(cart));
+    } catch (err) {
+      console.error("Error saving cart to localStorage:", err);
+    }
+  }, [cart]);
+
+  // helpers
+  const findIndexById = (id) => cart.findIndex((p) => p.id === id);
+
+  const addItem = ({ id, name, image, price, stock }) => {
+    const priceNum = Number(price || 0);
+    const stockNum = Number(stock ?? 0);
+    setCart((prev) => {
+      const idx = prev.findIndex((p) => p.id === id);
+      if (idx !== -1) {
+        // already in cart -> increase amount if stock allows
+        const existing = prev[idx];
+        if (existing.amount >= existing.stock) {
+          alert("Se llegó al limite de stock actual");
+          return prev;
+        }
+        const updated = [...prev];
+        const newAmount = existing.amount + 1;
+        const newTotal = Math.round(priceNum * newAmount * 100) / 100;
+        updated[idx] = {
+          ...existing,
+          amount: newAmount,
+          total: newTotal,
+        };
+        return updated;
+      }
+
+      // new product
+      const product = {
+        id,
+        name,
+        image,
+        price: priceNum,
+        stock: stockNum,
+        amount: 1,
+        total: Math.round(priceNum * 100) / 100,
+      };
+      return [...prev, product];
+    });
+  };
+
+  const removeItem = (id) => {
+    setCart((prev) => {
+      const idx = prev.findIndex((p) => p.id === id);
+      if (idx === -1) return prev;
+      const existing = prev[idx];
+      if (existing.amount > 1) {
+        const updated = [...prev];
+        const newAmount = existing.amount - 1;
+        const newTotal = Math.round(existing.price * newAmount * 100) / 100;
+        updated[idx] = {
+          ...existing,
+          amount: newAmount,
+          total: newTotal,
+        };
+        return updated;
+      }
+      
+      return prev.filter((p) => p.id !== id);
+    });
+  };
+
+  // wrappers that keep the original signature used in CartCards
+  const handlerSetCart = (e, id, price, image, name, stock) => {
+    e?.preventDefault?.();
+    addItem({ id, price, image, name, stock });
+  };
+
+  const handleRemoveItemCart = (e, id) => {
+    e?.preventDefault?.();
+    removeItem(id);
+  };
+
+  const total = useMemo(() => {
+    return cart.reduce(
+      (acc, el) => acc + (el.total ?? el.price * el.amount),
+      0
+    );
+  }, [cart]);
+
+  console.log("TOTAL: ", total);
+
+  // Checkout: now sends the full object expected by backend
   const handleCheckout = async () => {
     try {
-      // pedir preferenceId al backend
-      const urlOrPref = await dispatch(createCheckout(cart));
-      setPreferenceId(urlOrPref.id || urlOrPref); // depende de qué devuelva tu backend
-      setShowCheckout(true); // mostrar PaymentCheckout
+      const payload = {
+        cart,
+        userInfo: loggedUser ?? null,
+        currency_id: "ARS", // assumption: default currency
+        shipping_cost: 0, // assumption: default 0 - change as needed
+        metadata: {}, // assumption: empty metadata
+      };
+
+      const urlOrPref = await dispatch(createCheckout(payload));
+
+      // depending on backend shape, this may be an object or string
+      setPreferenceId(urlOrPref?.id ?? urlOrPref ?? null);
+      setShowCheckout(true);
     } catch (err) {
       console.error("Error iniciando checkout:", err);
     }
@@ -195,58 +205,15 @@ export default function Cart({ handleSetUserFlag }) {
     onClose();
   };
 
-  // const payMp = () => {
-  //   console.log("CART PAYMP: ", cart);
-  //   isLogged
-  //     ? axios
-  //         .post(`http://localhost:3001/donation`, {
-  //           cart,
-  //         })
-  //         .then((response) => {
-  //           window.open(response.data, "_blank");
-  //         })
-  //         .catch((error) => {
-  //           console.error(error);
-  //         })
-  //     : alert("Tenés que logearte");
-  // };
-
-  useEffect(() => {}, [cartFlag]);
-
   return (
     <>
       <Box minHeight={"90vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Stack
-          direction={{
-            base: "column",
-            lg: "row",
-          }}
-          align={{
-            lg: "flex-start",
-          }}
-          spacing={{
-            base: "8",
-            md: "16",
-          }}
+          direction={{ base: "column", lg: "row" }}
+          align={{ lg: "flex-start" }}
+          spacing={{ base: "8", md: "16" }}
         >
-          <Stack
-            spacing={{
-              base: "8",
-              md: "10",
-            }}
-            flex="2"
-          >
-            {/* <Heading fontSize="2xl" fontWeight="extrabold" py={6}>
-              Carrito
-            </Heading> */}
-            <Box padding={5} bg={"orange.300"}>
-              <Icon
-                as={AiOutlineShoppingCart}
-                w={10}
-                h={10}
-                color="brand.background"
-              />
-            </Box>
+          <Stack spacing={{ base: "8", md: "10" }} flex="2">
             {!cart || cart.length === 0 ? (
               <Center>
                 <Stack>
@@ -265,31 +232,20 @@ export default function Cart({ handleSetUserFlag }) {
                       as={MdArrowBackIosNew}
                       color="orange.400"
                       boxSize={5}
-                      _hover={{
-                        color: "grey",
-                        boxSize: "7",
-                      }}
                     />
                     <Icon
                       as={MdArrowBackIosNew}
                       color="orange.400"
                       boxSize={5}
-                      _hover={{
-                        color: "grey",
-                        boxSize: "7",
-                      }}
                     />
                     <Button
                       fontFamily={"body"}
                       bg="base.green.100"
                       color={"grey"}
-                      _hover={{
-                        color: "orange.400",
-                      }}
+                      _hover={{ color: "orange.400" }}
                       p="0"
                       mr="1rem"
                     >
-                      {" "}
                       Volver a la tienda
                     </Button>
                   </Link>
@@ -297,12 +253,12 @@ export default function Cart({ handleSetUserFlag }) {
               </Center>
             ) : (
               <Stack spacing="10">
-                {cart.map((pr, idx) => (
+                {cart.map((pr) => (
                   <CartCards
-                    key={idx}
+                    key={pr.id}
                     amount={pr.amount}
                     id={pr.id}
-                    images={pr.images}
+                    images={pr.images ?? pr.image}
                     name={pr.name}
                     price={pr.price}
                     total={pr.total}
@@ -311,6 +267,7 @@ export default function Cart({ handleSetUserFlag }) {
                     handleRemoveItemCart={handleRemoveItemCart}
                   />
                 ))}
+
                 <Center>
                   <SimpleGrid>
                     <Text
@@ -323,6 +280,7 @@ export default function Cart({ handleSetUserFlag }) {
                     >
                       Total: $ {total}
                     </Text>
+
                     <Box>
                       <Button
                         onClick={onOpen}
@@ -338,6 +296,7 @@ export default function Cart({ handleSetUserFlag }) {
                       >
                         Continuar compra
                       </Button>
+
                       <AlertDialog
                         isOpen={isOpen}
                         leastDestructiveRef={cancelRef}
@@ -360,6 +319,7 @@ export default function Cart({ handleSetUserFlag }) {
                                 Necesitamos tus datos!
                               </AlertDialogHeader>
                             )}
+
                             {isLogged ? (
                               <AlertDialogBody>
                                 Solo falta ir a pagar, si no necesitas nada más
@@ -371,6 +331,7 @@ export default function Cart({ handleSetUserFlag }) {
                                 si no tienes puedes crear una!
                               </AlertDialogBody>
                             )}
+
                             {isLogged ? (
                               <AlertDialogFooter>
                                 <Button ref={cancelRef} onClick={onClose}>
@@ -378,7 +339,7 @@ export default function Cart({ handleSetUserFlag }) {
                                 </Button>
                                 <Button
                                   color={"white"}
-                                  bg={"brand.orange"}
+                                  bg={{ base: "brand.orange" }}
                                   onClick={handleDialogCheckout}
                                   ml={3}
                                 >
@@ -392,7 +353,7 @@ export default function Cart({ handleSetUserFlag }) {
                                 </Button>
                                 <Button
                                   color={"white"}
-                                  bg={"brand.orange"}
+                                  bg={{ base: "brand.orange" }}
                                   onClick={(e) => {
                                     onClose();
                                     navigate("/");
@@ -411,49 +372,28 @@ export default function Cart({ handleSetUserFlag }) {
                 </Center>
 
                 {!showCheckout ? (
-                  // --- Vista del carrito normal ---
                   <Box
                     minHeight={"90vh"}
                     bg="brand.backgorund"
                     paddingBottom={"3rem"}
                   >
-                    {/* ... toda tu UI del carrito */}
+                    {/* Placeholder area kept to preserve structure if you were rendering more of the cart UI here */}
                   </Box>
                 ) : (
-                  // --- Vista del pago ---
                   <PaymentCheckout preferenceId={preferenceId} amount={total} />
                 )}
 
                 <Link to={"/shop"}>
-                  <Icon
-                    as={MdArrowBackIosNew}
-                    color="orange.400"
-                    boxSize={5}
-                    _hover={{
-                      color: "grey",
-                      boxSize: "7",
-                    }}
-                  />
-                  <Icon
-                    as={MdArrowBackIosNew}
-                    color="orange.400"
-                    boxSize={5}
-                    _hover={{
-                      color: "grey",
-                      boxSize: "7",
-                    }}
-                  />
+                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
+                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
                   <Button
                     fontFamily={"body"}
                     bg="base.green.100"
                     color={"grey"}
-                    _hover={{
-                      color: "orange.400",
-                    }}
+                    _hover={{ color: "orange.400" }}
                     p="0"
                     mr="1rem"
                   >
-                    {" "}
                     Seguir comprando
                   </Button>
                 </Link>

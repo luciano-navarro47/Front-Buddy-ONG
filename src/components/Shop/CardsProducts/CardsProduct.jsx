@@ -3,13 +3,13 @@ import CardProduct from "./CardProduct.jsx";
 
 export default function CardsProduct({
   products,
-  handlerSetCart,
+  handleSetCart,
   handleRemoveItemCart,
 }) {
   return products.map((el, idx) => (
     <CardProduct
       key={idx}
-      handlerSetCart={handlerSetCart}
+      handleSetCart={handleSetCart}
       handleRemoveItemCart={handleRemoveItemCart}
       name={el.name}
       id={el.id}

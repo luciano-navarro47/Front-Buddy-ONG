@@ -27,7 +27,7 @@ export default function CardProduct({
   price,
   stock,
   description,
-  handlerSetCart,
+  handleSetCart,
   handleRemoveItemCart,
 }) {
   const cancelRef = React.useRef();
@@ -149,7 +149,7 @@ export default function CardProduct({
                               color={"white"}
                               bg={"brand.orange"}
                               onClick={(e) => {
-                                handlerSetCart(
+                                handleSetCart(
                                   e,
                                   id,
                                   price,
