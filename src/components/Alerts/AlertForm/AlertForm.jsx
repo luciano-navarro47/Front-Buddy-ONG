@@ -8,16 +8,8 @@ import {
   CloseButton,
 } from "@chakra-ui/react";
 
-function AlertForm({
-  status = "info",
-  title = "",
-  description = "",
-  setShowAlert,
-  onClose,
-}) {
+function AlertForm({ status = "info", title = "", description = "", onClose }) {
   const handleClose = () => {
-    console.log("ENTRE")
-    if (typeof setShowAlert === "function") setShowAlert(false);
     if (typeof onClose === "function") onClose();
   };
 
@@ -55,24 +47,22 @@ function AlertForm({
     </Box>
   );
 }
-function ErrorForm({ setShowAlert, onClose } = {}) {
+function ErrorForm({ onClose } = {}) {
   return (
     <AlertForm
       status="error"
       title="Hay errores en el formulario"
       description="Asegurate de llenar todos los campos requeridos correctamente."
-      setShowAlert={setShowAlert}
       onClose={onClose}
     />
   );
 }
-function SuccedForm({ setShowAlert, onClose } = {}) {
+function SuccedForm({ onClose } = {}) {
   return (
     <AlertForm
       status="success"
       title="Enviado correctamente"
       description="Tu publicación se creó/actualizó correctamente."
-      setShowAlert={setShowAlert}
       onClose={onClose}
     />
   );

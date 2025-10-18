@@ -40,13 +40,11 @@ export default function FormPostPet({ isUpdating, userRole }) {
   };
 
   const [isIncomplete, setIsIncomplete] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const [input, setInput] = useState(initialInputState);
   const [isSubmitting, setIsSubmitting] = useState(false); // <-- loading state
 
-  console.log("SHOW: ", showAlert)
   // Hook
   usePetForm(paramsId, initialInputState, setInput, isUpdating);
 
@@ -86,7 +84,6 @@ export default function FormPostPet({ isUpdating, userRole }) {
     setIsIncomplete(false);
     setInfoSend(false);
     setIsSubmitting(true);
-
 
     if (isUpdating !== true) {
       try {
@@ -133,8 +130,10 @@ export default function FormPostPet({ isUpdating, userRole }) {
           Editando como administrador
         </Text>
       )}
-      {isIncomplete ? <ErrorForm setShowAlert={setShowAlert} onClose={() => setIsIncomplete(false)}/> : null}
-      {/* {infoSend ? <SuccedForm setShowAlert={setShowAlert} onClose={() => setInfoSend(false)}/> : null} */}
+      {isIncomplete ? (
+        <ErrorForm onClose={() => setIsIncomplete(false)} />
+      ) : null}
+      {/* {infoSend ? <SuccedForm onClose={() => setInfoSend(false)}/> : null} */}
 
       <form onSubmit={handlerSubmit} id="myForm">
         <Flex minH={"100%"} align={"center"} justify={"center"}>
