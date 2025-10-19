@@ -5,7 +5,7 @@ import DonationPage from "../components/Donation/DonationPage";
 import Veterinaries from "../components/Veterinaries/Veterinaries";
 import VetsDetail from "../components/VetsDetail/VetsDetail";
 import Pets from "../components/Adoption/Pets";
-import PetDetail from "../components/pets/details/PetDetail";
+import PetDetail from "../components/Adoption/details/PetDetail";
 import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
 import Shop from "components/Shop/Shop";
 import Cart from "components/Shop/Cart/Cart";

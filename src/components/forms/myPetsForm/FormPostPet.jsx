@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { SuccedForm, ErrorForm } from "../Alerts/AlertForm/AlertForm";
+import { SuccedForm, ErrorForm } from "../../Alerts/AlertForm/AlertForm";
 import {
   Flex,
   Box,
@@ -13,9 +13,9 @@ import {
   Text,
   Icon,
 } from "@chakra-ui/react";
-import { getPetsByUser, postOrUpdatePet } from "../../redux/Actions/petActions";
-import { SelectField, selectConfigs } from "./FormFields/SelectField";
-import { InputField, inputConfigs } from "./FormFields/InputField";
+import { getPetsByUser, postOrUpdatePet } from "../../../redux/Actions/petActions";
+import { SelectField, selectConfigs } from "../FormFields/SelectField";
+import { InputField, inputConfigs } from "../FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";

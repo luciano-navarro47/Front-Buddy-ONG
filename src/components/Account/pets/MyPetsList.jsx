@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Text, Box, SimpleGrid } from "@chakra-ui/react";
+import { Text, Box, SimpleGrid, Button } from "@chakra-ui/react";
 import { getPetsByUser } from "redux/Actions/petActions";
 import PetCard from "./PetCard";
 import Pagination from "components/Pagination/Pagination";
@@ -36,11 +36,17 @@ export default function MyPetsList({ user }) {
 
   return (
     <Box>
-      <SectionHeader
-        title="Mis mascotas"
-        subtitle="Editá la información de tus animales
+      <Box>
+        <SectionHeader
+          title="Mis mascotas"
+          subtitle="Editá la información de tus animales
           posteados o dejá de publicarlos."
-      />
+        />
+      </Box>
+
+      <Box>
+        <Button>+</Button>
+      </Box>
 
       {userPets.length > 0 ? (
         <Box maxW="1200px" mx="auto" px="4">

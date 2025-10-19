@@ -1,6 +1,6 @@
 import React from "react";
 import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
-import FormPostPet from "../components/FormPostPet/FormPostPet";
+import FormPostPet from "../components/forms/myPetsForm/FormPostPet";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/Veterinaries/Veterinaries";
