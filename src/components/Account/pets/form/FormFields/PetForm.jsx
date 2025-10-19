@@ -196,7 +196,7 @@ export default function PetForm({ isUpdating, userRole }) {
               </Stack>
             </Box>
 
-            <Button
+            {/* <Button
               leftIcon={<Icon as={MdArrowBackIosNew} />}
               onClick={() => {
                 navigate(`/account/myPets?page=${pageParam}`);
@@ -209,7 +209,7 @@ export default function PetForm({ isUpdating, userRole }) {
               disabled={isSubmitting} // no permitir navegar mientras se envía
             >
               Atrás
-            </Button>
+            </Button> */}
           </Stack>
         </Flex>
       </form>

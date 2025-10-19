@@ -42,9 +42,9 @@ export default function MyPetsList({ user }) {
     onCloseForm();
   }, [dispatch, onCloseForm]);
 
-  // useEffect(() => {
-  //   dispatch(getPetsByUser(user.id));
-  // }, [dispatch, user.id]);
+  useEffect(() => {
+    dispatch(getPetsByUser(user.id));
+  }, [dispatch, user.id]);
 
   useEffect(() => {
     setSearchParams({ page: currentPage });
