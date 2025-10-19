@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import { SuccedForm, ErrorForm } from "../../Alerts/AlertForm/AlertForm";
+import { SuccedForm, ErrorForm } from "../../../../Alerts/AlertForm/AlertForm";
 import {
   Flex,
   Box,
@@ -12,15 +12,20 @@ import {
   Heading,
   Text,
   Icon,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
-import { getPetsByUser, postOrUpdatePet } from "../../../redux/Actions/petActions";
+import {
+  getPetsByUser,
+  postOrUpdatePet,
+} from "../../../../../redux/Actions/petActions";
 import { SelectField, selectConfigs } from "../FormFields/SelectField";
 import { InputField, inputConfigs } from "../FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
 
-export default function FormPostPet({ isUpdating, userRole }) {
+export default function PetForm({ isUpdating, userRole }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -125,16 +130,6 @@ export default function FormPostPet({ isUpdating, userRole }) {
 
   return (
     <Box>
-      {userRole === "admin" && (
-        <Text color="gray.500" fontSize="sm" textAlign={"center"}>
-          Editando como administrador
-        </Text>
-      )}
-      {isIncomplete ? (
-        <ErrorForm onClose={() => setIsIncomplete(false)} />
-      ) : null}
-      {/* {infoSend ? <SuccedForm onClose={() => setInfoSend(false)}/> : null} */}
-
       <form onSubmit={handlerSubmit} id="myForm">
         <Flex minH={"100%"} align={"center"} justify={"center"}>
           <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
