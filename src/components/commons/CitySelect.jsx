@@ -13,7 +13,7 @@ export default function CitySelect({
   value = "",
   onChange,
   placeholder = "Seleccioná una ciudad (Provincia de Buenos Aires)",
-  error,
+  error, 
 }) {
   const [cities, setCities] = useState(null); // null = not fetched yet
   const [loading, setLoading] = useState(false);
