@@ -228,7 +228,7 @@ export default function PetForm({
             value={input.city}
             onChange={handleChange}
             error={inputError.city}
-          />
+          /> 
         </SimpleGrid>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
