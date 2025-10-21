@@ -102,6 +102,9 @@ export default function UploadImage({
             accept="image/*"
             onChange={handleSelect}
             disabled={localFiles.length >= maxFiles}
+            required={false}
+            aria-required={false}
+            tabIndex={-1}
           />
           <Button
             size="sm"

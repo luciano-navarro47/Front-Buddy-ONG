@@ -3,22 +3,23 @@ import { FormControl, Input, Text } from "@chakra-ui/react";
 
 export const inputConfigs = [
     {
-      id: "area",
-      name: "area",
-      label: "Área",
-      placeholder: "Lugar donde se encuentra...",
+      id: "name",
+      name: "name",
+      label: "Nombre (opcional)",
+      placeholder: ""
     },
     {
-      id: "detail",
-      name: "detail",
-      label: "Detalles",
-      placeholder: "Descripción del animal",
+      id: "street",
+      name: "street",
+      label: "Calles",
+      placeholder: "Ej: Calle Diamante",
     },
     {
-      id: "img",
-      name: "img",
-      label: "Imagen",
-      placeholder: "EJ: https://urlDeLaImagen.jpg",
+      id: "number",
+      name: "number",
+      label: "Altura (opcional)",
+      placeholder: "Ej: 1234",
+      type: "number",
     },
   ];
 
@@ -27,13 +28,14 @@ export function InputField({
   name,
   value,
   label,
+  type,
   placeholder,
   onChange,
   error,
 }) {
   return (
     <FormControl id={id}>
-      <Text fontSize="sm">{label}</Text>
+      <Text fontSize="md" fontWeight={600}>{label}</Text>
       <Input
         value={value}
         fontFamily={"body"}
@@ -42,6 +44,8 @@ export function InputField({
         focusBorderColor={"brand.green.300"}
         placeholder={placeholder}
         onChange={onChange}
+        type={type}
+        isRequired
       />
       {error && <Text color="red.500" fontSize="sm">{error}</Text>}
     </FormControl>

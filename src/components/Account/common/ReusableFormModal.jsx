@@ -6,6 +6,7 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
+  Container,
 } from "@chakra-ui/react";
 
 export default function ReusableFormModal({
@@ -20,9 +21,9 @@ export default function ReusableFormModal({
     <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader textDecoration="underline">
-          {header}
-        </ModalHeader>
+        <Container>
+          <ModalHeader textDecoration="underline">{header}</ModalHeader>
+        </Container>
         <ModalCloseButton />
         <form
           onSubmit={(e) => {

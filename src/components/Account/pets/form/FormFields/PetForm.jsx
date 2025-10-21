@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { MdArrowBackIosNew } from "react-icons/md";
-import { SuccedForm, ErrorForm } from "../../../../Alerts/AlertForm/AlertForm";
 import {
-  Flex,
   Box,
-  HStack,
-  Stack,
   Button,
-  Heading,
-  Text,
-  Icon,
+  Flex,
   FormControl,
   FormLabel,
+  HStack,
+  Spinner,
+  Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
 import {
   getPetsByUser,
@@ -24,46 +22,94 @@ import { InputField, inputConfigs } from "../FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
+import UploadImages from "components/account/common/UploadImages";
+import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
 
-export default function PetForm({ isUpdating, userRole }) {
+/**
+ * Props:
+ * - mode: "create" | "update"  (compatibilidad con MyPetsList)
+ * - isUpdating: (opcional) id or truthy when updating (mantengo compatibilidad con la versión previa)
+ * - userRole
+ * - onSuccess: callback (opcional) -> ideal si el formulario está dentro de un modal
+ * - onCancel: callback (opcional)
+ */
+export default function PetForm({
+  mode = "create",
+  isUpdating = false,
+  userRole,
+  onSuccess,
+  onCancel,
+}) {
+  // TO DO: use the userRole to delimite the user permission
+  // to only read the information and not create a pet if is user. Use toast to show alert
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toast = useToast();
   const [searchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
-
   const paramsId = useParams().id;
 
+  const isUpdateMode = mode === "update" || Boolean(isUpdating);
+
   const initialInputState = {
+    name: "",
     specie: "",
     sex: "",
     age: "",
     size: "",
-    status: "",
-    area: "",
+    postType: "",
     detail: "",
-    img: "",
+    city: "",
+    street: "",
+    number: "",
+    images: [],
+    videos: [],
   };
 
   const [isIncomplete, setIsIncomplete] = useState(false);
   const [infoSend, setInfoSend] = useState(false);
   const [inputError, setInputError] = useState({});
   const [input, setInput] = useState(initialInputState);
-  const [isSubmitting, setIsSubmitting] = useState(false); // <-- loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [images, setImages] = useState([]);
+  const [loadingPet, setLoadingPet] = useState(isUpdateMode);
 
-  // Hook
-  usePetForm(paramsId, initialInputState, setInput, isUpdating);
+  console.log("INPUT ERROR: ", inputError)
+  usePetForm(paramsId, initialInputState, setInput, isUpdateMode);
+
+  useEffect(() => {
+    if (isUpdateMode && input?.images) {
+      setImages(Array.isArray(input.images) ? input.images : []);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isUpdateMode]);
+
+  useEffect(() => {
+    setInput((prev) => ({ ...prev, images }));
+  }, [images]);
 
   const handleChange = (e) => {
     e.preventDefault();
-
     const { name, value } = e.target;
 
-    setInput({
-      ...input,
-      [name]: value,
-    });
+    if (name === "number") {
+      if (value === "") {
+        setInput((prev) => ({ ...prev, [name]: value }));
+      } else {
+        if (!/^\d+$/.test(value)) return;
+        if (value.length > 5) return;
+        setInput((prev) => ({ ...prev, [name]: value }));
+      }
+    } else {
+      setInput((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
 
     const updatedInput = { ...input, [name]: value };
+
     const errors = validateForm(updatedInput);
 
     setInputError((prevErrors) => ({
@@ -74,15 +120,26 @@ export default function PetForm({ isUpdating, userRole }) {
 
   const handlerSubmit = async (e) => {
     e.preventDefault();
-
     if (isSubmitting) return;
 
     const errors = validateForm(input);
-    setInputError(errors);
 
+    setInputError(errors);
     if (Object.keys(errors).length) {
       setIsIncomplete(true);
       setInfoSend(false);
+      return;
+    }
+
+    if (!input.images || input.images.length === 0) {
+      setIsIncomplete(true);
+      toast({
+        title: "Faltan imágenes",
+        status: "warning",
+        description: "Subí al menos una imagen de la mascota.",
+        duration: 2500,
+        isClosable: true,
+      });
       return;
     }
 
@@ -90,129 +147,157 @@ export default function PetForm({ isUpdating, userRole }) {
     setInfoSend(false);
     setIsSubmitting(true);
 
-    if (isUpdating !== true) {
-      try {
-        window.scrollTo(0, 0);
+    try {
+      window.scrollTo(0, 0);
 
-        const created = await dispatch(postOrUpdatePet(input));
-
-        resetForm(setInput, setInputError, initialInputState);
-
-        const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-        if (loggedUser?.id) {
-          await dispatch(getPetsByUser(loggedUser.id));
-        }
-
-        setInfoSend(true);
-        navigate("/account/myPets");
-      } catch (error) {
-        console.error("Error creando mascota:", error);
-        setInfoSend(false);
-        setIsSubmitting(false);
+      if (!isUpdateMode) {
+        // create
+        await dispatch(postOrUpdatePet(input));
+      } else {
+        const updateArg = isUpdating || "update";
+        await dispatch(postOrUpdatePet(input, updateArg, paramsId));
       }
-    } else {
-      // update case
-      try {
-        window.scrollTo(0, 0);
-        await dispatch(postOrUpdatePet(input, isUpdating, paramsId));
-        setInfoSend(true);
-        const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
-        if (loggedUser?.id) {
-          await dispatch(getPetsByUser(loggedUser.id));
-        }
+
+      const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+      if (loggedUser?.id) {
+        await dispatch(getPetsByUser(loggedUser.id));
+      }
+
+      toast({
+        title: isUpdateMode ? "Mascota actualizada" : "Mascota publicada",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      });
+
+      resetForm(setInput, setInputError, initialInputState);
+      setImages([]);
+      setInfoSend(true);
+      setIsSubmitting(false);
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
         navigate(`/account/myPets?page=${pageParam}`);
-      } catch (err) {
-        console.error("Error actualizando mascota:", err);
-        setIsSubmitting(false);
       }
+    } catch (error) {
+      console.error("Error enviando mascota:", error);
+      toast({
+        title: "Error",
+        status: "error",
+        description: "Ocurrió un error al enviar la mascota.",
+        duration: 2500,
+        isClosable: true,
+      });
+      setInfoSend(false);
+      setIsSubmitting(false);
     }
   };
 
+  if (isUpdateMode && loadingPet) {
+    return (
+      <Box p={6} textAlign="center">
+        <Spinner />
+      </Box>
+    );
+  }
+
   return (
-    <Box>
-      <form onSubmit={handlerSubmit} id="myForm">
-        <Flex minH={"100%"} align={"center"} justify={"center"}>
-          <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-            <Stack align={"center"}>
-              <Heading fontSize={"2xl"} textAlign={"center"}>
-                {isUpdating
-                  ? userRole === "admin"
-                    ? "Editando la mascota del usuario"
-                    : "Editar mi mascota"
-                  : "Publicar"}
-              </Heading>
-              <Text fontSize={"lg"} color={"gray.600"}>
-                ¡Gracias por cuidar a los animales!
-              </Text>
-            </Stack>
+    <Flex minH={"100%"} align={"center"} justify={"center"}>
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={8}>
+        <HStack>
+          {selectConfigs.slice(0, 2).map((cfg) => (
+            <SelectField
+              key={cfg.id}
+              {...cfg}
+              value={input[cfg.name]}
+              error={inputError[cfg.name]}
+              onChange={handleChange}
+            />
+          ))}
+        </HStack>
 
-            <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
-              <Stack spacing={4}>
-                <HStack>
-                  {selectConfigs.slice(0, 2).map((cfg) => (
-                    <SelectField
-                      key={cfg.id}
-                      {...cfg}
-                      value={input[cfg.name]}
-                      error={inputError[cfg.name]}
-                      onChange={handleChange}
-                    />
-                  ))}
-                </HStack>
+        {selectConfigs.slice(2).map((cfg) => (
+          <SelectField
+            key={cfg.id}
+            {...cfg}
+            value={input[cfg.name]}
+            error={inputError[cfg.name]}
+            onChange={handleChange}
+          />
+        ))}
 
-                {selectConfigs.slice(2).map((cfg) => (
-                  <SelectField
-                    key={cfg.id}
-                    {...cfg}
-                    value={input[cfg.name]}
-                    error={inputError[cfg.name]}
-                    onChange={handleChange}
-                  />
-                ))}
+        {inputConfigs.map((cfg) => (
+          <InputField
+            key={cfg.id}
+            {...cfg}
+            value={input[cfg.name]}
+            error={inputError[cfg.name]}
+            onChange={handleChange}
+            type={cfg.type}
+          />
+        ))}
 
-                {inputConfigs.map((cfg) => (
-                  <InputField
-                    key={cfg.id}
-                    {...cfg}
-                    value={input[cfg.name]}
-                    error={inputError[cfg.name]}
-                    onChange={handleChange}
-                  />
-                ))}
+        <FormControl id="detail">
+          <FormLabel fontSize="md" fontWeight={600}>
+            Detalles / Descripción
+          </FormLabel>
+          <DescriptionEditor
+            value={input.detail}
+            onChange={(val) => setInput((p) => ({ ...p, detail: val }))}
+            placeholder="Contá algo sobre la mascota (carácter, circunstancias, cuidados)"
+            error={inputError.detail}
+          />
+        </FormControl>
 
-                <Button
-                  type="submit"
-                  bg={"orange.300"}
-                  color={"white"}
-                  _hover={{ bg: "orange.400" }}
-                  onClick={() => window.scrollTo(0, 0)}
-                  isLoading={isSubmitting} // <-- Chakra Button spinner
-                  loadingText={isUpdating ? "Actualizando..." : "Publicando..."} // texto durante carga
-                  spinnerPlacement="start"
-                  disabled={isSubmitting} // evita doble click
-                >
-                  {isUpdating ? "Actualizar" : "Publicar"}
-                </Button>
-              </Stack>
-            </Box>
+        <FormControl id="images" isRequired>
+          <FormLabel fontSize="md" fontWeight={600}>
+            Cargar imágenes de la mascota
+          </FormLabel>
+          <UploadImages
+            setImages={(urls) =>
+              setImages((prev) => [
+                ...(Array.isArray(prev) ? prev : []),
+                ...urls,
+              ])
+            }
+            multiple
+          />
+          <Text fontSize="sm" color="gray.500" mt={2}>
+            {images.length} imagen(es) cargada(s)
+          </Text>
+        </FormControl>
 
-            {/* <Button
-              leftIcon={<Icon as={MdArrowBackIosNew} />}
-              onClick={() => {
-                navigate(`/account/myPets?page=${pageParam}`);
-              }}
-              bg="base.green.100"
-              color={"grey"}
-              _hover={{
-                color: "orange.400",
-              }}
-              disabled={isSubmitting} // no permitir navegar mientras se envía
+        {isIncomplete && (
+          <Text color="red.400" fontSize="sm">
+            Revisá los campos obligatorios.
+          </Text>
+        )}
+
+        <Stack spacing={4} direction="row" justify="flex-end">
+          {onCancel && (
+            <Button
+              variant="outline"
+              onClick={onCancel}
+              disabled={isSubmitting}
             >
-              Atrás
-            </Button> */}
-          </Stack>
-        </Flex>
-      </form>
-    </Box>
+              Cancelar
+            </Button>
+          )}
+
+          <Button
+            type="submit"
+            colorScheme="orange"
+            onClick={(e) => handlerSubmit(e)}
+            isLoading={isSubmitting}
+            loadingText={isUpdateMode ? "Actualizando..." : "Publicando..."}
+            spinnerPlacement="start"
+            disabled={isSubmitting}
+          >
+            {isUpdateMode ? "Actualizar" : "Publicar"}
+          </Button>
+        </Stack>
+      </Stack>
+    </Flex>
   );
 }

@@ -2,59 +2,73 @@ import React from "react";
 import { FormControl, Select, Text } from "@chakra-ui/react";
 
 export const selectConfigs = [
-    {
-      id: "specie",
-      name: "specie",
-      label: "Especie",
-      options: [
-        { value: "gato", label: "Gato/a" },
-        { value: "perro", label: "Perro/a" },
-      ],
-      isRequired: true,
-    },
-    {
-      id: "sex",
-      name: "sex",
-      label: "Sexo",
-      options: [
-        { value: "macho", label: "Macho" },
-        { value: "hembra", label: "Hembra" },
-      ],
-      isRequired: true,
-    },
-    {
-      id: "age",
-      name: "age",
-      label: "Edad",
-      options: [
-        { value: "cachorro", label: "Cachorro/a" },
-        { value: "joven", label: "Joven" },
-        { value: "adulto", label: "Adulto/a" },
-      ],
-      isRequired: true,
-    },
-    {
-      id: "size",
-      name: "size",
-      label: "Tamaño",
-      options: [
-        { value: "pequeño", label: "Pequeño/a" },
-        { value: "mediano", label: "Mediano/a" },
-        { value: "grande", label: "Grande" },
-      ],
-      isRequired: true,
-    },
-    {
-      id: "status",
-      name: "status",
-      label: "Estado",
-      options: [
-        { value: "perdido", label: "Perdido/a" },
-        { value: "encontrado", label: "Encontrado/a" },
-      ],
-      isRequired: true,
-    },
-  ];
+  {
+    id: "specie",
+    name: "specie",
+    label: "Tipo de especie",
+    options: [
+      { value: "cat", label: "Gato" },
+      { value: "dog", label: "Perro" },
+    ],
+    isRequired: true,
+  },
+  {
+    id: "sex",
+    name: "sex",
+    label: "Sexo",
+    options: [
+      { value: "male", label: "Macho" },
+      { value: "female", label: "Hembra" },
+    ],
+    isRequired: true,
+  },
+  {
+    id: "age",
+    name: "age",
+    label: "Edad",
+    options: [
+      { value: "puppy", label: "Cachorro" },
+      { value: "young", label: "Joven" },
+      { value: "adult", label: "Adulto" },
+    ],
+    isRequired: true,
+  },
+  {
+    id: "size",
+    name: "size",
+    label: "Tamaño aproximado",
+    options: [
+      { value: "small", label: "Pequeño" },
+      { value: "medium", label: "Mediano" },
+      { value: "large", label: "Grande" },
+    ],
+    isRequired: true,
+  },
+  {
+    id: "postType",
+    name: "postType",
+    label: "Tipo de publicación",
+    options: [
+      { value: "wanted", label: "Se busca" },
+      { value: "abandoned", label: "Está abandonado" },
+      { value: "in_adoption", label: "Darlo en adopción" },
+    ],
+    isRequired: true,
+  },
+  {
+    id: "city",
+    name: "city",
+    label: "Ciudad",
+    // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
+    // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
+    options: [ 
+      { value: "CITY_NAME_1", label: "Ciudad 1" },
+      { value: "CITY_NAME_2", label: "Ciudad 2" },
+      { value: "CITY_NAME_3", label: "Ciudad 3" },
+    ],
+    isRequired: true,
+  },
+];
 export function SelectField({
   id,
   name,
@@ -81,7 +95,11 @@ export function SelectField({
           </option>
         ))}
       </Select>
-      {error && <Text color="red.500" fontSize="sm">{error}</Text>}
+      {error && (
+        <Text color="red.500" fontSize="sm">
+          {error}
+        </Text>
+      )}
     </FormControl>
   );
 }
