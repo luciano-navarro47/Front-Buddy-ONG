@@ -55,19 +55,19 @@ export const selectConfigs = [
     ],
     isRequired: true,
   },
-  {
-    id: "city",
-    name: "city",
-    label: "Ciudad",
-    // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
-    // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
-    options: [ 
-      { value: "CITY_NAME_1", label: "Ciudad 1" },
-      { value: "CITY_NAME_2", label: "Ciudad 2" },
-      { value: "CITY_NAME_3", label: "Ciudad 3" },
-    ],
-    isRequired: true,
-  },
+  // {
+  //   id: "city",
+  //   name: "city",
+  //   label: "Ciudad",
+  //   // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
+  //   // TO DO: options[] MUST MAP AND THIRD-PARTY API THAT FETCH LOCATIONS
+  //   options: [ 
+  //     { value: "CITY_NAME_1", label: "Ciudad 1" },
+  //     { value: "CITY_NAME_2", label: "Ciudad 2" },
+  //     { value: "CITY_NAME_3", label: "Ciudad 3" },
+  //   ],
+  //   isRequired: true,
+  // },
 ];
 export function SelectField({
   id,

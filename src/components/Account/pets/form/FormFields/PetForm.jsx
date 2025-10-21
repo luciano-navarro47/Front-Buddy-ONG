@@ -24,6 +24,7 @@ import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
 import UploadImages from "components/account/common/UploadImages";
 import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
+import CitySelect from "components/commons/CitySelect";
 
 /**
  * Props:
@@ -89,7 +90,7 @@ export default function PetForm({
   }, [images]);
 
   const handleChange = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     const { name, value } = e.target;
 
     if (name === "number") {
@@ -222,6 +223,12 @@ export default function PetForm({
               w="100%"
             />
           ))}
+          <CitySelect
+            name="city"
+            value={input.city}
+            onChange={handleChange}
+            error={inputError.city}
+          />
         </SimpleGrid>
 
         <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
