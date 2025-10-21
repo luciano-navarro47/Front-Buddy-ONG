@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -8,6 +9,7 @@ type DescriptionEditorProps = {
   placeholder?: string;
   modules?: object;
   formats?: string[];
+  error?: string | undefined // <-- opcional
 };
 
 export default function DescriptionEditor({
@@ -16,6 +18,7 @@ export default function DescriptionEditor({
   placeholder = "Escribe aquí...",
   modules,
   formats,
+  error,
 }: DescriptionEditorProps) {
   const defaultModules = {
     toolbar: [
@@ -40,13 +43,35 @@ export default function DescriptionEditor({
   ];
 
   return (
-    <ReactQuill
-      theme="snow"
-      value={value}
-      onChange={onChange}
-      placeholder={placeholder}
-      modules={modules || defaultModules}
-      formats={formats || defaultFormats}
-    />
+    <Box>
+      <Box
+        sx={{
+          ".ql-container": {
+            borderRadius: "6px",
+          },
+          ".ql-editor": {
+            minHeight: "100px",
+            padding: "8px 12px",
+          },
+        }}
+      >
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          modules={modules || defaultModules}
+          formats={formats || defaultFormats}
+        />
+      </Box>
+
+      {error ? (
+        <Box mt={2}>
+          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--chakra-colors-red-500)" }}>
+            {error}
+          </p>
+        </Box>
+      ) : null}
+    </Box>
   );
 }

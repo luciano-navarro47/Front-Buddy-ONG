@@ -237,7 +237,7 @@ export default function ProductForm({
             onClick={handleSubmit}
             isDisabled={input.images.length === 0}
           >
-            {mode === "create" ? "Publicar producto" : "Actualizar"}
+            {mode === "create" ? "Crear" : "Actualizar"}
           </Button>
         </Stack>
       </Stack>

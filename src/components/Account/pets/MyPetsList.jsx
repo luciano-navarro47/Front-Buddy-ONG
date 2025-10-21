@@ -1,15 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Text, Box, SimpleGrid } from "@chakra-ui/react";
+import { Text, Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 import { getPetsByUser } from "redux/Actions/petActions";
 import PetCard from "./PetCard";
 import Pagination from "components/Pagination/Pagination";
 import SectionHeader from "../common/SectionHeader";
+import ActionPill from "../common/buttons/ActionPill";
+import PetForm from "./form/FormFields/PetForm";
+import ReusableFormModal from "../common/ReusableFormModal";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
+  const userRole = user.role;
   const userPets = useSelector((state) => state.pets.userPets) || [];
+  const [formMode, setFormMode] = useState("create");
+  const {
+    isOpen: isFormOpen,
+    onOpen: onOpenForm,
+    onClose: onCloseForm,
+  } = useDisclosure();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
@@ -26,6 +37,11 @@ export default function MyPetsList({ user }) {
     setCurrentPage(pageNumber);
   };
 
+  const handleSuccess = useCallback(() => {
+    dispatch(getPetsByUser());
+    onCloseForm();
+  }, [dispatch, onCloseForm]);
+
   useEffect(() => {
     dispatch(getPetsByUser(user.id));
   }, [dispatch, user.id]);
@@ -34,6 +50,8 @@ export default function MyPetsList({ user }) {
     setSearchParams({ page: currentPage });
   }, [currentPage, setSearchParams]);
 
+  // TO DO: show a SuccessAlertNotification when a pet is published correctly
+
   return (
     <Box>
       <SectionHeader
@@ -41,6 +59,38 @@ export default function MyPetsList({ user }) {
         subtitle="Editá la información de tus animales
           posteados o dejá de publicarlos."
       />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        pb={2}
+      >
+        <ActionPill
+          icon={<AddIcon boxSize={4} ml={0.5} color="blackAlpha.600" />}
+          onClick={() => {
+            // dispatch(clearProduct());
+            // setSelectedProductId(null);
+            setFormMode("create");
+            onOpenForm();
+          }}
+        ></ActionPill>
+      </Box>
+
+      <ReusableFormModal
+        isOpen={isFormOpen}
+        onClose={onCloseForm}
+        formMode={formMode}
+        header={
+          formMode === "create" ? "Publicar mascota" : "Editar mascota"
+        }
+      >
+        <PetForm
+          mode={formMode}
+          onSuccess={handleSuccess}
+          onCancel={onCloseForm}
+          userRole={userRole}
+        />
+      </ReusableFormModal>
 
       {userPets.length > 0 ? (
         <Box maxW="1200px" mx="auto" px="4">

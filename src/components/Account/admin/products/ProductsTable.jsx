@@ -284,7 +284,7 @@ export function ProductsTable(user) {
       />
       <SectionHeader
         title='Gestionar productos de la "Tienda Virtual"'
-        subtitle={`Tabla con información de los productos. Editá el stock, añadí imagenes, actualizá datos o eliminá productos de la tienda.`}
+        subtitle="Tabla con información de los productos. Editá el stock, añadí imagenes, actualizá datos o eliminá productos de la tienda."
       />
       <Flex align="center" justify="space-between" wrap="wrap">
         <ActionPill colorScheme="orange" count={products.length}>
@@ -319,6 +319,7 @@ export function ProductsTable(user) {
         isOpen={isFormOpen}
         onClose={onCloseForm}
         formMode={formMode}
+        header={formMode === "create" ? "Añadir producto" : "Editar producto"}
       >
         <ProductForm
           productId={selectedProductId}

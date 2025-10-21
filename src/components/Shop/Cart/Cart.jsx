@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { MdArrowBackIosNew } from "react-icons/md";
-import SectionHeader from "components/account/common/SectionHeader";
 import {
   Box,
   Icon,
@@ -23,7 +22,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import CartCards from "./CartCards";
-import PaymentCheckout from "components/PaymentCheckout";
+import PaymentCheckout from "../PaymentCheckout";
 import { createCheckout } from "redux/Actions/paymentsActions";
 
 // Refactor notes:

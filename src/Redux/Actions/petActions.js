@@ -68,6 +68,7 @@ export function postPet(formInput, token) {
 }
 
 export function postOrUpdatePet(formInput, isUpdating, petId) {
+  console.log("FORMINPUT: ", formInput)
   return async function (dispatch) {
     try {
       if (isUpdating) {
