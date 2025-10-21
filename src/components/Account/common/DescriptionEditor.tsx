@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -44,19 +44,32 @@ export default function DescriptionEditor({
 
   return (
     <Box>
-      <ReactQuill
-        theme="snow"
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        modules={modules || defaultModules}
-        formats={formats || defaultFormats}
-      />
+      <Box
+        sx={{
+          ".ql-container": {
+            borderRadius: "6px",
+          },
+          ".ql-editor": {
+            minHeight: "100px",
+            padding: "8px 12px",
+          },
+        }}
+      >
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          modules={modules || defaultModules}
+          formats={formats || defaultFormats}
+        />
+      </Box>
+
       {error ? (
         <Box mt={2}>
-          <Text color={"red.500" as any} fontSize="sm">
+          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--chakra-colors-red-500)" }}>
             {error}
-          </Text>
+          </p>
         </Box>
       ) : null}
     </Box>

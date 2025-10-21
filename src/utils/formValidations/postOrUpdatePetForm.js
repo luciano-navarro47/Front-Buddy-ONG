@@ -1,8 +1,7 @@
 export const validateForm = (input = {}) => {
   const inputError = {};
 
-  
-  // Normalizar para evitar undefined
+  // Normalize to avoid an undefined value
   const specie = input.specie ?? "";
   const sex = input.sex ?? "";
   const age = input.age ?? "";
@@ -14,9 +13,7 @@ export const validateForm = (input = {}) => {
   const name = (input.name ?? "").toString();
   const city = input.city ?? "";
   const number = (input.number ?? "").toString(); // altura
-  
-  // console.log("DET: ", typeof detail)
-  // console.log("SEX: ", sex)
+
   if (!specie.length) {
     inputError.specie = "Selecciona gato o perro";
   }
@@ -33,19 +30,19 @@ export const validateForm = (input = {}) => {
     inputError.postType = "Selecciona un tipo de publicación";
   }
 
-  // detail: primero comprobar vacío, luego longitudes
   if (detail.trim() === "") {
     inputError.detail = "Falta una descripción";
   } else {
     if (detail.trim().length < 50) {
-      inputError.detail = "Insertá al menos 50 caractéres que describan al animal";
+      inputError.detail =
+        "Insertá al menos 50 caractéres que describan al animal";
     } else if (detail.trim().length > 500) {
       inputError.detail = "Máximo de carácteres alcanzado";
     }
   }
 
   if (images.length < 3) {
-    inputError.images = "Debes añadir 3 imágenes";
+    inputError.images = "Debes añadir un total de 3 imágenes";
   }
 
   if (street.trim().length === 0) {
@@ -62,18 +59,15 @@ export const validateForm = (input = {}) => {
     inputError.city = "Ingresá la localidad";
   }
 
-  // VALIDACIÓN DE ALTURA: debe ser entre 2 y 5 dígitos
-  if (number.length === 0) {
-    inputError.number = "Ingresá la altura";
-  } else {
-    if (!/^\d+$/.test(number)) {
+  const numberTrim = number.trim();
+  if (numberTrim.length > 0) {
+    if (!/^\d+$/.test(numberTrim)) {
       inputError.number = "La altura solo debe contener números";
-    } else if (number.length < 2) {
+    } else if (numberTrim.length < 2) {
       inputError.number = "La altura debe tener al menos 2 dígitos";
-    } else if (number.length > 5) {
+    } else if (numberTrim.length > 5) {
       inputError.number = "La altura puede tener como máximo 5 dígitos";
     }
   }
-
   return inputError;
 };

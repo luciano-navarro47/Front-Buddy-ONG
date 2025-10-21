@@ -5,7 +5,7 @@ export const inputConfigs = [
     {
       id: "name",
       name: "name",
-      label: "Nombre (opcional)",
+      label: "Nombre/Apodo (opcional)",
       placeholder: ""
     },
     {

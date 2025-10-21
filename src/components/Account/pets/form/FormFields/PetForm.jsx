@@ -7,7 +7,7 @@ import {
   Flex,
   FormControl,
   FormLabel,
-  HStack,
+  SimpleGrid,
   Spinner,
   Stack,
   Text,
@@ -75,7 +75,6 @@ export default function PetForm({
   const [images, setImages] = useState([]);
   const [loadingPet, setLoadingPet] = useState(isUpdateMode);
 
-  console.log("INPUT ERROR: ", inputError)
   usePetForm(paramsId, initialInputState, setInput, isUpdateMode);
 
   useEffect(() => {
@@ -204,50 +203,53 @@ export default function PetForm({
 
   return (
     <Flex minH={"100%"} align={"center"} justify={"center"}>
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={8}>
-        <HStack>
-          {selectConfigs.slice(0, 2).map((cfg) => (
+      <Stack
+        spacing={6}
+        mx={"auto"}
+        maxW={"1100px"}
+        w="100%"
+        py={6}
+        px={{ base: 4, md: 6 }}
+      >
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          {selectConfigs.map((cfg) => (
             <SelectField
               key={cfg.id}
               {...cfg}
               value={input[cfg.name]}
               error={inputError[cfg.name]}
               onChange={handleChange}
+              w="100%"
             />
           ))}
-        </HStack>
+        </SimpleGrid>
 
-        {selectConfigs.slice(2).map((cfg) => (
-          <SelectField
-            key={cfg.id}
-            {...cfg}
-            value={input[cfg.name]}
-            error={inputError[cfg.name]}
-            onChange={handleChange}
-          />
-        ))}
-
-        {inputConfigs.map((cfg) => (
-          <InputField
-            key={cfg.id}
-            {...cfg}
-            value={input[cfg.name]}
-            error={inputError[cfg.name]}
-            onChange={handleChange}
-            type={cfg.type}
-          />
-        ))}
+        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          {inputConfigs.map((cfg) => (
+            <InputField
+              key={cfg.id}
+              {...cfg}
+              value={input[cfg.name]}
+              error={inputError[cfg.name]}
+              onChange={handleChange}
+              type={cfg.type}
+              w="100%"
+            />
+          ))}
+        </SimpleGrid>
 
         <FormControl id="detail">
           <FormLabel fontSize="md" fontWeight={600}>
             Detalles / Descripción
           </FormLabel>
-          <DescriptionEditor
-            value={input.detail}
-            onChange={(val) => setInput((p) => ({ ...p, detail: val }))}
-            placeholder="Contá algo sobre la mascota (carácter, circunstancias, cuidados)"
-            error={inputError.detail}
-          />
+          <Box>
+            <DescriptionEditor
+              value={input.detail}
+              onChange={(val) => setInput((p) => ({ ...p, detail: val }))}
+              placeholder="Contá algo sobre la mascota (carácter, circunstancias, cuidados)"
+              error={inputError.detail}
+            />
+          </Box>
         </FormControl>
 
         <FormControl id="images" isRequired>
@@ -255,25 +257,13 @@ export default function PetForm({
             Cargar imágenes de la mascota
           </FormLabel>
           <UploadImages
-            setImages={(urls) =>
-              setImages((prev) => [
-                ...(Array.isArray(prev) ? prev : []),
-                ...urls,
-              ])
-            }
+            setImages={(urls) => setImages(Array.isArray(urls) ? urls : [])}
             multiple
+            error={inputError.images}
           />
-          <Text fontSize="sm" color="gray.500" mt={2}>
-            {images.length} imagen(es) cargada(s)
-          </Text>
         </FormControl>
 
-        {isIncomplete && (
-          <Text color="red.400" fontSize="sm">
-            Revisá los campos obligatorios.
-          </Text>
-        )}
-
+        {/* buttons */}
         <Stack spacing={4} direction="row" justify="flex-end">
           {onCancel && (
             <Button
@@ -284,7 +274,6 @@ export default function PetForm({
               Cancelar
             </Button>
           )}
-
           <Button
             type="submit"
             colorScheme="orange"
