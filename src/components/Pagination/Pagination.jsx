@@ -1,74 +1,121 @@
-import React from "react";
-import { SimpleGrid, Button, Icon, Center } from "@chakra-ui/react";
-import { MdArrowBackIosNew } from "react-icons/md";
-import { MdArrowForwardIos } from "react-icons/md";
-import "./Pagination.css";
+import React, { useMemo } from "react";
+import {
+  SimpleGrid,
+  Button,
+  IconButton,
+  HStack,
+  Center,
+  Text,
+  VisuallyHidden,
+} from "@chakra-ui/react";
+import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
 
-const Pagination = ({ petsPerPage, totalPets, paginate, currentPage }) => {
-  let pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(totalPets / petsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+/**
+ * Props:
+ * - itemsPerPage: number
+ * - totalItems: number
+ * - currentPage: number (1-based)
+ * - onPageChange: function(pageNumber) => void
+ * - maxButtons?: number (how many page number buttons to show, default 7)
+ */
+export default function Pagination({
+  itemsPerPage,
+  totalItems,
+  currentPage,
+  onPageChange,
+  maxButtons = 4,
+}) {
+  const totalPages = Math.max(
+    1,
+    Math.ceil((totalItems || 0) / (itemsPerPage || 1))
+  );
+
+  const page = Math.min(Math.max(currentPage || 1, 1), totalPages);
+
+  const pages = useMemo(() => {
+    const pagesArr = [];
+
+    if (totalPages <= maxButtons) {
+      for (let i = 1; i <= totalPages; i++) pagesArr.push(i);
+      return pagesArr;
+    }
+
+    const half = Math.floor(maxButtons / 2);
+    let start = page - half;
+    let end = page + half;
+
+    if (start <= 1) {
+      start = 1;
+      end = maxButtons - 1; // leave room for last page
+    } else if (end >= totalPages) {
+      start = totalPages - (maxButtons - 2);
+      end = totalPages;
+    }
+
+    pagesArr.push(1);
+
+    if (start > 2) {
+      pagesArr.push("left-ellipsis");
+    }
+
+    for (let i = Math.max(2, start); i <= Math.min(end, totalPages - 1); i++) {
+      pagesArr.push(i);
+    }
+
+    if (end < totalPages - 1) {
+      pagesArr.push("right-ellipsis");
+    }
+
+    if (totalPages > 1) pagesArr.push(totalPages);
+
+    return pagesArr;
+  }, [totalPages, page, maxButtons]);
+
+  const handleClick = (p) => {
+    if (p === "left-ellipsis" || p === "right-ellipsis") return;
+    if (p < 1 || p > totalPages) return;
+    if (p === page) return;
+    onPageChange(p);
+  };
 
   return (
-    <>
-      <SimpleGrid columns={[1, 1, 1]} spacing={"15px"}>
-        <Center mt={"1rem"} display={"flex"} justifyContent={"center"}>
-          <ul>
-            <Button
-              w={["2rem", "2rem", "5rem"]}
-              mx="1rem"
-              onClick={() => {
-                paginate(currentPage - 1);
-              }}
-              hidden={currentPage <= 1 ? true : false}
-              className={"button"}
-            >
-              <Icon
-                as={MdArrowBackIosNew}
-                color="orange.400"
-                boxSize={5}
-                _hover={{
-                  color: "grey",
-                  boxSize: "3",
-                }}
-              />
-            </Button>
-            {pageNumbers.map((number) => (
+    <SimpleGrid columns={[1]} spacing={4}>
+      <Center mt="1rem">
+        <HStack spacing={2} wrap="wrap">
+          <IconButton
+            aria-label="Página anterior"
+            icon={<MdArrowBackIosNew />}
+            onClick={() => onPageChange(Math.max(1, page - 1))}
+            isDisabled={page <= 1}
+            size="sm"
+          />
+          {pages.map((p, idx) =>
+            typeof p === "number" ? (
               <Button
-                mx="0.2rem"
-                className={`li ${currentPage === number ? "activePage" : ""}`}
-                onClick={() => {
-                  paginate(number);
-                }}
-                key={number}
+                key={p}
+                size="sm"
+                variant={p === page ? "solid" : "ghost"}
+                colorScheme={p === page ? "orange" : "gray"}
+                onClick={() => handleClick(p)}
               >
-                {number}
+                <VisuallyHidden>Ir a página</VisuallyHidden>
+                <Text as="span">{p}</Text>
               </Button>
-            ))}
-            <Button
-              w={["2rem", "2rem", "5rem"]}
-              mx="1rem"
-              onClick={() => {
-                paginate(currentPage + 1);
-              }}
-              hidden={currentPage >= pageNumbers.length ? true : false}
-            >
-              <Icon
-                as={MdArrowForwardIos}
-                color="orange.400"
-                boxSize={5}
-                _hover={{
-                  color: "grey",
-                  boxSize: "3",
-                }}
-              />
-            </Button>
-          </ul>
-        </Center>
-      </SimpleGrid>
-    </>
+            ) : (
+              <Button key={`${p}-${idx}`} size="sm" variant="ghost" isDisabled>
+                …
+              </Button>
+            )
+          )}
+          <IconButton
+            aria-label="Página siguiente"
+            icon={<MdArrowForwardIos />}
+            onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+            isDisabled={page >= totalPages}
+            size="sm"
+          />
+        </HStack>
+      </Center>
+    </SimpleGrid>
   );
-};
-
-export default Pagination;
+}

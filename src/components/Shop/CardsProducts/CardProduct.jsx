@@ -29,6 +29,7 @@ export default function CardProduct({
   description,
   handleSetCart,
   handleRemoveItemCart,
+  currentPage,
 }) {
   const cancelRef = React.useRef();
   const navigate = useNavigate();
@@ -37,12 +38,15 @@ export default function CardProduct({
   const product = JSON.parse(localStorage.getItem("cart"))?.filter(
     (pr) => pr.id === id
   )[0];
-
   const handleNavigateProduct = (e) => {
     e.preventDefault();
-    navigate(`/shop/product/${id}`);
-  };
 
+    const params = new URLSearchParams();
+    if (currentPage && currentPage > 1) params.set("page", String(currentPage));
+    const q = params.toString();
+    const url = q ? `/shop/product/${id}?${q}` : `/shop/product/${id}`;
+    navigate(url);
+  };
   return (
     <>
       <Box>

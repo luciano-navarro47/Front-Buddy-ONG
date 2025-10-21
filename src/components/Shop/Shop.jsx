@@ -1,17 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts } from "../../redux/Actions/productActions";
-
+import { useSearchParams } from "react-router-dom";
 import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
-import CardsProduct from "./CardsProducts/CardsProduct";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
 import Pagination from "../Pagination/Pagination";
+import CardsProduct from "./CardsProducts/CardsProduct";
+import { getAllProducts } from "../../redux/Actions/productActions";
 
 export default function Shop() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.filteredProducts);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [productsPerPage, setProductsPerPage] = useState(6);
+
+  useEffect(() => {
+    const sp = new URLSearchParams(searchParams);
+    if (currentPage === 1) {
+      sp.delete("page");
+    } else {
+      sp.set("page", String(currentPage));
+    }
+    setSearchParams(sp, { replace: true });
+  }, [currentPage, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(
@@ -19,6 +38,9 @@ export default function Shop() {
     indexOfLastProduct
   );
   const paginate = (number) => {
+    if (number < 1) return;
+    const totalPages = Math.ceil((products.length || 0) / productsPerPage) || 1;
+    if (number > totalPages) return;
     setCurrentPage(number);
   };
 
@@ -51,7 +73,6 @@ export default function Shop() {
     e.preventDefault();
 
     try {
-
       let product = {
         name,
         images,
@@ -79,7 +100,7 @@ export default function Shop() {
 
             oldCart[index].total = oldCart[index].price * oldCart[index].amount;
             window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            dispatch(getAllProducts);
+            dispatch(getAllProducts());
           }
         } else {
           if (stock !== 0) {
@@ -107,10 +128,6 @@ export default function Shop() {
     }
   };
 
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
-
   return (
     <>
       <Box minHeight={"80vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
@@ -120,10 +137,10 @@ export default function Shop() {
           paginate={paginate}
         />
         <Pagination
-          petsPerPage={productsPerPage}
-          allPets={products.length}
-          paginate={paginate}
+          itemsPerPage={productsPerPage}
+          totalItems={products.length}
           currentPage={currentPage}
+          onPageChange={(pageNum) => setCurrentPage(pageNum)}
         />
         <Center>
           <Box>
@@ -133,6 +150,7 @@ export default function Shop() {
                   products={currentProducts}
                   handleSetCart={handleSetCart}
                   handleRemoveItemCart={handleRemoveItemCart}
+                  currentPage={currentPage}
                 />
               ) : (
                 <Center w={"99vw"} display={"flex"} alignItems={"center"}>
@@ -150,6 +168,13 @@ export default function Shop() {
             </SimpleGrid>
           </Box>
         </Center>
+
+        <Pagination
+          itemsPerPage={productsPerPage}
+          totalItems={products.length}
+          currentPage={currentPage}
+          onPageChange={(pageNum) => setCurrentPage(pageNum)}
+        />
       </Box>
     </>
   );
