@@ -3,7 +3,6 @@ import { SET_USER, CLEAR_TOKEN } from "../ActionTypes";
 
 export const logout = (auth0Logout = null) => {
   return (dispatch) => {
-    // console.log("AUTH0LOGOUT: ", auth0Logout)
     if (auth0Logout) {
       auth0Logout({ returnTo: window.location.origin + "/" });
     }

@@ -23,7 +23,7 @@ import {
 export default function CartCards({
   amount,
   id,
-  images,
+  picture_url,
   name,
   price,
   total,
@@ -56,7 +56,7 @@ export default function CartCards({
               width={100}
               height={100}
               fit="cover"
-              src={images?.length > 0 ? images[0] : null}
+              src={picture_url ?? picture_url}
               alt={name}
             />
           </Box>
@@ -117,7 +117,7 @@ export default function CartCards({
                 onClick={
                   amount === stock
                     ? onOpen
-                    : (e) => handlerSetCart(e, id, price, images, name, stock)
+                    : (e) => handlerSetCart(e, id, price, picture_url, name, stock)
                 }
               >
                 {stock === amount ? "x" : "+"}
@@ -150,7 +150,7 @@ export default function CartCards({
                           bg={"brand.orange"}
                           ml={3}
                           onClick={(e) => {
-                            handlerSetCart(e, id, price, images, name, stock);
+                            handlerSetCart(e, id, price, picture_url, name, stock);
                             onClose();
                           }}
                         >

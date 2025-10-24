@@ -73,52 +73,68 @@ export default function Shop() {
     e.preventDefault();
 
     try {
-      let product = {
+      const product = {
+        id: String(id),
         name,
-        images,
-        price,
-        id,
-        stock,
-        amount: 1,
+        unit_price: Number(price ?? 0),
+        quantity: 1,
+        stock: Number(stock ?? 0),
+        picture_url: Array.isArray(images) ? images[0] : images,
+        total: Number(price ?? 0),
       };
 
-      let oldCart = JSON.parse(window.localStorage.getItem("cart"));
+      const raw = window.localStorage.getItem("cart");
+      const oldCart = raw ? JSON.parse(raw) : null;
 
-      if (oldCart) {
-        let index = false;
-        oldCart.forEach((pr, i) => {
-          if (pr.id === product.id) {
-            index = i;
-          }
-        });
+      if (Array.isArray(oldCart) && oldCart.length > 0) {
+        const index = oldCart.findIndex(
+          (pr) => String(pr.id) === String(product.id)
+        );
 
-        if (index !== false) {
-          if (stock === oldCart[index].amount) {
+        if (index !== -1) {
+          const existing = oldCart[index];
+          const existingQty = Number(existing.quantity ?? existing.amount ?? 0);
+          const existingUnitPrice = Number(
+            existing.unit_price ?? existing.price ?? product.unit_price
+          );
+
+          if (existingQty >= (product.stock ?? 0)) {
             return alert("Se llegó al limite de stock actual");
-          } else {
-            oldCart[index].amount += 1;
+          }
 
-            oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            dispatch(getAllProducts());
-          }
+          const newQty = existingQty + 1;
+          oldCart[index] = {
+            ...existing,
+            quantity: newQty,
+            unit_price: existingUnitPrice,
+            total: Math.round(existingUnitPrice * newQty * 100) / 100,
+            picture_url:
+              existing.picture_url ??
+              existing.images?.[0] ??
+              product.picture_url,
+            name: existing.name ?? product.name,
+          };
+
+          window.localStorage.setItem("cart", JSON.stringify(oldCart));
+          dispatch(getAllProducts());
+          return;
+        }
+
+        if (product.stock !== 0) {
+          window.localStorage.setItem(
+            "cart",
+            JSON.stringify([...oldCart, product])
+          );
+          dispatch(getAllProducts());
+          return;
         } else {
-          if (stock !== 0) {
-            product.total = product.price;
-            window.localStorage.setItem(
-              "cart",
-              JSON.stringify([...oldCart, product])
-            );
-            dispatch(getAllProducts);
-          } else {
-            return alert("El producto no tiene stock");
-          }
+          return alert("El producto no tiene stock");
         }
       } else {
-        if (stock !== 0) {
-          product.total = product.price;
+        if (product.stock !== 0) {
           window.localStorage.setItem("cart", JSON.stringify([product]));
-          dispatch(getAllProducts);
+          dispatch(getAllProducts());
+          return;
         } else {
           return alert("El producto no tiene stock");
         }

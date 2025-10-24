@@ -1,29 +1,29 @@
-// src/components/PaymentCheckout.jsx
+
 import React, { useEffect } from "react";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 
 export default function PaymentCheckout({ preferenceId, amount }) {
-    console.log("ENTRE AL COMP PAYCHECK ")
   useEffect(() => {
     initMercadoPago(process.env.REACT_APP_MP_PUBLIC_KEY, { locale: "es-AR" });
   }, []);
 
   const initialization = {
     amount,
-    preferenceId, // viene del backend
+    preferenceId, 
   };
 
   const customization = {
     paymentMethods: {
-      ticket: "all",
+      // ticket: "all",
+      // prepaidCard: "all",
       creditCard: "all",
-      prepaidCard: "all",
       debitCard: "all",
       mercadoPago: "all",
     },
   };
 
   const onSubmit = async ({ selectedPaymentMethod, formData }) => {
+    console.log("FORMDATA: ", formData)
     return new Promise((resolve, reject) => {
       fetch("/process_payment", {
         method: "POST",

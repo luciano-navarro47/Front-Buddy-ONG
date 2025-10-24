@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { MdArrowBackIosNew } from "react-icons/md";
+// import { MdArrowBackIosNew } from "react-icons/md";
 import {
   Box,
-  Icon,
+  // Icon,
   Text,
   Center,
   SimpleGrid,
@@ -15,7 +15,7 @@ import {
 import {
   AlertDialog,
   AlertDialogBody,
-  AlertDialogFooter,
+  // AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
@@ -25,20 +25,13 @@ import CartCards from "./CartCards";
 import PaymentCheckout from "../PaymentCheckout";
 import { createCheckout } from "redux/Actions/paymentsActions";
 
-// Refactor notes:
-// - The cart is now managed with React state (setCart) and persisted to localStorage in a single place.
-// - addItem / removeItem helpers centralize the cart mutation logic and avoid repeated branches.
-// - createCheckout dispatch now receives the full payload object: { cart, userInfo, currency_id, shipping_cost, metadata }
-// - Removed the previous "cartFlag" trick and unnecessary empty useEffect.
-
 export default function Cart() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const cancelRef = useRef();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Try to read initial cart from localStorage safely
   const readInitialCart = () => {
     try {
       const raw = window.localStorage.getItem("cart");
@@ -46,28 +39,37 @@ export default function Cart() {
       const parsed = JSON.parse(raw);
 
       const normalize = (p) => {
-        const price = Number(p.price);
-        const amount = Number(p.amount ?? 0);
+        const unit_price = Number(p.unit_price ?? p.price ?? 0);
+        const quantity = Number(p.quantity ?? p.amount ?? 0);
         const stock = Number(p.stock ?? 0);
-        const totalFromItem = Number(p.total);
-        const computedTotal = Number.isFinite(totalFromItem)
-          ? totalFromItem
-          : price * amount;
+        const img =
+          (Array.isArray(p.images) && p.images.length > 0 && p.images[0]) ||
+          p.picture_url ||
+          undefined;
+
+        const computedTotal = Number.isFinite(Number(p.total))
+          ? Number(p.total)
+          : unit_price * quantity;
 
         const total = Number.isFinite(computedTotal)
           ? Math.round(computedTotal * 100) / 100
           : 0;
 
         return {
-          ...p,
-          price: Number.isFinite(price) ? price : 0,
-          amount: Number.isFinite(amount) ? amount : 0,
-          stock: Number.isFinite(stock) ? stock : 0,
+          id: String(p.id),
+          name: String(p.name ?? ""),
+          unit_price: Number.isFinite(unit_price) ? unit_price : 0,
+          quantity: Number.isFinite(quantity) ? quantity : 0,
+          stock,
+          picture_url: img,
           total,
         };
       };
-
-      return Array.isArray(parsed) ? parsed.map(normalize) : [];
+      const initial = Array.isArray(parsed) ? parsed.map(normalize) : [];
+      try {
+        window.localStorage.setItem("cart", JSON.stringify(initial));
+      } catch (err) {}
+      return initial;
     } catch (err) {
       console.error("Error parsing cart from localStorage:", err);
       return [];
@@ -77,6 +79,7 @@ export default function Cart() {
   const [cart, setCart] = useState(readInitialCart);
   const [showCheckout, setShowCheckout] = useState(false);
   const [preferenceId, setPreferenceId] = useState(null);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
 
   const loggedUser = React.useMemo(() => {
     try {
@@ -87,8 +90,6 @@ export default function Cart() {
   }, []);
 
   const isLogged = Boolean(loggedUser);
-
-  // Persist cart changes to localStorage in one place
   useEffect(() => {
     try {
       window.localStorage.setItem("cart", JSON.stringify(cart));
@@ -97,41 +98,37 @@ export default function Cart() {
     }
   }, [cart]);
 
-  // helpers
-  const findIndexById = (id) => cart.findIndex((p) => p.id === id);
-
   const addItem = ({ id, name, image, price, stock }) => {
-    const priceNum = Number(price || 0);
+    const unit_price = Number(price || 0);
     const stockNum = Number(stock ?? 0);
     setCart((prev) => {
       const idx = prev.findIndex((p) => p.id === id);
       if (idx !== -1) {
-        // already in cart -> increase amount if stock allows
         const existing = prev[idx];
-        if (existing.amount >= existing.stock) {
+        if (existing.quantity >= (existing.stock ?? stockNum)) {
           alert("Se llegó al limite de stock actual");
           return prev;
         }
         const updated = [...prev];
-        const newAmount = existing.amount + 1;
-        const newTotal = Math.round(priceNum * newAmount * 100) / 100;
+        const newQuantity = existing.quantity + 1;
+        const newTotal = Math.round(unit_price * newQuantity * 100) / 100;
         updated[idx] = {
           ...existing,
-          amount: newAmount,
+          quantity: newQuantity,
           total: newTotal,
         };
         return updated;
       }
 
-      // new product
       const product = {
-        id,
-        name,
-        image,
-        price: priceNum,
+        id: String(id),
+        name: String(name ?? ""),
+        unit_price,
+        quantity: 1,
         stock: stockNum,
-        amount: 1,
-        total: Math.round(priceNum * 100) / 100,
+        picture_url: Array.isArray(image) ? image[0] : image,
+        image: Array.isArray(image) ? image[0] : image,
+        total: Math.round(unit_price * 100) / 100,
       };
       return [...prev, product];
     });
@@ -142,23 +139,22 @@ export default function Cart() {
       const idx = prev.findIndex((p) => p.id === id);
       if (idx === -1) return prev;
       const existing = prev[idx];
-      if (existing.amount > 1) {
+      if (existing.quantity > 1) {
         const updated = [...prev];
-        const newAmount = existing.amount - 1;
-        const newTotal = Math.round(existing.price * newAmount * 100) / 100;
+        const newQuantity = existing.quantity - 1;
+        const newTotal =
+          Math.round(existing.unit_price * newQuantity * 100) / 100;
         updated[idx] = {
           ...existing,
-          amount: newAmount,
+          quantity: newQuantity,
           total: newTotal,
         };
         return updated;
       }
-      
       return prev.filter((p) => p.id !== id);
     });
   };
 
-  // wrappers that keep the original signature used in CartCards
   const handlerSetCart = (e, id, price, image, name, stock) => {
     e?.preventDefault?.();
     addItem({ id, price, image, name, stock });
@@ -176,36 +172,93 @@ export default function Cart() {
     );
   }, [cart]);
 
-  console.log("TOTAL: ", total);
-
-  // Checkout: now sends the full object expected by backend
-  const handleCheckout = async () => {
+  const handleCheckout = async (mode = "brick") => {
     try {
+      setLoadingCheckout(true);
+
+      const transformedCart = cart.map((p) => ({
+        id: String(p.id),
+        name: String(p.name ?? ""),
+        unit_price: Number(p.unit_price ?? p.price ?? 0),
+        quantity: Number(p.quantity ?? p.amount ?? 1),
+        image:
+          (Array.isArray(p.images) && p.images[0]) ||
+          p.image ||
+          p.picture_url ||
+          undefined,
+      }));
+
+      const userInfo = loggedUser
+        ? {
+            id: loggedUser.id,
+            fullName: loggedUser.fullName,
+            email: loggedUser.email,
+          }
+        : null;
+
       const payload = {
-        cart,
-        userInfo: loggedUser ?? null,
-        currency_id: "ARS", // assumption: default currency
-        shipping_cost: 0, // assumption: default 0 - change as needed
-        metadata: {}, // assumption: empty metadata
+        cart: transformedCart,
+        userInfo,
+        currency_id: "ARS",
+        shipping_cost: 0,
+        metadata: {},
       };
 
-      const urlOrPref = await dispatch(createCheckout(payload));
+      const data = await dispatch(createCheckout(payload));
 
-      // depending on backend shape, this may be an object or string
-      setPreferenceId(urlOrPref?.id ?? urlOrPref ?? null);
-      setShowCheckout(true);
+      if (mode === "redirect") {
+        if (data?.init_point) {
+          window.location.href = data.init_point;
+          return;
+        } else {
+          throw new Error("No init_point returned from server");
+        }
+      }
+
+      // modo brick
+      if (mode === "brick") {
+        if (data?.preference_id) {
+          setPreferenceId(data.preference_id);
+          setShowCheckout(true);
+
+          setTimeout(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          }, 120);
+          
+          return;
+        } else {
+          throw new Error("No preference_id returned from server");
+        }
+      }
     } catch (err) {
       console.error("Error iniciando checkout:", err);
+      // opcional: mostrar toast/alert
+    } finally {
+      setLoadingCheckout(false);
     }
-  };
-
-  const handleDialogCheckout = async () => {
-    await handleCheckout();
-    onClose();
   };
 
   return (
     <>
+      <Box
+        display="flex"
+        justifyContent={"center"}
+        pt={2}
+        bg={"brand.green.200"}
+      >
+        <Link to={"/shop"}>
+          <Button
+            fontFamily={"body"}
+            bg="base.green.100"
+            color={"grey"}
+            _hover={{ color: "orange.400" }}
+            p="0"
+            mr="1rem"
+          >
+            Seguir comprando
+          </Button>
+        </Link>
+      </Box>
       <Box minHeight={"90vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
         <Stack
           direction={{ base: "column", lg: "row" }}
@@ -226,28 +279,6 @@ export default function Cart() {
                   >
                     No hay productos en tu carrito
                   </Text>
-                  <Link to={"/shop"}>
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      color="orange.400"
-                      boxSize={5}
-                    />
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      color="orange.400"
-                      boxSize={5}
-                    />
-                    <Button
-                      fontFamily={"body"}
-                      bg="base.green.100"
-                      color={"grey"}
-                      _hover={{ color: "orange.400" }}
-                      p="0"
-                      mr="1rem"
-                    >
-                      Volver a la tienda
-                    </Button>
-                  </Link>
                 </Stack>
               </Center>
             ) : (
@@ -255,11 +286,11 @@ export default function Cart() {
                 {cart.map((pr) => (
                   <CartCards
                     key={pr.id}
-                    amount={pr.amount}
+                    amount={pr.quantity}
                     id={pr.id}
-                    images={pr.images ?? pr.image}
+                    picture_url={pr.picture_url}
                     name={pr.name}
-                    price={pr.price}
+                    price={pr.unit_price}
                     total={pr.total}
                     stock={pr.stock}
                     handlerSetCart={handlerSetCart}
@@ -282,7 +313,7 @@ export default function Cart() {
 
                     <Box>
                       <Button
-                        onClick={onOpen}
+                        onClick={() => handleCheckout("brick")}
                         fontFamily={"body"}
                         borderRadius={"full"}
                         size="lg"
@@ -292,8 +323,10 @@ export default function Cart() {
                           transform: "translateY(2px)",
                           boxShadow: "lg",
                         }}
+                        isDisabled={showCheckout || loadingCheckout}
+                        isLoading={loadingCheckout}
                       >
-                        Continuar compra
+                        Continuar
                       </Button>
 
                       <AlertDialog
@@ -322,46 +355,13 @@ export default function Cart() {
                             {isLogged ? (
                               <AlertDialogBody>
                                 Solo falta ir a pagar, si no necesitas nada más
-                                haz click en "Ir a pagar"
+                                puedes continuar tu compra.
                               </AlertDialogBody>
                             ) : (
                               <AlertDialogBody>
                                 Para hacer la compra debes ingresar tu cuenta,
                                 si no tienes puedes crear una!
                               </AlertDialogBody>
-                            )}
-
-                            {isLogged ? (
-                              <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                  Volver al carrito
-                                </Button>
-                                <Button
-                                  color={"white"}
-                                  bg={{ base: "brand.orange" }}
-                                  onClick={handleDialogCheckout}
-                                  ml={3}
-                                >
-                                  Continuar compra
-                                </Button>
-                              </AlertDialogFooter>
-                            ) : (
-                              <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                  Cancelar
-                                </Button>
-                                <Button
-                                  color={"white"}
-                                  bg={{ base: "brand.orange" }}
-                                  onClick={(e) => {
-                                    onClose();
-                                    navigate("/");
-                                  }}
-                                  ml={3}
-                                >
-                                  Ingresar
-                                </Button>
-                              </AlertDialogFooter>
                             )}
                           </AlertDialogContent>
                         </AlertDialogOverlay>
@@ -371,31 +371,10 @@ export default function Cart() {
                 </Center>
 
                 {!showCheckout ? (
-                  <Box
-                    minHeight={"90vh"}
-                    bg="brand.backgorund"
-                    paddingBottom={"3rem"}
-                  >
-                    {/* Placeholder area kept to preserve structure if you were rendering more of the cart UI here */}
-                  </Box>
+                  ""
                 ) : (
                   <PaymentCheckout preferenceId={preferenceId} amount={total} />
                 )}
-
-                <Link to={"/shop"}>
-                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
-                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
-                  <Button
-                    fontFamily={"body"}
-                    bg="base.green.100"
-                    color={"grey"}
-                    _hover={{ color: "orange.400" }}
-                    p="0"
-                    mr="1rem"
-                  >
-                    Seguir comprando
-                  </Button>
-                </Link>
               </Stack>
             )}
           </Stack>
