@@ -9,7 +9,6 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import React from "react";
-import "./CartCard.css";
 import {
   AlertDialog,
   AlertDialogBody,
