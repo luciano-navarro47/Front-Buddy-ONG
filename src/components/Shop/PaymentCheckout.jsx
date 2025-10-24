@@ -23,7 +23,7 @@ export default function PaymentCheckout({ preferenceId, amount }) {
 
   const customization = {
     paymentMethods: {
-      ticket: "all", 
+      // ticket: "all", 
       // prepaidCard: "all",
       creditCard: "all",
       debitCard: "all",
