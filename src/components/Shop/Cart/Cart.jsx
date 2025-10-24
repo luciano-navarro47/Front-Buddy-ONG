@@ -106,7 +106,6 @@ export default function Cart() {
       if (idx !== -1) {
         const existing = prev[idx];
         if (existing.quantity >= (existing.stock ?? stockNum)) {
-          alert("Se llegó al limite de stock actual");
           return prev;
         }
         const updated = [...prev];
@@ -215,7 +214,7 @@ export default function Cart() {
         }
       }
 
-      // modo brick
+      // brick mode
       if (mode === "brick") {
         if (data?.preference_id) {
           setPreferenceId(data.preference_id);
@@ -231,8 +230,7 @@ export default function Cart() {
         }
       }
     } catch (err) {
-      console.error("Error iniciando checkout:", err);
-      // opcional: mostrar toast/alert
+
     } finally {
       setLoadingCheckout(false);
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
+import { Box, SimpleGrid, Center, Text, useToast } from "@chakra-ui/react";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
 import Pagination from "../Pagination/Pagination";
 import CardsProduct from "./CardsProducts/CardsProduct";
@@ -9,6 +9,7 @@ import { getAllProducts } from "../../redux/Actions/productActions";
 
 export default function Shop() {
   const dispatch = useDispatch();
+  const toast = useToast()
   const products = useSelector((state) => state.products.filteredProducts);
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -99,7 +100,11 @@ export default function Shop() {
           );
 
           if (existingQty >= (product.stock ?? 0)) {
-            return alert("Se llegó al limite de stock actual");
+            return toast({
+              title: "Se llegó al limite de stock actual",
+              isClosable: true,
+              status: "warning"
+            })
           }
 
           const newQty = existingQty + 1;
