@@ -71,16 +71,26 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
       zIndex="1000"
       boxShadow="sm"
     >
-      <Container maxW="7xl" px={{ base: 2, md: 4 }}>
+      <Container maxW="9x1">
         <Grid
           data-navbar-grid="main"
-          templateColumns={{ base: "48px 1fr 48px", md: "200px 1fr 200px" }}
+          templateColumns={{
+            base: "48px 1fr 48px", // (< 768px)
+            md: "120px 1fr 150px", // (768px - 992px) - Tighter layout
+            lg: "140px 1fr 160px", // (992px - 1280px) - intermediate layout
+            xl: "200px 1fr 200px", // (>= 1280px) - full desktop layout
+          }}
           alignItems="center"
           gap={2}
           h={16}
+          px={{
+            base: 4,
+            md: 6,
+            lg: 10,
+          }}
         >
           <Box display="flex" alignItems="center" justifyContent="flex-start">
-            <Box display={{ base: "flex", md: "none" }} alignItems="center">
+            <Box display={{ base: "flex", md: "none" }}>
               {currentUser && Object.keys(currentUser).length > 0 ? (
                 <UserMenu
                   currentUser={currentUser}
@@ -108,7 +118,13 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
             </Box>
           </Box>
 
-          <Box textAlign="center">
+          <Box
+            display="flex"
+            justifySelf="center"
+            justifyContent="center"
+            alignItems="center"
+            mx={0}
+          >
             <Box
               display={{ base: "block", md: "none" }}
               onClick={() => navigate("/")}
@@ -119,7 +135,6 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
                 onClick={() => navigate("/")}
               />
             </Box>
-
             <Box display={{ base: "none", md: "flex" }} justifyContent="center">
               <NavLinks links={mainLinks} handleLinkClick={handleLinkClick} />
             </Box>
@@ -183,43 +198,22 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
 
       <style>
         {`
-      /* Ajuste fino del layout entre 768px y 1050px */
-    @media (max-width: 1050px) and (min-width: 768px) {
-      /* Reduce el espacio horizontal entre los links */
-      .chakra-stack[data-navlinks],
-      .chakra-hstack[data-navlinks],
-      .chakra-flex[data-navlinks] {
-        gap: 0.5rem !important;
-      }
+        /* Ajuste fino del layout entre 768px y 1009px */
+      @media (max-width: 1009px) and (min-width: 768px) {
+        /* Reduce el espacio horizontal entre los links */
+        .chakra-stack[data-navlinks],
+        .chakra-hstack[data-navlinks],
+        .chakra-flex[data-navlinks] {
+          gap: 0.5rem !important;
+        }
 
-      /* Disminuye el padding lateral de los botones de links */
-      .chakra-button {
-        font-size: 0.8rem !important;
-        padding-inline: 0.25rem !important;
+        /* Disminuye el padding lateral de los botones de links */
+        .chakra-button {
+          font-size: 0.82rem !important;
+          padding-inline: 0.125rem !important;
+        }
       }
-
-      /* Ajusta el grid para dejar más espacio al avatar y evitar solapamiento */
-      .chakra-container > .chakra-grid {
-        grid-template-columns: 140px 1fr 160px !important;
-      }
-
-      /* Reduce el tamaño del logo levemente para que no empuje */
-      .chakra-container img[alt="Buddy logo"] {
-        max-width: 46px !important;
-      }
-    }
-
-      /* Rango más crítico: entre 768px y 872px */
-    @media (max-width: 872px) and (min-width: 768px) {
-      .chakra-container > .chakra-grid {
-        grid-template-columns: 120px 1fr 150px !important;
-      }
-
-      .chakra-container img[alt="Buddy logo"] {
-        max-width: 40px !important;
-      }
-    }
-  `}
+      `}
       </style>
     </Box>
   );
