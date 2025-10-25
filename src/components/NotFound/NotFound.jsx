@@ -1,6 +1,6 @@
 import "./NotFound.css";
 import { useNavigate } from "react-router-dom";
-import img5 from "../../assets/imagenes/img5.png";
+import img5 from "../../assets/images/img5.png";
 import { Box, Image, Center, Heading, Button } from "@chakra-ui/react";
 
 const NotFound = ({ handleSetUserFlag }) => {

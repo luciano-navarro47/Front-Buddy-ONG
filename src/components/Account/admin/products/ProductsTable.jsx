@@ -18,7 +18,7 @@ import ReusableFormModal from "components/account/common/ReusableFormModal";
 import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
 import ActionPill from "components/account/common/buttons/ActionPill";
-import { CATEGORY_LABEL_BY_VALUE } from "components/constants/categories";
+import { CATEGORY_LABEL_BY_VALUE } from "utils/constants/categories";
 import {
   clearProduct,
   deleteProducts,

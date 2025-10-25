@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MapView.css";
-import logo from "../../assets/imagenes/marcador.png";
+import logo from "../../assets/images/marcador.png";
 
 const myIcon = new L.icon({
   iconUrl: logo,

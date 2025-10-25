@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { GiSittingDog, GiCat } from "react-icons/gi";
 import { RiHeartAddLine } from "react-icons/ri";
-import { avatars } from "../constants/collaborators-info";
-import logo from "../../assets/imagenes/logo_negro.png";
+import { avatars } from "../../utils/constants/collaborators-info";
+import logo from "../../assets/images/logo_negro.png";
 
 export default function LandingHero() {
   return (
@@ -74,7 +74,7 @@ export default function LandingHero() {
               <Avatar
                 key={avatar.name}
                 name={avatar.name}
-                src={avatar.url}
+                src={avatar.img}
                 zIndex={2}
                 boxShadow="lg"
                 _before={{
