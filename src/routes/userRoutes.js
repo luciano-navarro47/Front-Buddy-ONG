@@ -1,5 +1,5 @@
 import React from "react";
-import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
+import { PrivateRoute } from "../components/commons/PrivateRoute/PrivateRoute";
 import PetForm from "components/account/pets/form/FormFields/PetForm";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";

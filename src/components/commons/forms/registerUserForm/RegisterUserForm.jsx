@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import {
   postUser,
   checkUsernameAvailability,
-} from "../../../redux/Actions/userActions";
-import { validateRegisterUserForm } from "../../../utils/formValidations/registerUserForm";
+} from "../../../../redux/Actions/userActions";
+import { validateRegisterUserForm } from "../../../../utils/formValidations/registerUserForm";
 import AlertForm from "../../Alerts/AlertForm/AlertForm";
 import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AccountFields from "./fields/AccountFields";

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../../redux/Actions/session";
+import { logout } from "../../../redux/Actions/session";
 
 export const PrivateRoute = ({
   roles = [],

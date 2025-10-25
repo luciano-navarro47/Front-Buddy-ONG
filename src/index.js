@@ -4,7 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import reportWebVitals from "./reportWebVitals";
 import App from "./App";
-import { theme } from "./components/Theme";
+import { theme } from "./components/commons/Theme";
 
 import React from "react";
 import ReactDOM from "react-dom/client";

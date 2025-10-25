@@ -17,7 +17,7 @@ import SectionHeader from "components/account/common/SectionHeader";
 import DataTable from "../../common/table/DataTable";
 import ActionPill from "components/account/common/buttons/ActionPill";
 import { getAllVeterinaries } from "redux/Actions/veterinaryActions";
-import ImageGalleryModal from "components/Modal/ImageGalleryModal";
+import ImageGalleryModal from "components/commons/Modal/ImageGalleryModal";
 import { useNavigate } from "react-router-dom";
 
 export function VeterinariesTable() {

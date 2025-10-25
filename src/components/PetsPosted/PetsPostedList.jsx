@@ -6,7 +6,7 @@ import { SimpleGrid, Box, Stack, Center, Icon, Text } from "@chakra-ui/react";
 
 import PetPostedCard from "./PetPostedCard";
 import FilterBar from "./FilterBar";
-import Pagination from "../Pagination/Pagination";
+import Pagination from "../commons/Pagination/Pagination";
 import { getPets } from "../../redux/Actions/petActions";
 
 export default function PetsPostedList({ value }) {

@@ -6,7 +6,7 @@ import VetsList from "../components/Veterinaries/VetsList";
 import VetDetail from "../components/Veterinaries/VetDetail";
 import PetsPostedList from "../components/PetsPosted/PetsPostedList";
 import Details from "components/PetsPosted/PetDetail";
-import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
+import RegisterUserForm from "../components/commons/forms/registerUserForm/RegisterUserForm";
 import Shop from "components/Shop/Shop";
 import Cart from "components/Shop/Cart/Cart";
 import ProductDetail from "components/Shop/ProductDetail/ProductDetail";

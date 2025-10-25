@@ -9,9 +9,9 @@ import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
-import NotFound from "./components/NotFound/NotFound";
+import NotFound from "./components/commons/NotFound/NotFound";
 import Layout from "./components/Layout";
-import EmailModal from "./components/Modal/EmailModal";
+import EmailModal from "./components/commons/Modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,

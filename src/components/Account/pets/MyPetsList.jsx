@@ -5,7 +5,7 @@ import { Text, Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { getPetsByUser } from "redux/Actions/petActions";
 import PetCard from "./PetCard";
-import Pagination from "components/Pagination/Pagination";
+import Pagination from "components/commons/Pagination/Pagination";
 import SectionHeader from "../common/SectionHeader";
 import ActionPill from "../common/buttons/ActionPill";
 import PetForm from "./form/FormFields/PetForm";
