@@ -7,7 +7,7 @@ import { Auth0Provider } from "@auth0/auth0-react";
 
 import { ChakraProvider } from "@chakra-ui/react";
 
-import App from "./app"
+import App from "./App"
 import reportWebVitals from "./reportWebVitals";
 import { theme } from "components/commons/theme";
 
