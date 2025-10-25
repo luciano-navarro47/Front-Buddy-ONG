@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import s from "./MyPets.module.css";
 import { Heading, Container, Text, Center, Box } from "@chakra-ui/react";
-import Card from "../Card/Card";
+import Card from "../PetsPosted/PetPostedCard";
 import { getPetsByUser } from "redux/Actions/petActions";
 
 export default function MyPets({ user, setUser }) {

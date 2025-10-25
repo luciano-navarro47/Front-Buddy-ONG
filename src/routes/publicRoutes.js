@@ -4,8 +4,8 @@ import AboutUs from "../components/AboutUs/AboutUs";
 import DonationPage from "../components/Donation/DonationPage";
 import Veterinaries from "../components/Veterinaries/Veterinaries";
 import VetsDetail from "../components/VetsDetail/VetsDetail";
-import Pets from "../components/Adoption/Pets";
-import PetDetail from "../components/Adoption/details/PetDetail";
+import PetsPostedList from "../components/PetsPosted/PetsPostedList";
+import Details from "components/PetsPosted/PetDetail";
 import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
 import Shop from "components/Shop/Shop";
 import Cart from "components/Shop/Cart/Cart";
@@ -32,7 +32,7 @@ export const publicRoutes = ({
   },
   {
     path: "/register",
-    element: <RegisterUserForm setUser={setUser}/>,
+    element: <RegisterUserForm setUser={setUser} />,
   },
   {
     path: "/aboutUs",
@@ -64,10 +64,10 @@ export const publicRoutes = ({
   },
   {
     path: "/pets",
-    element: <Pets />,
+    element: <PetsPostedList />,
   },
   {
     path: "/pet/detail/:id",
-    element: <PetDetail />,
+    element: <Details />,
   },
 ];

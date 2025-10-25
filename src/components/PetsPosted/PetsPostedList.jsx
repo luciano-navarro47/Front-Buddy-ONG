@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SimpleGrid, Box, Stack, Center, Icon, Text } from "@chakra-ui/react";
 
-import Card from "../Card/Card";
+import PetPostedCard from "./PetPostedCard";
 import FilterBar from "./FilterBar";
 import Pagination from "../Pagination/Pagination";
 import { getPets } from "../../redux/Actions/petActions";
 
-const Adoption = ({ value }) => {
+export default function PetsPostedList({ value }) {
   const dispatch = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [petsPerPage, setPetsPerPage] = useState(8);
@@ -57,8 +57,8 @@ const Adoption = ({ value }) => {
             </Center>
           ) : (
             currentPets?.map((el) => (
-              <Link to={`/pet/${el?.id}`} key={el?.id}>
-                <Card data={el} />
+              <Link to={`/pet/detail/${el?.id}`} key={el?.id}>
+                <PetPostedCard data={el} />
               </Link>
             ))
           )}
@@ -66,6 +66,4 @@ const Adoption = ({ value }) => {
       </Center>
     </>
   );
-};
-
-export default Adoption;
+}

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getPetDetails } from "../../../redux/Actions/petActions";
+import { getPetDetails } from "redux/Actions/petActions";
 import {
   Box,
   Heading,
@@ -53,7 +53,7 @@ export default function Details() {
 
   useEffect(() => {
     dispatch(getPetDetails(id));
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   return (
     <div className="detailContainer">
