@@ -63,9 +63,6 @@ export default function ShopNavbar({
   return (
     <div>
       <Box bg={"brand.green.200"} pt="1rem">
-        <Center>
-          <Heading>Productos Solidarios</Heading>
-        </Center>
       </Box>
       <Box bg={"brand.green.200"} alignItems={"center"}>
         <Center>
