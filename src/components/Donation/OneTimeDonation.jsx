@@ -1,6 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import mercadoPago from "../../assets/imagenes/mercadoPago.png";
+import mercadoPago from "../../assets/images/mercadoPago.png";
 
 import {
   Box,
@@ -10,14 +9,12 @@ import {
   SimpleGrid,
   Image,
   Center,
-  VStack,
 } from "@chakra-ui/react";
 
 import axios from "axios";
 
 export default function OneTimeDonation() {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const user = useSelector((state) => state.user);
   const handlePayment = async (value) => {
     const donation = {
       unit_price: parseInt(value),

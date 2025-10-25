@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import logo from "../../assets/imagenes/logo_amarillo.png";
+import logo from "../../assets/images/logo_amarillo.png";
 import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
 
 import MapView from "../Map/MapView";

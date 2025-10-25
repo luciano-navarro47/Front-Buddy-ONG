@@ -15,7 +15,7 @@ import {
 import { GiSittingDog, GiCat } from "react-icons/gi";
 import { RiHeartAddLine } from "react-icons/ri";
 import { avatars } from "../constants/collaborators-info";
-import logo from "../../assets/imagenes/logo_negro.png";
+import logo from "../../assets/images/logo_negro.png";
 
 export default function LandingHero() {
   return (

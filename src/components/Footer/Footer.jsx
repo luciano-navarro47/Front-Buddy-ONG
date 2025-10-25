@@ -1,4 +1,3 @@
-// Footer.jsx
 import React from "react";
 import {
   Box,
@@ -9,12 +8,10 @@ import {
   Text,
   chakra,
   Link,
-  VStack,
   Wrap,
   WrapItem,
   Avatar,
   Tooltip,
-  IconButton,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -24,35 +21,24 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaInstagram, FaTwitter, FaYoutube, FaLinkedin } from "react-icons/fa";
-import logo from "../../assets/imagenes/logo_negro.png";
+import logo from "../../assets/images/logo_negro.png";
 
-// fotos (ajustá las rutas si hace falta)
-import magui from "../../assets/imagenes/magui.png";
-import lau from "../../assets/imagenes/lau.png";
-import lucho from "../../assets/imagenes/lucho.png";
-import ale from "../../assets/imagenes/ale.png";
-import marian from "../../assets/imagenes/marian.png";
-import juli from "../../assets/imagenes/juli.png";
-import igna from "../../assets/imagenes/igna.png";
-import andy from "../../assets/imagenes/andy.png";
+import lucho from "../../assets/images/lucho_avatar.png";
+import juli from "../../assets/images/juli.png";
 
-/* ------------------------
-   Datos del equipo (centralizados)
-   ------------------------ */
 const TEAM_MEMBERS = [
-  { name: "Mariana Maceira", img: marian, linkedin: "https://www.linkedin.com/in/m-g-maceira/" },
-  { name: "Maria Laura Colo", img: lau, linkedin: "https://www.linkedin.com/in/lauracolof/" },
-  { name: "Luciano Navarro", img: lucho, linkedin: "https://www.linkedin.com/in/lucho47-dev/" },
-  { name: "Alexis Falces", img: ale, linkedin: "https://www.linkedin.com/in/alexis-falces-95b892252/" },
-  { name: "Magdalena Aliaga", img: magui, linkedin: "https://www.linkedin.com/in/magdalena-aliaga-bb239698/" },
-  { name: "Julian Navarro", img: juli, linkedin: "https://www.linkedin.com/in/julian-navarro-b25938247/" },
-  { name: "Ignacio Coria", img: igna, linkedin: "https://www.linkedin.com/in/ignacio-coria-de-bernardi/" },
-  { name: "Andres Salom", img: andy, linkedin: "https://www.linkedin.com/in/andres-salom/" },
+  {
+    name: "Luciano Navarro",
+    img: lucho,
+    linkedin: "https://www.linkedin.com/in/lucho47-dev/",
+  },
+  {
+    name: "Julian Navarro",
+    img: juli,
+    linkedin: "https://www.linkedin.com/in/julian-navarro-b25938247/",
+  },
 ];
 
-/* ------------------------
-   Componentes pequeños
-   ------------------------ */
 const SocialButton = ({ label, href, icon }) => (
   <chakra.a
     href={href}
@@ -83,7 +69,6 @@ const FooterLogo = ({ onClick }) => (
   />
 );
 
-/* Avatar clickable + tooltip */
 function TeamAvatars({ members }) {
   return (
     <Wrap spacing={3} align="center">
@@ -100,7 +85,6 @@ function TeamAvatars({ members }) {
   );
 }
 
-/* Lista de nombres en collapse para mantener el footer compacto */
 function TeamAccordion({ members }) {
   return (
     <Accordion allowToggle>
@@ -132,21 +116,31 @@ function TeamAccordion({ members }) {
   );
 }
 
-/* ------------------------
-   Footer principal (export default)
-   ------------------------ */
 export default function Footer() {
   const bg = "brand.green.100";
   const textColor = useColorModeValue("gray.700", "gray.200");
 
   return (
-    <Box bg={bg} color={textColor} as="footer" role="contentinfo" py={{ base: 6, md: 8 }}>
+    <Box
+      bg={bg}
+      color={textColor}
+      as="footer"
+      role="contentinfo"
+      py={{ base: 6, md: 8 }}
+    >
       <Container maxW="7xl">
-        <SimpleGrid columns={{ base: 1, md: 3, lg: 4 }} spacing={{ base: 6, md: 8 }}>
+        <SimpleGrid
+          columns={{ base: 1, md: 3, lg: 4 }}
+          spacing={{ base: 6, md: 8 }}
+        >
           {/* LOGO + COPYRIGHT + REDES */}
           <Stack spacing={3}>
-            <FooterLogo onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
-            <Text fontSize="sm" color="gray.700">© {new Date().getFullYear()} Buddy ONG. Todos los derechos.</Text>
+            <FooterLogo
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            />
+            <Text fontSize="sm" color="gray.700">
+              © {new Date().getFullYear()} Buddy ONG. Todos los derechos.
+            </Text>
             <HStack spacing={3}>
               <SocialButton label="Twitter" href="#" icon={<FaTwitter />} />
               <SocialButton label="YouTube" href="#" icon={<FaYoutube />} />
@@ -155,35 +149,41 @@ export default function Footer() {
             </HStack>
           </Stack>
 
-          {/* Company links (compact) */}
           <Stack align="flex-start" spacing={2}>
             <Text fontWeight="600">Compañía</Text>
-            <Link href="#" _hover={{ color: "orange.400" }}>About us</Link>
-            <Link href="#" _hover={{ color: "orange.400" }}>Blog</Link>
-            <Link href="#" _hover={{ color: "orange.400" }}>Contacto</Link>
-            <Link href="#" _hover={{ color: "orange.400" }}>Pricing</Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>
+              About us
+            </Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>
+              Blog
+            </Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>
+              Contacto
+            </Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>
+              Pricing
+            </Link>
           </Stack>
 
-          {/* LinkedIn / Equipo - combinamos avatars y accordion */}
           <Stack align="flex-start" spacing={3}>
-            <Text fontWeight="600">Contribuidores</Text>
+            <Text fontWeight="600">Contribuidores activos</Text>
 
-            {/* Avatars clickeables (compact) */}
-            <TeamAvatars members={TEAM_MEMBERS.slice(0, 6)} />
+            <TeamAvatars members={TEAM_MEMBERS.slice(0, 8)} />
 
-            {/* Accordion para ver lista completa */}
             <Box pt={0}>
               <TeamAccordion members={TEAM_MEMBERS} />
             </Box>
           </Stack>
 
-          {/* Proyecto / extra: aquí podés explicar o dejar links */}
           <Stack align="flex-start" spacing={2}>
             <Text fontWeight="600">Proyecto</Text>
             <Text fontSize="sm" color="gray.700" maxW="xs">
-              Proyecto de ejemplo para gestión de adopciones y donaciones. Si querés colaborar, contactanos.
+              Proyecto de ejemplo para gestión de adopciones y donaciones. Si
+              querés colaborar, contactanos.
             </Text>
-            <Link href="#" _hover={{ color: "orange.400" }}>Ver repo</Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>
+              Ver repo
+            </Link>
           </Stack>
         </SimpleGrid>
       </Container>
