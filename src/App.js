@@ -18,6 +18,7 @@ import {
   setUserState,
 } from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
+import { Center, Spinner, Text } from "@chakra-ui/react";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -43,11 +44,9 @@ export default function App() {
   const handleUserFlow = useCallback(
     async (normalizedUser) => {
       try {
-        // Try to find the user if exists
         const userDb = await dispatch(fetchAuth0User(normalizedUser.auth0Sub));
         setUser(userDb);
       } catch {
-        // User not exist. Create.
         const userDb = await dispatch(postUser(normalizedUser));
         setUser(userDb);
         localStorage.setItem("loggedUser", JSON.stringify(userDb));
@@ -55,13 +54,12 @@ export default function App() {
         setIsUserLoading(false);
       }
 
-      // Token
       try {
         const token = await getAccessTokenSilently();
         dispatch(setAccessToken(token));
         localStorage.setItem("token", token);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     },
     [dispatch, getAccessTokenSilently]
@@ -89,7 +87,7 @@ export default function App() {
             return;
           }
         } catch (error) {
-          console.error("Invalid token in storage: ", error);
+          // console.error("Invalid token in storage: ", error);
           dispatch(logoutAction());
           return;
         }
@@ -136,7 +134,16 @@ export default function App() {
     checkOrAskEmail();
   }, [auth0User, user, dispatch, handleUserFlow]);
 
-  if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
+  if (isLoading || isUserLoading) {
+    return (
+      <Center minH="100vh" flexDir="column">
+        <Spinner size="xl" thickness="4px" />
+        <Text mt={4} fontSize="lg">
+          Cargando...
+        </Text>
+      </Center>
+    );
+  }
   if (user?.status === "banned") return <p>User was banned from the app</p>;
 
   const routeProps = {
@@ -163,7 +170,7 @@ export default function App() {
             setPendingAuth0User(null);
             setIsWaitingEmail(false);
           } catch (error) {
-            console.error("No se pudo completar el registro: ", error);
+            // console.error("No se pudo completar el registro: ", error);
           }
         }}
       />

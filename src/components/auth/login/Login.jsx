@@ -12,7 +12,7 @@ import {
   HStack,
   InputGroup,
   InputRightElement,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"; 
 import { BiHide, BiShow } from "react-icons/bi";
 import { loginUser } from "redux/actions/userActions";
 import { validateLoginForm } from "utils/formValidations/loginForm";
