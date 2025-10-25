@@ -2,7 +2,7 @@ import {
   GET_VETERINARIES,
   GET_DETAILS_VETERINARIES,
   POST_VET,
-} from "../ActionTypes";
+} from "../actionTypes";
 
 const initialState = {
   allVets: [],

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CREATE_CHECKOUT, CREATE_CHECKOUT_ERROR } from "../ActionTypes";
+import { CREATE_CHECKOUT, CREATE_CHECKOUT_ERROR } from "../actionTypes";
 
 const API_URL = process.env.REACT_APP_API_URL;
 

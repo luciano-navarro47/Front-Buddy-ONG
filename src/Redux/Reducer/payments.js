@@ -1,4 +1,4 @@
-import { CREATE_CHECKOUT, CREATE_CHECKOUT_ERROR } from "redux/ActionTypes";
+import { CREATE_CHECKOUT, CREATE_CHECKOUT_ERROR } from "redux/actionTypes";
 
 const initialState = {
   checkoutUrl: null,

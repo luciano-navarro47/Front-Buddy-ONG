@@ -1,5 +1,5 @@
 import { clearToken } from "./auth";
-import { SET_USER, CLEAR_TOKEN } from "../ActionTypes";
+import { SET_USER, CLEAR_TOKEN } from "../actionTypes";
 
 export const logout = (auth0Logout = null) => {
   return (dispatch) => {

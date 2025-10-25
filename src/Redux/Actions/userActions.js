@@ -5,7 +5,7 @@ import {
   POST_USER,
   UPDATE_USER,
   SET_USER,
-} from "../ActionTypes";
+} from "../actionTypes";
 import axios from "axios";
 import { setAccessToken } from "./auth";
 

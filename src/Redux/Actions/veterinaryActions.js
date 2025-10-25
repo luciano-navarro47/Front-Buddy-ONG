@@ -3,7 +3,7 @@ import {
   GET_DETAILS_VETERINARIES,
   POST_VET,
   UPDATE_VET,
-} from "../ActionTypes";
+} from "../actionTypes";
 import { 
   HOST,
 } from "../../utils";

@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 import { Text, Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { getPetsByUser } from "redux/Actions/petActions";
+import { getPetsByUser } from "redux/actions/petActions";
 import PetCard from "./PetCard";
-import Pagination from "components/Pagination/Pagination";
-import SectionHeader from "../common/SectionHeader";
-import ActionPill from "../common/buttons/ActionPill";
+import Pagination from "components/commons/pagination/Pagination";
+import SectionHeader from "../../commons/display/SectionHeader";
+import ActionPill from "../../commons/buttons/ActionPill";
 import PetForm from "./form/FormFields/PetForm";
-import ReusableFormModal from "../common/ReusableFormModal";
+import ReusableFormModal from "../../commons/modal/ReusableFormModal";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();

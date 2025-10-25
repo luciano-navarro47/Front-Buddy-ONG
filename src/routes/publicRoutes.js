@@ -1,15 +1,15 @@
 import React from "react";
-import Home from "../components/Home/Home";
-import AboutUs from "../components/AboutUs/AboutUs";
-import DonationPage from "../components/Donation/DonationPage";
-import Veterinaries from "../components/Veterinaries/Veterinaries";
-import VetsDetail from "../components/VetsDetail/VetsDetail";
-import Pets from "../components/Adoption/Pets";
-import PetDetail from "../components/Adoption/details/PetDetail";
-import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
-import Shop from "components/Shop/Shop";
-import Cart from "components/Shop/Cart/Cart";
-import ProductDetail from "components/Shop/ProductDetail/ProductDetail";
+import Home from "../components/home/Home";
+import AboutUs from "../components/about-us/AboutUs";
+import DonationPage from "../components/donation/DonationPage";
+import VetsList from "../components/veterinaries/VetsList";
+import VetDetail from "../components/veterinaries/VetDetail";
+import PetsPostedList from "../components/pets-posted/PetsPostedList";
+import Details from "components/pets-posted/PetDetail";
+import RegisterUserForm from "../components/auth/register-user-form/RegisterUserForm";
+import Shop from "components/shop/Shop";
+import Cart from "components/shop/cart/Cart";
+import ProductDetail from "components/shop/product-detail/ProductDetail";
 
 export const publicRoutes = ({
   user,
@@ -32,7 +32,7 @@ export const publicRoutes = ({
   },
   {
     path: "/register",
-    element: <RegisterUserForm setUser={setUser}/>,
+    element: <RegisterUserForm setUser={setUser} />,
   },
   {
     path: "/aboutUs",
@@ -56,18 +56,18 @@ export const publicRoutes = ({
   },
   {
     path: "/veterinary",
-    element: <Veterinaries />,
+    element: <VetsList />,
   },
   {
     path: "/veterinary/:id",
-    element: <VetsDetail />,
+    element: <VetDetail />,
   },
   {
     path: "/pets",
-    element: <Pets />,
+    element: <PetsPostedList />,
   },
   {
     path: "/pet/detail/:id",
-    element: <PetDetail />,
+    element: <Details />,
   },
 ];

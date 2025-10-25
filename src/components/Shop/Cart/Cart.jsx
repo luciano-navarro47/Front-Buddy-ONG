@@ -16,7 +16,7 @@ import CartList from "./CartList";
 import CartSummary from "./CartSummary";
 import PaymentCheckout from "./PaymentCheckout";
 import { useDispatch } from "react-redux";
-import { createCheckout } from "redux/Actions/paymentsActions";
+import { createCheckout } from "redux/actions/paymentsActions";
 import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function Cart() {

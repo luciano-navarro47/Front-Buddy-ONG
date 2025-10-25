@@ -1,9 +1,9 @@
 import React from "react";
-import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
+import { PrivateRoute } from "components/auth/private-route/PrivateRoute";
 import PetForm from "components/account/pets/form/FormFields/PetForm";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
-import Veterinaries from "components/Veterinaries/Veterinaries";
+import Veterinaries from "components/veterinaries/VetsList";
 import ProfileForm from "components/account/profile/ProfileForm";
 
 export const userRoutes = ({ user, setUser, handleLogout }) => [
