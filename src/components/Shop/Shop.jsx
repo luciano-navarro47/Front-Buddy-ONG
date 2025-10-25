@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, SimpleGrid, Center, Text, useToast } from "@chakra-ui/react";
-import ShopNavbar from "./ShopNavbar/ShopNavbar";
+import ShopNavbar from "./shop-navbar/ShopNavbar";
 import Pagination from "../commons/pagination/Pagination";
-import CardsProduct from "./CardsProducts/CardsProduct";
-import { getAllProducts } from "../../redux/Actions/productActions";
+import CardsProduct from "./cards-products/CardsProduct";
+import { getAllProducts } from "../../redux/actions/productActions";
 
 export default function Shop() {
   const toast = useToast();

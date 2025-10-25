@@ -2,21 +2,21 @@ import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
-import { setAccessToken } from "./redux/Actions/auth";
-import { logout as logoutAction } from "./redux/Actions/session";
+import { setAccessToken } from "./redux/actions/auth";
+import { logout as logoutAction } from "./redux/actions/session";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
 import NotFound from "./components/commons/notFound/NotFound";
-import Layout from "./components/Layout";
+import Layout from "./components/layout/Layout";
 import EmailModal from "./components/commons/modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
   setUserState,
-} from "./redux/Actions/userActions";
+} from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
 
 export const App = () => {

@@ -15,14 +15,14 @@ import {
 import {
   getPetsByUser,
   postOrUpdatePet,
-} from "../../../../../redux/Actions/petActions";
+} from "../../../../../redux/actions/petActions";
 import { SelectField, selectConfigs } from "../FormFields/SelectField";
 import { InputField, inputConfigs } from "../FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
-import UploadImages from "components/account/common/UploadImages";
-import DescriptionEditor from "components/account/common/DescriptionEditor.tsx";
+import UploadImages from "components/commons/UploadImages";
+import DescriptionEditor from "components/commons/DescriptionEditor";
 import CitySelect from "components/commons/CitySelect";
 
 /**

@@ -10,7 +10,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "./redux/Store/Index";
+import { store } from "./redux/store";
 
 import { Auth0Provider } from "@auth0/auth0-react";
 

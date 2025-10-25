@@ -1,10 +1,10 @@
 import React from "react";
 import AccountLayout from "components/account/AccountLayout";
-import { PrivateRoute } from "components/auth/privateRoute/PrivateRoute";
-import { UsersTable } from "components/account/admin/users/UsersTable";
-import { PetsTable } from "components/account/admin/pets/PetsTable";
-import { ProductsTable } from "components/account/admin/products/ProductsTable";
-import { VeterinariesTable } from "components/account/admin/veterinaries/VeterinariesTable";
+import { PrivateRoute } from "components/auth/private-route/PrivateRoute";
+import { UsersTable } from "components/admin/users/UsersTable";
+import { PetsTable } from "components/admin/pets/PetsTable";
+import { ProductsTable } from "components/admin/products/ProductsTable";
+import { VeterinariesTable } from "components/admin/veterinaries/VeterinariesTable";
 
 
 export const adminRoutes = ({ user, setUser, handleLogout }) => [

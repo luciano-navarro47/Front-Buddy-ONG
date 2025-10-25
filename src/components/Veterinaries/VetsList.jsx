@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/images/logo_amarillo.png";
 import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
-import MapView from "./Map/MapView";
+import MapView from "./map/MapView";
 import VetCard from "./VetCard";
-import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
+import { getAllVeterinaries } from "../../redux/actions/veterinaryActions";
 
 export default function VetsList() {
   const veterinaries = useSelector((state) => state.vets.allVets);

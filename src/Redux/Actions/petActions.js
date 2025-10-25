@@ -7,7 +7,7 @@ import {
   DELETE_PET,
   FILTER_ADOPTION_VALUES,
   FILTER_BY_SEARCH_AREA,
-} from "../ActionTypes";
+} from "../actionTypes";
 import axios from "axios";
 import { HOST, header } from "../../utils";
 

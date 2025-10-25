@@ -7,7 +7,7 @@ import {
   HStack,
   useToast,
 } from "@chakra-ui/react";
-import SectionHeader from "../common/SectionHeader";
+import SectionHeader from "../../commons/SectionHeader";
 import TextField from "./TextField";
 import PasswordSection from "./PasswordSection";
 import { useProfileForm } from "utils/hooks/profile/useProfileForm";

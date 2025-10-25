@@ -6,7 +6,7 @@ import {
   UPDATE_PRODUCT,
   FILTER_PRODUCTS,
   SEARCH_PRODUCT_BY_NAME,
-} from "../../redux/ActionTypes";
+} from "../actionTypes";
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 

@@ -7,7 +7,7 @@ import {
   FILTER_PRODUCTS,
   // DELETE_PRODUCT,
   // SEARCH_PRODUCT_BY_NAME,
-} from "../../redux/ActionTypes";
+} from "../actionTypes";
 
 const initialState = {
   allProducts: [],

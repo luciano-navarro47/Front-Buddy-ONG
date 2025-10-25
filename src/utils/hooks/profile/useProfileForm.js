@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { updateUser, getUserById } from "redux/Actions/userActions";
+import { updateUser, getUserById } from "redux/actions/userActions";
 import { validateRequiredFields, validateFieldPatterns } from "utils/formValidations/profileForm";
 import { useDispatch, useSelector } from "react-redux";
 

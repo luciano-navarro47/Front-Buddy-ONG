@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { PhoneIcon } from "@chakra-ui/icons";
 import { RiHospitalLine } from "react-icons/ri";
-import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
+import { VeterinaryDetails } from "../../redux/actions/veterinaryActions";
 
 export default function VetDetail() {
   const dispatch = useDispatch();

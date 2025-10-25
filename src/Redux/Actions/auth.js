@@ -1,4 +1,4 @@
-import { SET_TOKEN, CLEAR_TOKEN } from "../../redux/ActionTypes";
+import { SET_TOKEN, CLEAR_TOKEN } from "../actionTypes";
 import { jwtDecode } from "jwt-decode";
 
 export const setAccessToken = (token) => async (dispatch) => {
