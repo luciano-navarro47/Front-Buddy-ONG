@@ -2,8 +2,8 @@ import React from "react";
 import Home from "../components/Home/Home";
 import AboutUs from "../components/AboutUs/AboutUs";
 import DonationPage from "../components/Donation/DonationPage";
-import Veterinaries from "../components/Veterinaries/Veterinaries";
-import VetsDetail from "../components/VetsDetail/VetsDetail";
+import VetsList from "../components/Veterinaries/VetsList";
+import VetDetail from "../components/Veterinaries/VetDetail";
 import PetsPostedList from "../components/PetsPosted/PetsPostedList";
 import Details from "components/PetsPosted/PetDetail";
 import RegisterUserForm from "../components/forms/registerUserForm/RegisterUserForm";
@@ -56,11 +56,11 @@ export const publicRoutes = ({
   },
   {
     path: "/veterinary",
-    element: <Veterinaries />,
+    element: <VetsList />,
   },
   {
     path: "/veterinary/:id",
-    element: <VetsDetail />,
+    element: <VetDetail />,
   },
   {
     path: "/pets",

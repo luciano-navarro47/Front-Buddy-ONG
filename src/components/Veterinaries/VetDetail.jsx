@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
 import {
   Box,
   SimpleGrid,
@@ -19,8 +18,9 @@ import {
 } from "@chakra-ui/react";
 import { PhoneIcon } from "@chakra-ui/icons";
 import { RiHospitalLine } from "react-icons/ri";
+import { VeterinaryDetails } from "../../redux/Actions/veterinaryActions";
 
-const VetsDetails = () => {
+export default function VetDetail() {
   const dispatch = useDispatch();
   const { id } = useParams();
   const vetDetail = useSelector((state) => state.vets.vetsDetail);
@@ -238,6 +238,4 @@ const VetsDetails = () => {
       )}
     </>
   );
-};
-
-export default VetsDetails;
+}

@@ -2,12 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/images/logo_amarillo.png";
 import { Box, Text, SimpleGrid, Center, chakra, Image } from "@chakra-ui/react";
-
-import MapView from "../Map/MapView";
-import VetCard from "../VetsCards/VetsCards";
+import MapView from "./Map/MapView";
+import VetCard from "./VetCard";
 import { getAllVeterinaries } from "../../redux/Actions/veterinaryActions";
 
-const Veterinaries = () => {
+export default function VetsList() {
   const veterinaries = useSelector((state) => state.vets.allVets);
   const dispatch = useDispatch();
 
@@ -117,6 +116,4 @@ const Veterinaries = () => {
       </Box>
     </Box>
   );
-};
-
-export default Veterinaries;
+}

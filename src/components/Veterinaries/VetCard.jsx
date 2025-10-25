@@ -10,7 +10,9 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-const VetsCard = ({ data: { image, name, phone, id, description } }) => {
+export default function VetCard({
+  data: { image, name, phone, id, description },
+}) {
   return (
     <Box>
       <Card boxShadow={"2xl"}>
@@ -46,6 +48,4 @@ const VetsCard = ({ data: { image, name, phone, id, description } }) => {
       </Card>
     </Box>
   );
-};
-
-export default VetsCard;
+}
