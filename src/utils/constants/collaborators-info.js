@@ -3,12 +3,11 @@ import juli from "../../assets/images/juli.png";
 
 export const avatars = [
   {
-    name: "Julian Navarro",
-    url: juli,
-  },
-
-  {
     name: "Luciano Navarro",
-    url: lucho,
+    img: lucho,
+  },
+  {
+    name: "Julian Navarro",
+    img: juli,
   },
 ];
