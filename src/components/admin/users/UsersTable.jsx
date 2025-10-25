@@ -9,8 +9,8 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { CopyIcon } from "@chakra-ui/icons";
-import SectionHeader from "components/commons/SectionHeader";
-import ReusableAlertDialog from "components/commons/ReusableAlertDialog";
+import SectionHeader from "components/commons/display/SectionHeader";
+import ReusableAlertDialog from "components/commons/alerts/ReusableAlertDialog";
 import DataTable from "components/commons/table/DataTable";
 import { bulkSetStatusUser, getAllUsers } from "redux/actions/userActions";
 import ActionPill from "components/commons/buttons/ActionPill";

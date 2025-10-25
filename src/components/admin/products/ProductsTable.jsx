@@ -12,10 +12,10 @@ import {
 import { AddIcon, CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
 import ImageGalleryModal from "components/commons/modal/ImageGalleryModal";
-import SectionHeader from "components/commons/SectionHeader";
+import SectionHeader from "components/commons/display/SectionHeader";
 import ProductForm from "./ProductForm";
-import ReusableFormModal from "components/commons/ReusableFormModal";
-import ReusableAlertDialog from "components/commons/ReusableAlertDialog";
+import ReusableFormModal from "components/commons/modal/ReusableFormModal";
+import ReusableAlertDialog from "components/commons/alerts/ReusableAlertDialog";
 import DataTable from "components/commons/table/DataTable";
 import ActionPill from "components/commons/buttons/ActionPill";
 import { CATEGORY_LABEL_BY_VALUE } from "utils/constants/categories";

@@ -21,9 +21,9 @@ import { InputField, inputConfigs } from "../FormFields/InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
-import UploadImages from "components/commons/UploadImages";
-import DescriptionEditor from "components/commons/DescriptionEditor";
-import CitySelect from "components/commons/CitySelect";
+import UploadImages from "components/commons/inputs/UploadImages";
+import DescriptionEditor from "components/commons/forms/DescriptionEditor";
+import CitySelect from "components/commons/forms/CitySelect";
 
 /**
  * Props:

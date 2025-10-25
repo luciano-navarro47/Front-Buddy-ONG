@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
-import SectionHeader from "components/commons/SectionHeader";
+import SectionHeader from "components/commons/display/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "components/commons/table/DataTable";
 import ImageGalleryModal from "components/commons/modal/ImageGalleryModal";

@@ -6,10 +6,10 @@ import { AddIcon } from "@chakra-ui/icons";
 import { getPetsByUser } from "redux/actions/petActions";
 import PetCard from "./PetCard";
 import Pagination from "components/commons/pagination/Pagination";
-import SectionHeader from "../../commons/SectionHeader";
+import SectionHeader from "../../commons/display/SectionHeader";
 import ActionPill from "../../commons/buttons/ActionPill";
 import PetForm from "./form/FormFields/PetForm";
-import ReusableFormModal from "../../commons/ReusableFormModal";
+import ReusableFormModal from "../../commons/modal/ReusableFormModal";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();

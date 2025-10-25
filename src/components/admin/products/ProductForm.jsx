@@ -16,8 +16,8 @@ import {
   InputGroup,
   Spinner,
 } from "@chakra-ui/react";
-import DescriptionEditor from "components/commons/DescriptionEditor";
-import UploadImages from "components/commons/UploadImages";
+import DescriptionEditor from "components/commons/forms/DescriptionEditor";
+import UploadImages from "components/commons/inputs/UploadImages";
 import { CATEGORIES } from "utils/constants/categories";
 import { getProductDescription, postOrUpdateProduct } from "redux/actions/productActions";
 
