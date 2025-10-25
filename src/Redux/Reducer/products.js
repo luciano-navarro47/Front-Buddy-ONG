@@ -4,8 +4,8 @@ import {
   UPDATE_PRODUCT,
   CLEAR_PRODUCT,
   POST_PRODUCT,
-  // DELETE_PRODUCT,
   FILTER_PRODUCTS,
+  // DELETE_PRODUCT,
   // SEARCH_PRODUCT_BY_NAME,
 } from "../../redux/ActionTypes";
 
@@ -26,6 +26,7 @@ export default function productsReducer(state = initialState, action) {
       return {
         ...state,
         allProducts: Array.isArray(action.payload) ? action.payload : [],
+        filteredProducts: Array.isArray(action.payload) ? action.payload : [],
       };
     case GET_PRODUCT:
       return {

@@ -1,406 +1,244 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import { MdArrowBackIosNew } from "react-icons/md";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Box,
-  Icon,
-  Text,
-  Center,
   SimpleGrid,
-  Stack,
   Button,
+  HStack,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  VStack,
 } from "@chakra-ui/react";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
-import CartCards from "./CartCards";
-import PaymentCheckout from "../PaymentCheckout";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { readInitialCart } from "utils/shop/cart/cart";
+import CartList from "./CartList";
+import CartSummary from "./CartSummary";
+import PaymentCheckout from "./PaymentCheckout";
+import { useDispatch } from "react-redux";
 import { createCheckout } from "redux/Actions/paymentsActions";
-
-// Refactor notes:
-// - The cart is now managed with React state (setCart) and persisted to localStorage in a single place.
-// - addItem / removeItem helpers centralize the cart mutation logic and avoid repeated branches.
-// - createCheckout dispatch now receives the full payload object: { cart, userInfo, currency_id, shipping_cost, metadata }
-// - Removed the previous "cartFlag" trick and unnecessary empty useEffect.
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export default function Cart() {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const cancelRef = useRef();
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  // Try to read initial cart from localStorage safely
-  const readInitialCart = () => {
-    try {
-      const raw = window.localStorage.getItem("cart");
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-
-      const normalize = (p) => {
-        const price = Number(p.price);
-        const amount = Number(p.amount ?? 0);
-        const stock = Number(p.stock ?? 0);
-        const totalFromItem = Number(p.total);
-        const computedTotal = Number.isFinite(totalFromItem)
-          ? totalFromItem
-          : price * amount;
-
-        const total = Number.isFinite(computedTotal)
-          ? Math.round(computedTotal * 100) / 100
-          : 0;
-
-        return {
-          ...p,
-          price: Number.isFinite(price) ? price : 0,
-          amount: Number.isFinite(amount) ? amount : 0,
-          stock: Number.isFinite(stock) ? stock : 0,
-          total,
-        };
-      };
-
-      return Array.isArray(parsed) ? parsed.map(normalize) : [];
-    } catch (err) {
-      console.error("Error parsing cart from localStorage:", err);
-      return [];
-    }
-  };
-
   const [cart, setCart] = useState(readInitialCart);
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
+
+  // controls whether the brick UI is rendered
+  const [showBrick, setShowBrick] = useState(false);
   const [preferenceId, setPreferenceId] = useState(null);
 
-  const loggedUser = React.useMemo(() => {
-    try {
-      return JSON.parse(localStorage.getItem("loggedUser"));
-    } catch (err) {
-      return null;
-    }
-  }, []);
+  const [lastPayloadHash, setLastPayloadHash] = useState(null);
 
-  const isLogged = Boolean(loggedUser);
+  const brickRef = useRef(null);
 
-  // Persist cart changes to localStorage in one place
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
   useEffect(() => {
     try {
       window.localStorage.setItem("cart", JSON.stringify(cart));
-    } catch (err) {
-      console.error("Error saving cart to localStorage:", err);
-    }
+    } catch (e) {}
   }, [cart]);
 
-  // helpers
-  const findIndexById = (id) => cart.findIndex((p) => p.id === id);
-
-  const addItem = ({ id, name, image, price, stock }) => {
-    const priceNum = Number(price || 0);
-    const stockNum = Number(stock ?? 0);
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.id === id);
-      if (idx !== -1) {
-        // already in cart -> increase amount if stock allows
-        const existing = prev[idx];
-        if (existing.amount >= existing.stock) {
-          alert("Se llegó al limite de stock actual");
-          return prev;
-        }
-        const updated = [...prev];
-        const newAmount = existing.amount + 1;
-        const newTotal = Math.round(priceNum * newAmount * 100) / 100;
-        updated[idx] = {
-          ...existing,
-          amount: newAmount,
-          total: newTotal,
-        };
-        return updated;
-      }
-
-      // new product
-      const product = {
-        id,
-        name,
-        image,
-        price: priceNum,
-        stock: stockNum,
-        amount: 1,
-        total: Math.round(priceNum * 100) / 100,
-      };
-      return [...prev, product];
-    });
-  };
-
-  const removeItem = (id) => {
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.id === id);
-      if (idx === -1) return prev;
-      const existing = prev[idx];
-      if (existing.amount > 1) {
-        const updated = [...prev];
-        const newAmount = existing.amount - 1;
-        const newTotal = Math.round(existing.price * newAmount * 100) / 100;
-        updated[idx] = {
-          ...existing,
-          amount: newAmount,
-          total: newTotal,
-        };
-        return updated;
-      }
-      
-      return prev.filter((p) => p.id !== id);
-    });
-  };
-
-  // wrappers that keep the original signature used in CartCards
-  const handlerSetCart = (e, id, price, image, name, stock) => {
-    e?.preventDefault?.();
-    addItem({ id, price, image, name, stock });
-  };
-
-  const handleRemoveItemCart = (e, id) => {
-    e?.preventDefault?.();
-    removeItem(id);
-  };
-
-  const total = useMemo(() => {
-    return cart.reduce(
-      (acc, el) => acc + (el.total ?? el.price * el.amount),
-      0
+  const increase = (id) => {
+    setCart((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              quantity: p.quantity + 1,
+              total: Math.round(p.unit_price * (p.quantity + 1) * 100) / 100,
+            }
+          : p
+      )
     );
-  }, [cart]);
+  };
 
-  console.log("TOTAL: ", total);
+  const decrease = (id) => {
+    setCart((prev) =>
+      prev.flatMap((p) => {
+        if (p.id !== id) return p;
+        if (p.quantity <= 1) return []; // remove
+        const q = p.quantity - 1;
+        return {
+          ...p,
+          quantity: q,
+          total: Math.round(p.unit_price * q * 100) / 100,
+        };
+      })
+    );
+  };
 
-  // Checkout: now sends the full object expected by backend
-  const handleCheckout = async () => {
+  const total = useMemo(
+    () => cart.reduce((acc, it) => acc + (it.total || 0), 0),
+    [cart]
+  );
+
+  const currentTransformed = useMemo(
+    () =>
+      cart.map((p) => ({
+        id: p.id,
+        name: p.name,
+        unit_price: p.unit_price,
+        quantity: p.quantity,
+        image: p.picture_url,
+      })),
+    [cart]
+  );
+
+  const currentPayloadHash = useMemo(() => {
     try {
-      const payload = {
-        cart,
-        userInfo: loggedUser ?? null,
-        currency_id: "ARS", // assumption: default currency
-        shipping_cost: 0, // assumption: default 0 - change as needed
-        metadata: {}, // assumption: empty metadata
-      };
+      return JSON.stringify(currentTransformed);
+    } catch (e) {
+      return null;
+    }
+  }, [currentTransformed]);
 
-      const urlOrPref = await dispatch(createCheckout(payload));
+  useEffect(() => {
+    if (!showBrick) return;
+    if (
+      lastPayloadHash &&
+      currentPayloadHash &&
+      lastPayloadHash !== currentPayloadHash
+    ) {
+      setShowBrick(false);
+      setPreferenceId(null);
+    }
+  }, [cart, showBrick, lastPayloadHash, currentPayloadHash]);
 
-      // depending on backend shape, this may be an object or string
-      setPreferenceId(urlOrPref?.id ?? urlOrPref ?? null);
-      setShowCheckout(true);
+  const handleContinue = async () => {
+    if (loadingCheckout) return;
+
+    const payload = {
+      cart: currentTransformed,
+      userInfo: JSON.parse(localStorage.getItem("loggedUser")) || null,
+      currency_id: "ARS",
+      shipping_cost: 0,
+      metadata: {},
+    };
+
+    const payloadHash = currentPayloadHash;
+
+    if (preferenceId && showBrick && lastPayloadHash === payloadHash) {
+      setTimeout(() => {
+        brickRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 80);
+      return;
+    }
+
+    setLoadingCheckout(true);
+    try {
+      const data = await dispatch(createCheckout(payload));
+
+      if (data?.preference_id) {
+        setPreferenceId(data.preference_id);
+        setLastPayloadHash(payloadHash);
+
+        setShowBrick(false);
+        setTimeout(() => {
+          setShowBrick(true);
+          setTimeout(() => {
+            brickRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }, 160);
+        }, 60);
+      } else if (data?.init_point) {
+        window.location.href = data.init_point;
+      } else {
+        // console.warn("createCheckout no devolvió preference_id ni init_point");
+      }
     } catch (err) {
-      console.error("Error iniciando checkout:", err);
+      // console.error("Error en createCheckout:", err);
+    } finally {
+      setLoadingCheckout(false);
     }
   };
 
-  const handleDialogCheckout = async () => {
-    await handleCheckout();
-    onClose();
+  const handleBackToShop = () => {
+    const query = searchParams.toString();
+    navigate(`/shop${query ? `?${query}` : ""}`);
   };
+
+  const cartChangedSincePreference =
+    Boolean(lastPayloadHash) &&
+    Boolean(currentPayloadHash) &&
+    lastPayloadHash !== currentPayloadHash;
 
   return (
-    <>
-      <Box minHeight={"90vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
-        <Stack
-          direction={{ base: "column", lg: "row" }}
-          align={{ lg: "flex-start" }}
-          spacing={{ base: "8", md: "16" }}
+    <Box minH="80vh" pb={12}>
+      <HStack px={{ base: 4, md: 12 }} pt={6} spacing={4} align="center">
+        <Button
+          leftIcon={<ArrowBackIcon />}
+          variant="ghost"
+          onClick={handleBackToShop}
         >
-          <Stack spacing={{ base: "8", md: "10" }} flex="2">
-            {!cart || cart.length === 0 ? (
-              <Center>
-                <Stack>
-                  <Text
-                    textAlign={"center"}
-                    fontSize={"4xl"}
-                    py={10}
-                    fontWeight={"bold"}
-                    color={"brand.darkBlue"}
-                    fontFamily={"heading"}
-                  >
-                    No hay productos en tu carrito
-                  </Text>
-                  <Link to={"/shop"}>
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      color="orange.400"
-                      boxSize={5}
-                    />
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      color="orange.400"
-                      boxSize={5}
-                    />
-                    <Button
-                      fontFamily={"body"}
-                      bg="base.green.100"
-                      color={"grey"}
-                      _hover={{ color: "orange.400" }}
-                      p="0"
-                      mr="1rem"
-                    >
-                      Volver a la tienda
-                    </Button>
-                  </Link>
-                </Stack>
-              </Center>
-            ) : (
-              <Stack spacing="10">
-                {cart.map((pr) => (
-                  <CartCards
-                    key={pr.id}
-                    amount={pr.amount}
-                    id={pr.id}
-                    images={pr.images ?? pr.image}
-                    name={pr.name}
-                    price={pr.price}
-                    total={pr.total}
-                    stock={pr.stock}
-                    handlerSetCart={handlerSetCart}
-                    handleRemoveItemCart={handleRemoveItemCart}
-                  />
-                ))}
+          Volver a la tienda
+        </Button>
+      </HStack>
 
-                <Center>
-                  <SimpleGrid>
-                    <Text
-                      textAlign={"center"}
-                      fontSize={"2xl"}
-                      py={10}
-                      fontWeight={"bold"}
-                      color={"brand.orange"}
-                      fontFamily={"heading"}
-                    >
-                      Total: $ {total}
-                    </Text>
+      <SimpleGrid
+        columns={{ base: 1, md: 3 }}
+        spacing={6}
+        px={{ base: 4, md: 12 }}
+        py={8}
+      >
+        <Box gridColumn={{ md: "1 / span 2" }}>
+          <CartList items={cart} onIncrease={increase} onDecrease={decrease} />
+        </Box>
 
-                    <Box>
-                      <Button
-                        onClick={onOpen}
-                        fontFamily={"body"}
-                        borderRadius={"full"}
-                        size="lg"
-                        bg={"brand.orange"}
-                        color={"white"}
-                        _hover={{
-                          transform: "translateY(2px)",
-                          boxShadow: "lg",
-                        }}
-                      >
-                        Continuar compra
-                      </Button>
+        <Box>
+          <CartSummary
+            total={total}
+            onContinue={handleContinue}
+            loading={loadingCheckout}
+            disabled={cart.length === 0}
+          />
+        </Box>
+      </SimpleGrid>
 
-                      <AlertDialog
-                        isOpen={isOpen}
-                        leastDestructiveRef={cancelRef}
-                        onClose={onClose}
-                      >
-                        <AlertDialogOverlay>
-                          <AlertDialogContent>
-                            {isLogged ? (
-                              <AlertDialogHeader
-                                fontSize="lg"
-                                fontWeight="bold"
-                              >
-                                El total actual del carrito es ${total}
-                              </AlertDialogHeader>
-                            ) : (
-                              <AlertDialogHeader
-                                fontSize="lg"
-                                fontWeight="bold"
-                              >
-                                Necesitamos tus datos!
-                              </AlertDialogHeader>
-                            )}
-
-                            {isLogged ? (
-                              <AlertDialogBody>
-                                Solo falta ir a pagar, si no necesitas nada más
-                                haz click en "Ir a pagar"
-                              </AlertDialogBody>
-                            ) : (
-                              <AlertDialogBody>
-                                Para hacer la compra debes ingresar tu cuenta,
-                                si no tienes puedes crear una!
-                              </AlertDialogBody>
-                            )}
-
-                            {isLogged ? (
-                              <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                  Volver al carrito
-                                </Button>
-                                <Button
-                                  color={"white"}
-                                  bg={{ base: "brand.orange" }}
-                                  onClick={handleDialogCheckout}
-                                  ml={3}
-                                >
-                                  Continuar compra
-                                </Button>
-                              </AlertDialogFooter>
-                            ) : (
-                              <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                  Cancelar
-                                </Button>
-                                <Button
-                                  color={"white"}
-                                  bg={{ base: "brand.orange" }}
-                                  onClick={(e) => {
-                                    onClose();
-                                    navigate("/");
-                                  }}
-                                  ml={3}
-                                >
-                                  Ingresar
-                                </Button>
-                              </AlertDialogFooter>
-                            )}
-                          </AlertDialogContent>
-                        </AlertDialogOverlay>
-                      </AlertDialog>
-                    </Box>
-                  </SimpleGrid>
-                </Center>
-
-                {!showCheckout ? (
-                  <Box
-                    minHeight={"90vh"}
-                    bg="brand.backgorund"
-                    paddingBottom={"3rem"}
-                  >
-                    {/* Placeholder area kept to preserve structure if you were rendering more of the cart UI here */}
+      <Box mt={4} px={{ base: 4, md: 12 }}>
+        <SimpleGrid
+          columns={{ base: 1, md: 3 }}
+          spacing={6}
+          width="100%"
+          alignItems="start"
+        >
+          <Box gridColumn={{ md: "1 / span 2" }} px={0}>
+            <VStack spacing={4} align="stretch">
+              {cartChangedSincePreference && (
+                <Alert status="warning" borderRadius="md" width="100%" px={4}>
+                  <AlertIcon />
+                  <Box>
+                    <AlertTitle>Pago desactualizado</AlertTitle>
+                    <AlertDescription display="block">
+                      Modificaste el carrito desde que generaste el pago. Para
+                      pagar con el monto actualizado, presioná{" "}
+                      <strong>Continuar</strong> otra vez para generar una nueva
+                      preferencia de pago.
+                    </AlertDescription>
                   </Box>
-                ) : (
-                  <PaymentCheckout preferenceId={preferenceId} amount={total} />
-                )}
+                </Alert>
+              )}
 
-                <Link to={"/shop"}>
-                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
-                  <Icon as={MdArrowBackIosNew} color="orange.400" boxSize={5} />
-                  <Button
-                    fontFamily={"body"}
-                    bg="base.green.100"
-                    color={"grey"}
-                    _hover={{ color: "orange.400" }}
-                    p="0"
-                    mr="1rem"
-                  >
-                    Seguir comprando
-                  </Button>
-                </Link>
-              </Stack>
-            )}
-          </Stack>
-        </Stack>
+              <Box px={0} pt={0}>
+                {showBrick && preferenceId && (
+                  <PaymentCheckout
+                    key={`${preferenceId}-${lastPayloadHash ?? ""}`}
+                    preferenceId={preferenceId}
+                    amount={total}
+                  />
+                )}
+              </Box>
+            </VStack>
+          </Box>
+        </SimpleGrid>
       </Box>
-    </>
+    </Box>
   );
 }

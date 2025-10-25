@@ -1,25 +1,56 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllProducts } from "../../redux/Actions/productActions";
-
-import { Box, SimpleGrid, Center, Text } from "@chakra-ui/react";
-import CardsProduct from "./CardsProducts/CardsProduct";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Box, SimpleGrid, Center, Text, useToast } from "@chakra-ui/react";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
 import Pagination from "../Pagination/Pagination";
+import CardsProduct from "./CardsProducts/CardsProduct";
+import { getAllProducts } from "../../redux/Actions/productActions";
 
 export default function Shop() {
+  const toast = useToast();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const products = useSelector((state) => state.products.filteredProducts);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const initialPage = parseInt(searchParams.get("page")) || 1;
+  const [currentPage, setCurrentPage] = useState(initialPage);
   const [productsPerPage, setProductsPerPage] = useState(6);
+
+  useEffect(() => {
+    const sp = new URLSearchParams(searchParams);
+    if (currentPage === 1) {
+      sp.delete("page");
+    } else {
+      sp.set("page", String(currentPage));
+    }
+    setSearchParams(sp, { replace: true });
+  }, [currentPage, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(
     indexOfFirstProduct,
     indexOfLastProduct
   );
+
   const paginate = (number) => {
+    if (number < 1) return;
+    const totalPages = Math.ceil((products.length || 0) / productsPerPage) || 1;
+    if (number > totalPages) return;
     setCurrentPage(number);
+  };
+
+  const handleGoToCart = () => {
+    const query = searchParams.toString();
+    navigate(`/shop/cart${query ? `?${query}` : ""}`);
   };
 
   function handleRemoveItemCart(e, id) {
@@ -51,53 +82,72 @@ export default function Shop() {
     e.preventDefault();
 
     try {
-
-      let product = {
+      const product = {
+        id: String(id),
         name,
-        images,
-        price,
-        id,
-        stock,
-        amount: 1,
+        unit_price: Number(price ?? 0),
+        quantity: 1,
+        stock: Number(stock ?? 0),
+        picture_url: Array.isArray(images) ? images[0] : images,
+        total: Number(price ?? 0),
       };
 
-      let oldCart = JSON.parse(window.localStorage.getItem("cart"));
+      const raw = window.localStorage.getItem("cart");
+      const oldCart = raw ? JSON.parse(raw) : null;
 
-      if (oldCart) {
-        let index = false;
-        oldCart.forEach((pr, i) => {
-          if (pr.id === product.id) {
-            index = i;
+      if (Array.isArray(oldCart) && oldCart.length > 0) {
+        const index = oldCart.findIndex(
+          (pr) => String(pr.id) === String(product.id)
+        );
+
+        if (index !== -1) {
+          const existing = oldCart[index];
+          const existingQty = Number(existing.quantity ?? existing.amount ?? 0);
+          const existingUnitPrice = Number(
+            existing.unit_price ?? existing.price ?? product.unit_price
+          );
+
+          if (existingQty >= (product.stock ?? 0)) {
+            return toast({
+              title: "Se llegó al limite de stock actual",
+              isClosable: true,
+              status: "warning",
+            });
           }
-        });
 
-        if (index !== false) {
-          if (stock === oldCart[index].amount) {
-            return alert("Se llegó al limite de stock actual");
-          } else {
-            oldCart[index].amount += 1;
+          const newQty = existingQty + 1;
+          oldCart[index] = {
+            ...existing,
+            quantity: newQty,
+            unit_price: existingUnitPrice,
+            total: Math.round(existingUnitPrice * newQty * 100) / 100,
+            picture_url:
+              existing.picture_url ??
+              existing.images?.[0] ??
+              product.picture_url,
+            name: existing.name ?? product.name,
+          };
 
-            oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            dispatch(getAllProducts);
-          }
+          window.localStorage.setItem("cart", JSON.stringify(oldCart));
+          dispatch(getAllProducts());
+          return;
+        }
+
+        if (product.stock !== 0) {
+          window.localStorage.setItem(
+            "cart",
+            JSON.stringify([...oldCart, product])
+          );
+          dispatch(getAllProducts());
+          return;
         } else {
-          if (stock !== 0) {
-            product.total = product.price;
-            window.localStorage.setItem(
-              "cart",
-              JSON.stringify([...oldCart, product])
-            );
-            dispatch(getAllProducts);
-          } else {
-            return alert("El producto no tiene stock");
-          }
+          return alert("El producto no tiene stock");
         }
       } else {
-        if (stock !== 0) {
-          product.total = product.price;
+        if (product.stock !== 0) {
           window.localStorage.setItem("cart", JSON.stringify([product]));
-          dispatch(getAllProducts);
+          dispatch(getAllProducts());
+          return;
         } else {
           return alert("El producto no tiene stock");
         }
@@ -107,10 +157,6 @@ export default function Shop() {
     }
   };
 
-  useEffect(() => {
-    dispatch(getAllProducts());
-  }, [dispatch]);
-
   return (
     <>
       <Box minHeight={"80vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
@@ -118,12 +164,13 @@ export default function Shop() {
           handleSetCart={handleSetCart}
           handleRemoveItemCart={handleRemoveItemCart}
           paginate={paginate}
+          goToCart={handleGoToCart}
         />
         <Pagination
-          petsPerPage={productsPerPage}
-          allPets={products.length}
-          paginate={paginate}
+          itemsPerPage={productsPerPage}
+          totalItems={products.length}
           currentPage={currentPage}
+          onPageChange={(pageNum) => setCurrentPage(pageNum)}
         />
         <Center>
           <Box>
@@ -133,6 +180,7 @@ export default function Shop() {
                   products={currentProducts}
                   handleSetCart={handleSetCart}
                   handleRemoveItemCart={handleRemoveItemCart}
+                  currentPage={currentPage}
                 />
               ) : (
                 <Center w={"99vw"} display={"flex"} alignItems={"center"}>
@@ -150,6 +198,13 @@ export default function Shop() {
             </SimpleGrid>
           </Box>
         </Center>
+
+        <Pagination
+          itemsPerPage={productsPerPage}
+          totalItems={products.length}
+          currentPage={currentPage}
+          onPageChange={(pageNum) => setCurrentPage(pageNum)}
+        />
       </Box>
     </>
   );

@@ -26,14 +26,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getProductDescription } from "redux/Actions/productActions";
 
 export default function ProductDetail({ handleSetUserFlag }) {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const pageFromParams = parseInt(searchParams.get("page")) || 1;
+
   const cancelRef = React.useRef();
   const product = useSelector((s) => s.products.product);
   const { id } = useParams();
@@ -42,26 +45,6 @@ export default function ProductDetail({ handleSetUserFlag }) {
   useEffect(() => {
     dispatch(getProductDescription(id));
   }, [dispatch, id]);
-
-  // const payMp = async () => {
-  //   axios
-  //     .post(`http://localhost:3001/donation`, {
-  //       unit_price: product[0].price,
-  //       title: product[0].name,
-  //     })
-  //     .then((response) => {
-  //       window.open(response.data, "_blank");
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //     });
-  // };
-
-  // console.log("DETAIL PRODUCT STOCK :", product[0].stock);
-
-  // let product = JSON.parse(localStorage.getItem("cart"))?.filter(
-  //   (pr) => pr.id === product.id
-  // );
 
   return (
     <>
@@ -78,9 +61,11 @@ export default function ProductDetail({ handleSetUserFlag }) {
           transform: "translateY(2px)",
           boxShadow: "lg",
         }}
-        onClick={() => {
-          navigate("/shop");
-        }}
+        onClick={() =>
+          navigate(
+            `/shop${pageFromParams > 1 ? `?page=${pageFromParams}` : ""}`
+          )
+        }
       >
         Volver a la tienda
       </Button>
@@ -172,7 +157,6 @@ export default function ProductDetail({ handleSetUserFlag }) {
                 </Box>
               </Stack>
 
-              {/* //!ACÁ ABAJO EMPIEZA LA PRUEBA DE BOTON AGREGAR AL CARRITO DESDE DETAIL 17/02/23 */}
               {product?.amount > 0 ? (
                 <div>
                   <Text as={"span"} fontWeight={"bold"}>
@@ -195,7 +179,6 @@ export default function ProductDetail({ handleSetUserFlag }) {
                     boxShadow: "lg",
                   }}
                 >
-                  {/* {stock===0?"No hay stock":"Agregar"} */}
                   {product.stock === 0
                     ? "No hay stock"
                     : product?.amount === product.stock

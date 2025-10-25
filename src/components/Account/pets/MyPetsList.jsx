@@ -111,10 +111,10 @@ export default function MyPetsList({ user }) {
           </SimpleGrid>
 
           <Pagination
-            petsPerPage={petsPerPage}
-            totalPets={userPets.length}
-            paginate={paginate}
+            itemsPerPage={petsPerPage}
+            totalItems={userPets.length}
             currentPage={currentPage}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
           />
         </Box>
       ) : (
