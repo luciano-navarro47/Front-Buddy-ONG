@@ -9,9 +9,9 @@ import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
-import NotFound from "./components/commons/notFound/NotFound";
+import NotFound from "components/commons/not-found/NotFound";
 import Layout from "./components/layout/Layout";
-import EmailModal from "./components/commons/modal/EmailModal";
+import EmailModal from "components/commons/modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
@@ -19,7 +19,7 @@ import {
 } from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
 
-export const App = () => {
+export default function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
@@ -191,6 +191,4 @@ export const App = () => {
       </Routes>
     </>
   );
-};
-
-export default App;
+}
