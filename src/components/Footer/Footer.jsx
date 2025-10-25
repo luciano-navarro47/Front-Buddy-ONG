@@ -1,22 +1,32 @@
+// Footer.jsx
+import React from "react";
 import {
-	Box,
-	Image,
-	chakra,
-	Container,
-	Link,
-	SimpleGrid,
-	Stack,
-	Text,
-	VisuallyHidden,
-	Avatar,
-	useColorModeValue,
-	VStack,
-	Wrap,
-	WrapItem,
-	Center,
+  Box,
+  Image,
+  Container,
+  SimpleGrid,
+  Stack,
+  Text,
+  chakra,
+  Link,
+  VStack,
+  Wrap,
+  WrapItem,
+  Avatar,
+  Tooltip,
+  IconButton,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  HStack,
+  useColorModeValue,
 } from "@chakra-ui/react";
+import { FaInstagram, FaTwitter, FaYoutube, FaLinkedin } from "react-icons/fa";
 import logo from "../../assets/imagenes/logo_negro.png";
-import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+
+// fotos (ajustá las rutas si hace falta)
 import magui from "../../assets/imagenes/magui.png";
 import lau from "../../assets/imagenes/lau.png";
 import lucho from "../../assets/imagenes/lucho.png";
@@ -26,204 +36,157 @@ import juli from "../../assets/imagenes/juli.png";
 import igna from "../../assets/imagenes/igna.png";
 import andy from "../../assets/imagenes/andy.png";
 
-const Logo = () => {
-	return (
-		<Box>
-			<Image
-				src={logo}
-				// alt="Dan Abramov"
-				boxSize="90px"
-				mx="1rem"
-				mt="1rem"
-				onClick={() => window.scrollTo(0, 0)}
-			/>
-		</Box>
-	);
-};
+/* ------------------------
+   Datos del equipo (centralizados)
+   ------------------------ */
+const TEAM_MEMBERS = [
+  { name: "Mariana Maceira", img: marian, linkedin: "https://www.linkedin.com/in/m-g-maceira/" },
+  { name: "Maria Laura Colo", img: lau, linkedin: "https://www.linkedin.com/in/lauracolof/" },
+  { name: "Luciano Navarro", img: lucho, linkedin: "https://www.linkedin.com/in/lucho47-dev/" },
+  { name: "Alexis Falces", img: ale, linkedin: "https://www.linkedin.com/in/alexis-falces-95b892252/" },
+  { name: "Magdalena Aliaga", img: magui, linkedin: "https://www.linkedin.com/in/magdalena-aliaga-bb239698/" },
+  { name: "Julian Navarro", img: juli, linkedin: "https://www.linkedin.com/in/julian-navarro-b25938247/" },
+  { name: "Ignacio Coria", img: igna, linkedin: "https://www.linkedin.com/in/ignacio-coria-de-bernardi/" },
+  { name: "Andres Salom", img: andy, linkedin: "https://www.linkedin.com/in/andres-salom/" },
+];
 
-const SocialButton = ({ children, label, href }) => {
-	return (
-		<chakra.button
-			bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
-			rounded={"full"}
-			w={8}
-			h={8}
-			cursor={"pointer"}
-			as={"a"}
-			href={href}
-			display={"inline-flex"}
-			alignItems={"center"}
-			justifyContent={"center"}
-			transition={"background 0.3s ease"}
-			_hover={{
-				bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
-			}}>
-			<VisuallyHidden>{label}</VisuallyHidden>
-			{children}
-		</chakra.button>
-	);
-};
+/* ------------------------
+   Componentes pequeños
+   ------------------------ */
+const SocialButton = ({ label, href, icon }) => (
+  <chakra.a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={label}
+    display="inline-flex"
+    alignItems="center"
+    justifyContent="center"
+    w={8}
+    h={8}
+    rounded="full"
+    bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
+    _hover={{ bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200") }}
+  >
+    {icon}
+  </chakra.a>
+);
 
-const ListHeader = ({ children }) => {
-	return (
-		<Text fontWeight={"500"} fontSize={"lg"} mb={2}>
-			{children}
-		</Text>
-	);
-};
+const FooterLogo = ({ onClick }) => (
+  <Image
+    src={logo}
+    alt="Buddy"
+    boxSize={{ base: "64px", md: "80px" }}
+    objectFit="contain"
+    onClick={onClick}
+    cursor="pointer"
+  />
+);
 
-export default function LargeWithNewsletter() {
-	const profiles1 = [magui, lau, lucho, ale];
-	const profiles2 = [juli, marian, igna, andy];
-
-	return (
-		<Box
-			bg="brand.green.100"
-			color={useColorModeValue("gray.700", "gray.200")}
-			p={10}
-			//position="absolute" //pierde sus medidas reales x eso ponerle un width del 100%
-			w={"100%"}
-			bottom={0}>
-			<Container as={VStack} maxW={"6xl"} py={10}>
-				<Center>
-					<SimpleGrid columns={{ sm: "1", md: "3", lg: "4" }} spacing={5}>
-						<Stack spacing={6}>
-							<Box>
-								<Logo color={useColorModeValue("gray.700", "white")} />
-							</Box>
-							<Text fontSize={"md"} display="flex">
-								© 2023 Buddy ONG. All rights reserved
-							</Text>
-							<Stack direction={"row"} spacing={6}>
-								<SocialButton label={"Twitter"} href={"#"}>
-									<FaTwitter />
-								</SocialButton>
-								<SocialButton label={"YouTube"} href={"#"}>
-									<FaYoutube />
-								</SocialButton>
-								<SocialButton label={"Instagram"} href={"#"}>
-									<FaInstagram />
-								</SocialButton>
-							</Stack>
-						</Stack>
-						<Stack>
-							<ListHeader>Company</ListHeader>
-							<Link href={"#"}>About us</Link>
-							<Link href={"#"}>Blog</Link>
-							<Link href={"#"}>Contact us</Link>
-							<Link href={"#"}>Pricing</Link>
-							<Link href={"#"}>Testimonials</Link>
-						</Stack>
-						<Stack>
-							<ListHeader fontWeight="extrabold">LinkedIn</ListHeader>
-							<Link
-								href={"https://www.linkedin.com/in/m-g-maceira/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Mariana Maceira
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/lauracolof/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Maria Laura Colo
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/ignacio-coria-de-bernardi/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Ignacio Coria
-							</Link>
-							<Link
-								href={
-									"https://www.linkedin.com/in/alexis-falces-95b892252/%22%7D"
-								}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Alexis Falces
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/julian-navarro-b25938247/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Julian Navarro
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/lucho47-dev/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Luciano Navarro
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/magdalena-aliaga-bb239698/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Magdalena Aliaga
-							</Link>
-							<Link
-								href={"https://www.linkedin.com/in/andres-salom/"}
-								isExternal
-								_hover={{
-									fontWeight: "bold",
-									color: "orange.400",
-								}}>
-								Andres Salom
-							</Link>
-						</Stack>
-						<Stack align={"flex-start"} spacing={6} px={10}>
-							<ListHeader>Proyecto</ListHeader>
-							<Wrap spacing={"1rem"}>
-								<WrapItem>
-									<Center w="16rem" p={"20px"}>
-										{profiles1?.map((photos) => (
-											<Avatar
-												key={photos}
-												size={"lg"}
-												borderBlockEndColor={"brand.orange"}
-												src={photos}
-											/>
-										))}
-									</Center>
-								</WrapItem>
-								<WrapItem>
-									<Center w="16rem">
-										{profiles2?.map((photos) => (
-											<Avatar
-												key={photos}
-												size={"lg"}
-												borderBlockEndColor={"brand.orange"}
-												src={photos}
-											/>
-										))}
-									</Center>
-								</WrapItem>
-							</Wrap>
-						</Stack>
-					</SimpleGrid>
-				</Center>
-			</Container>
-		</Box>
-	);
+/* Avatar clickable + tooltip */
+function TeamAvatars({ members }) {
+  return (
+    <Wrap spacing={3} align="center">
+      {members.map((m) => (
+        <WrapItem key={m.name}>
+          <Tooltip label={m.name} placement="top" hasArrow>
+            <Link href={m.linkedin} isExternal>
+              <Avatar size="sm" src={m.img} name={m.name} cursor="pointer" />
+            </Link>
+          </Tooltip>
+        </WrapItem>
+      ))}
+    </Wrap>
+  );
 }
-//direction={"row"}
+
+/* Lista de nombres en collapse para mantener el footer compacto */
+function TeamAccordion({ members }) {
+  return (
+    <Accordion allowToggle>
+      <AccordionItem border="none" p={0}>
+        <h2>
+          <AccordionButton px={0} _hover={{ bg: "transparent" }}>
+            <Box flex="1" textAlign="left" fontWeight="600">
+              Equipo
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+        </h2>
+        <AccordionPanel px={0} pt={3}>
+          <Stack spacing={1}>
+            {members.map((m) => (
+              <Link
+                key={m.name}
+                href={m.linkedin}
+                isExternal
+                _hover={{ color: "orange.400", fontWeight: "semibold" }}
+              >
+                {m.name}
+              </Link>
+            ))}
+          </Stack>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+
+/* ------------------------
+   Footer principal (export default)
+   ------------------------ */
+export default function Footer() {
+  const bg = "brand.green.100";
+  const textColor = useColorModeValue("gray.700", "gray.200");
+
+  return (
+    <Box bg={bg} color={textColor} as="footer" role="contentinfo" py={{ base: 6, md: 8 }}>
+      <Container maxW="7xl">
+        <SimpleGrid columns={{ base: 1, md: 3, lg: 4 }} spacing={{ base: 6, md: 8 }}>
+          {/* LOGO + COPYRIGHT + REDES */}
+          <Stack spacing={3}>
+            <FooterLogo onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} />
+            <Text fontSize="sm" color="gray.700">© {new Date().getFullYear()} Buddy ONG. Todos los derechos.</Text>
+            <HStack spacing={3}>
+              <SocialButton label="Twitter" href="#" icon={<FaTwitter />} />
+              <SocialButton label="YouTube" href="#" icon={<FaYoutube />} />
+              <SocialButton label="Instagram" href="#" icon={<FaInstagram />} />
+              <SocialButton label="LinkedIn" href="#" icon={<FaLinkedin />} />
+            </HStack>
+          </Stack>
+
+          {/* Company links (compact) */}
+          <Stack align="flex-start" spacing={2}>
+            <Text fontWeight="600">Compañía</Text>
+            <Link href="#" _hover={{ color: "orange.400" }}>About us</Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>Blog</Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>Contacto</Link>
+            <Link href="#" _hover={{ color: "orange.400" }}>Pricing</Link>
+          </Stack>
+
+          {/* LinkedIn / Equipo - combinamos avatars y accordion */}
+          <Stack align="flex-start" spacing={3}>
+            <Text fontWeight="600">Contribuidores</Text>
+
+            {/* Avatars clickeables (compact) */}
+            <TeamAvatars members={TEAM_MEMBERS.slice(0, 6)} />
+
+            {/* Accordion para ver lista completa */}
+            <Box pt={0}>
+              <TeamAccordion members={TEAM_MEMBERS} />
+            </Box>
+          </Stack>
+
+          {/* Proyecto / extra: aquí podés explicar o dejar links */}
+          <Stack align="flex-start" spacing={2}>
+            <Text fontWeight="600">Proyecto</Text>
+            <Text fontSize="sm" color="gray.700" maxW="xs">
+              Proyecto de ejemplo para gestión de adopciones y donaciones. Si querés colaborar, contactanos.
+            </Text>
+            <Link href="#" _hover={{ color: "orange.400" }}>Ver repo</Link>
+          </Stack>
+        </SimpleGrid>
+      </Container>
+    </Box>
+  );
+}
