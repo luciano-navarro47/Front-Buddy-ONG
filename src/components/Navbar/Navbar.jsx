@@ -171,7 +171,6 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
               )}
             </Box>
 
-            {/* mobile hamburger */}
             <Box display={{ base: "flex", md: "none" }} alignItems="center">
               <IconButton
                 aria-label="Abrir menú"
@@ -199,18 +198,18 @@ export default function Navbar({ user, isAuthenticated, handleLogout }) {
       <style>
         {`
         /* Ajuste fino del layout entre 768px y 1009px */
-      @media (max-width: 1009px) and (min-width: 768px) {
+      @media (max-width: 1030px) and (min-width: 768px) {
         /* Reduce el espacio horizontal entre los links */
         .chakra-stack[data-navlinks],
         .chakra-hstack[data-navlinks],
         .chakra-flex[data-navlinks] {
-          gap: 0.5rem !important;
+          gap: 0.39rem !important;
         }
 
         /* Disminuye el padding lateral de los botones de links */
         .chakra-button {
           font-size: 0.82rem !important;
-          padding-inline: 0.125rem !important;
+          padding-inline: 0.1rem !important;
         }
       }
       `}
