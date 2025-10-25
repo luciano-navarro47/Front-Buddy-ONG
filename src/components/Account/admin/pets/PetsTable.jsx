@@ -6,7 +6,7 @@ import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/account/common/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
 import DataTable from "../../common/table/DataTable";
-import ImageGalleryModal from "components/commons/Modal/ImageGalleryModal";
+import ImageGalleryModal from "components/commons/modal/ImageGalleryModal";
 import ActionPill from "components/account/common/buttons/ActionPill";
 import { getPets } from "redux/Actions/petActions";
 

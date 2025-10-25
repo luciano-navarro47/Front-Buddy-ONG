@@ -1,6 +1,6 @@
 import React from "react";
 import AccountLayout from "components/account/AccountLayout";
-import { PrivateRoute } from "../components/commons/PrivateRoute/PrivateRoute";
+import { PrivateRoute } from "components/auth/privateRoute/PrivateRoute";
 import { UsersTable } from "components/account/admin/users/UsersTable";
 import { PetsTable } from "components/account/admin/pets/PetsTable";
 import { ProductsTable } from "components/account/admin/products/ProductsTable";

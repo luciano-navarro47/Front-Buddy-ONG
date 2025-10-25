@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, SimpleGrid, Center, Text, useToast } from "@chakra-ui/react";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
-import Pagination from "../commons/Pagination/Pagination";
+import Pagination from "../commons/pagination/Pagination";
 import CardsProduct from "./CardsProducts/CardsProduct";
 import { getAllProducts } from "../../redux/Actions/productActions";
 

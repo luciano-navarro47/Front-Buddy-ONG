@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Stack, Heading, Text, Icon, Center } from "@chakra-ui/react";
 import { RxDoubleArrowDown } from "react-icons/rx";
-import Login from "../Login/Login";
+import Login from "components/auth/login/Login";
 
 export default function LoginPanel({
   user,

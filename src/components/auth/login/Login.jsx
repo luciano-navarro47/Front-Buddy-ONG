@@ -14,8 +14,8 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 import { BiHide, BiShow } from "react-icons/bi";
-import { loginUser } from "../../redux/Actions/userActions";
-import { validateLoginForm } from "../../utils/formValidations/loginForm";
+import { loginUser } from "redux/Actions/userActions";
+import { validateLoginForm } from "utils/formValidations/loginForm";
 
 const Login = ({
   user,

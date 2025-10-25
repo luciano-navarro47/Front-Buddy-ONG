@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon, CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import PriceCell from "./PriceCell";
-import ImageGalleryModal from "components/commons/Modal/ImageGalleryModal";
+import ImageGalleryModal from "components/commons/modal/ImageGalleryModal";
 import SectionHeader from "components/account/common/SectionHeader";
 import ProductForm from "./ProductForm";
 import ReusableFormModal from "components/account/common/ReusableFormModal";
