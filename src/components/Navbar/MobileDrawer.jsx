@@ -24,13 +24,10 @@ export default function MobileDrawer({
   handleLogout,
 }) {
   return (
-    <Drawer placement="right" onClose={onClose} isOpen={isOpen}>
+    <Drawer placement="right" onClose={onClose} isOpen={isOpen} size="xs">
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>
-          <Image src={logo} boxSize="36px" objectFit="contain" alt="Buddy" />
-        </DrawerHeader>
         <DrawerBody>
           <VStack align="start" spacing={4} mt={2}>
             {mainLinks.map((link) => (
@@ -44,7 +41,7 @@ export default function MobileDrawer({
                   onClose();
                 }}
               >
-                <Text fontSize="lg">{link.label}</Text>
+                <Text fontSize="sm">{link.label}</Text>
               </Button>
             ))}
 
@@ -60,6 +57,7 @@ export default function MobileDrawer({
                     navigate("/account");
                     onClose();
                   }}
+                  size="sm"
                 >
                   Mi cuenta
                 </Button>
@@ -71,6 +69,7 @@ export default function MobileDrawer({
                     handleLogout && handleLogout();
                     onClose();
                   }}
+                  size="sm"
                 >
                   Cerrar sesión
                 </Button>
