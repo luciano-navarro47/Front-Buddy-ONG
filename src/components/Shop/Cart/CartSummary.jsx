@@ -1,12 +1,7 @@
 import React from "react";
 import { Box, Text, Button, VStack } from "@chakra-ui/react";
 
-export default function CartSummary({
-  total,
-  onContinue,
-  loading,
-  disabled,
-}) {
+export default function CartSummary({ total, onContinue, loading, disabled }) {
   return (
     <Box
       p={4}
@@ -18,7 +13,9 @@ export default function CartSummary({
       top="80px"
     >
       <VStack spacing={4}>
-        <Text fontSize="lg" fontWeight="600">Total: ${total}</Text>
+        <Text fontSize="lg" fontWeight="600">
+          Total: ${total}
+        </Text>
         <Button
           colorScheme="orange"
           width="100%"

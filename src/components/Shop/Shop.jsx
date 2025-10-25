@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Box, SimpleGrid, Center, Text, useToast } from "@chakra-ui/react";
 import ShopNavbar from "./ShopNavbar/ShopNavbar";
 import Pagination from "../Pagination/Pagination";
@@ -8,13 +8,15 @@ import CardsProduct from "./CardsProducts/CardsProduct";
 import { getAllProducts } from "../../redux/Actions/productActions";
 
 export default function Shop() {
+  const toast = useToast();
   const dispatch = useDispatch();
-  const toast = useToast()
+  const navigate = useNavigate();
+
   const products = useSelector((state) => state.products.filteredProducts);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialPage = parseInt(searchParams.get("page")) || 1;
 
+  const initialPage = parseInt(searchParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [productsPerPage, setProductsPerPage] = useState(6);
 
@@ -38,11 +40,17 @@ export default function Shop() {
     indexOfFirstProduct,
     indexOfLastProduct
   );
+
   const paginate = (number) => {
     if (number < 1) return;
     const totalPages = Math.ceil((products.length || 0) / productsPerPage) || 1;
     if (number > totalPages) return;
     setCurrentPage(number);
+  };
+
+  const handleGoToCart = () => {
+    const query = searchParams.toString();
+    navigate(`/shop/cart${query ? `?${query}` : ""}`);
   };
 
   function handleRemoveItemCart(e, id) {
@@ -103,8 +111,8 @@ export default function Shop() {
             return toast({
               title: "Se llegó al limite de stock actual",
               isClosable: true,
-              status: "warning"
-            })
+              status: "warning",
+            });
           }
 
           const newQty = existingQty + 1;
@@ -156,6 +164,7 @@ export default function Shop() {
           handleSetCart={handleSetCart}
           handleRemoveItemCart={handleRemoveItemCart}
           paginate={paginate}
+          goToCart={handleGoToCart}
         />
         <Pagination
           itemsPerPage={productsPerPage}

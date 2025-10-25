@@ -20,24 +20,28 @@ export default function ShopNavbar({
   handlerSetCart,
   handleRemoveItemCart,
   paginate,
+  goToCart,
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [input, setInput] = useState("");
-  const inputSearch = document.getElementById("inputSearch");
+  const inputSearch =
+    typeof document !== "undefined"
+      ? document.getElementById("inputSearch")
+      : null;
 
   const handlerInputChange = (e) => {
     e.preventDefault();
     setInput(e.target.value);
   };
   const handlerClickSearch = (e) => {
-    e.preventDefault(e);
+    e.preventDefault();
     if (input.trim() !== "") {
       dispatch(shopSearchInputName(input.trim()));
       paginate(1);
-      inputSearch.value = "";
+      if (inputSearch) inputSearch.value = "";
     } else {
-      inputSearch.value = "";
+      if (inputSearch) inputSearch.value = "";
     }
   };
 
@@ -49,6 +53,10 @@ export default function ShopNavbar({
 
   function handlerClick(e) {
     e.preventDefault();
+    if (typeof goToCart === "function") {
+      setTimeout(() => goToCart(), 500);
+      return;
+    }
     setTimeout(() => navigate("/shop/cart"), 500);
   }
 
@@ -62,7 +70,6 @@ export default function ShopNavbar({
       <Box bg={"brand.green.200"} alignItems={"center"}>
         <Center>
           <Box padding={5}>
-            {" "}
             <Icon
               as={AiOutlineShoppingCart}
               w={10}
