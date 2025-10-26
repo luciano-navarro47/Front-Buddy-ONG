@@ -15,7 +15,7 @@ import EmailModal from "components/commons/modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
-  setUserState,
+  setUserState, 
 } from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
 import { Center, Spinner, Text } from "@chakra-ui/react";

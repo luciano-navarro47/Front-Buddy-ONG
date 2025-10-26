@@ -187,7 +187,7 @@ const handleSuccessfulLogin = (data, dispatch, setUser, navigate) => {
   localStorage.setItem("loggedUser", JSON.stringify(data.user));
   setUser(data.user);
 
-  navigate("/");
+  navigate("/"); 
 };
 
 const handleLoginError = (error, setInputErrors) => {
