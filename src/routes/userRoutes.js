@@ -1,6 +1,6 @@
 import React from "react";
 import { PrivateRoute } from "components/auth/private-route/PrivateRoute";
-import PetForm from "components/account/pets/form/FormFields/PetForm";
+import PetForm from "components/account/pets/form/formFields/PetForm";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
 import Veterinaries from "components/veterinaries/VetsList";

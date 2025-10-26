@@ -16,8 +16,8 @@ import {
   getPetsByUser,
   postOrUpdatePet,
 } from "../../../../../redux/actions/petActions";
-import { SelectField, selectConfigs } from "../FormFields/SelectField";
-import { InputField, inputConfigs } from "../FormFields/InputField";
+import { SelectField, selectConfigs } from "./SelectField";
+import { InputField, inputConfigs } from "./InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
