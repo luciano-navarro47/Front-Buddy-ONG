@@ -8,7 +8,7 @@ import PetCard from "./PetCard";
 import Pagination from "components/commons/pagination/Pagination";
 import SectionHeader from "../../commons/display/SectionHeader";
 import ActionPill from "../../commons/buttons/ActionPill";
-import PetForm from "./form/FormFields/PetForm";
+import PetForm from "./form/formFields/PetForm";
 import ReusableFormModal from "../../commons/modal/ReusableFormModal";
 
 export default function MyPetsList({ user }) {
