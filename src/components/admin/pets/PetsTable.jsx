@@ -15,6 +15,7 @@ export function PetsTable() {
   const navigate = useNavigate();
   // const toast = useToast();
   const pets = useSelector((s) => s.pets.allPets);
+  console.log("PETS: ", pets);
   const [copiedPetId, setCopiedPetId] = useState(null);
   const [copiedUserRowId, setCopiedUserRowId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,7 +47,7 @@ export function PetsTable() {
   };
 
   const columns = [
-    {
+    { 
       key: "id",
       header: "Id",
       initialWidth: 25,
@@ -154,26 +155,27 @@ export function PetsTable() {
         </Flex>
       ),
     },
-    {
-      key: "status",
-      header: "Estado",
-      initialWidth: 75,
-      renderCell: (value) => (
-        <Flex justify="center">
-          <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
-        </Flex>
-      ),
-    },
-    {
-      key: "area",
-      header: "Ubicacion",
-      initialWidth: 75,
-      renderCell: (value) => (
-        <Flex>
-          <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
-        </Flex>
-      ),
-    },
+    // {
+    //   key: "status",
+    //   header: "Estado",
+    //   initialWidth: 75,
+    //   renderCell: (value) => (
+        
+    //     <Flex justify="center">
+    //       <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
+    //     </Flex>
+    //   ),
+    // },
+    // {
+    //   key: "area",
+    //   header: "Ubicacion",
+    //   initialWidth: 75,
+    //   renderCell: (value) => (
+    //     <Flex>
+    //       <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
+    //     </Flex>
+    //   ),
+    // },
     {
       key: "detail",
       header: "Detalles",
