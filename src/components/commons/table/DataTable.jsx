@@ -37,7 +37,14 @@ export default function DataTable({
           {rows.map((row) => (
             <Tr key={row[rowKey] || row.id || Math.random()}>
               {columns.map(({ key, renderCell }) => (
-                <Td key={key} px={key === "id" ? 1 : 4} py={2} w={key === "id" ? "40px" : "auto"} textAlign="center" isTruncated>
+                <Td
+                  key={key}
+                  px={key === "id" ? 1 : 4}
+                  py={2}
+                  w={key === "id" ? "40px" : "auto"}
+                  textAlign="center"
+                  isTruncated
+                >
                   {renderCell
                     ? renderCell(row[key], row)
                     : String(row[key] ?? "-")}

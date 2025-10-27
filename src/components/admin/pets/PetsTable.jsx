@@ -22,7 +22,7 @@ export function PetsTable() {
   const navigate = useNavigate();
   // const toast = useToast();
   const pets = useSelector((s) => s.pets.allPets);
-  console.log("PETS: ", pets);
+  // console.log("PETS: ", pets);
   const [copiedPetId, setCopiedPetId] = useState(null);
   const [copiedUserRowId, setCopiedUserRowId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -224,7 +224,7 @@ export function PetsTable() {
 
         return (
           <Box>
-            <Flex justify="center" align="center" >
+            <Flex justify="center" align="center">
               <Tooltip
                 label="Id Copiado"
                 placement="left"
