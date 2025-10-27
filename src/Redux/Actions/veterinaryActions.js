@@ -18,7 +18,7 @@ export function getAllVeterinaries() {
         payload: response.data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -38,7 +38,7 @@ export function postOrUpdateVet(formInput, value, id) {
         });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }

@@ -116,7 +116,7 @@ export default function RegisterUserForm({ setUser }) {
         return;
       }
     } catch (err) {
-      console.error("Register error:", err);
+      // console.error("Register error:", err);
 
       const parsed = extractApiErrors(err);
 

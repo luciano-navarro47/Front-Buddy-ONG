@@ -25,7 +25,7 @@ export function getAllProducts() {
       });
       return data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -51,7 +51,7 @@ export function postOrUpdateProduct(formInput, value, id) {
         });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -65,7 +65,7 @@ export function getProductDescription(id) {
         payload: data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   };
@@ -96,7 +96,7 @@ export function shopSearchInputName(input) {
         payload: input,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -109,7 +109,7 @@ export function filterProducts(value) {
         payload: value,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }

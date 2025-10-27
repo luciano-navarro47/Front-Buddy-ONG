@@ -38,7 +38,7 @@ export default function PaymentCheckout({ preferenceId, amount }) {
       })
         .then((res) => res.json())
         .then((res) => {
-          console.log("Pago procesado:", res);
+          // console.log("Pago procesado:", res);
           resolve();
         })
         .catch((error) => {
@@ -57,11 +57,11 @@ export default function PaymentCheckout({ preferenceId, amount }) {
   };
 
   const onError = (error) => {
-    console.error("Error en Brick:", error);
+    // console.error("Error en Brick:", error);
   };
 
   const onReady = () => {
-    console.log("Payment Brick listo");
+    // console.log("Payment Brick listo");
   };
 
   return (

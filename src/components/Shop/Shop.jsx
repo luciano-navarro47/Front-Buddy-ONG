@@ -74,7 +74,7 @@ export default function Shop() {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -153,7 +153,7 @@ export default function Shop() {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

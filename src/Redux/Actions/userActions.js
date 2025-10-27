@@ -20,7 +20,7 @@ export const getAllUsers = () => {
         payload: json.data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -70,7 +70,7 @@ export const postUser = (user) => {
 
       return response;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   };
@@ -97,7 +97,7 @@ export const getUserById = (id) => {
       const userInfo = await axios.get(`${API_URL}/user/${id}`);
       dispatch({ type: GET_USER_ID, payload: userInfo.data[0] });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };
@@ -112,7 +112,7 @@ export function bulkSetStatusUser(changesArray) {
         payload: updatedUsers.data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -157,7 +157,7 @@ export const setUserState = (userData) => {
         payload: userData,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 };

@@ -43,7 +43,7 @@ export async function setImagesInCloudinary(files, options = {}) {
     const results = await Promise.all(promises);
     return results.map((r) => r.secure_url || r.url);
   } catch (error) {
-    console.log("An error has ocurred when images were uploading: ", error);
+    // console.log("An error has ocurred when images were uploading: ", error);
     throw error;
   }
 }

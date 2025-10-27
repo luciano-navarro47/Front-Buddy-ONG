@@ -65,7 +65,7 @@ export default function Subscription() {
       });
       window.open(response.data, "_blank");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast({
         title: "Error al generar la suscripción",
         description: "Intentalo más tarde o contactanos.",
