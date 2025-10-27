@@ -20,7 +20,7 @@ export function getPets() {
         payload: response.data,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 }
@@ -36,7 +36,7 @@ export function getPetsByUser(id) {
         payload: userPets,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 }
@@ -49,7 +49,7 @@ export const getPetDetails = (id) => async (dispatch) => {
       payload: getID.data,
     });
   } catch (err) {
-    console.log(err.message);
+    // console.log(err.message);
   }
 };
 
@@ -62,13 +62,12 @@ export function postPet(formInput, token) {
         type: POST_PET,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 }
 
 export function postOrUpdatePet(formInput, isUpdating, petId) {
-  console.log("FORMINPUT: ", formInput)
   return async function (dispatch) {
     try {
       if (isUpdating) {
@@ -85,7 +84,7 @@ export function postOrUpdatePet(formInput, isUpdating, petId) {
         });
       }
     } catch (error) {
-      console.log(error.message);
+      // console.log(error.message);
     }
   };
 }
@@ -103,7 +102,7 @@ export function deletePet(petId, userId) {
         payload: { allPets: allPets.data, userPets: usersPets.data },
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 }
@@ -117,7 +116,7 @@ export function deletePetAdmin(id) {
         payload: id,
       });
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
     }
   };
 }
@@ -134,7 +133,8 @@ export function filterAdoptionPets(arrayFilterValues, value) {
         payload: payload,
       });
     } catch (error) {
-      console.log(error);
+      // throw new Error(error);
+      throw new Error(error);
     }
   };
 }
@@ -151,7 +151,8 @@ export function filterBySearchArea(inputValue, value) {
         payload: payload,
       });
     } catch (error) {
-      console.log(error);
+      // throw new Error(error);
+      throw new Error(error);
     }
   };
 }

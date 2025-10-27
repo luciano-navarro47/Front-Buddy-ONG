@@ -392,7 +392,7 @@ const FilterBar = ({ value, paginate }) => {
   }
   function handlerSearchByArea(e, value) {
     e.preventDefault();
-    console.log("SEARCH AREA VALUE :", value);
+    // console.log("SEARCH AREA VALUE :", value);
     if (input !== "" && input.trim() !== "") {
       dispatch(filterBySearchArea(input.trim(), value));
       paginate(1);
