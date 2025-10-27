@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Flex, Image, Text, Tooltip, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Image,
+  Text,
+  Tooltip,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import SectionHeader from "components/commons/display/SectionHeader";
 // import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
@@ -15,6 +22,7 @@ export function PetsTable() {
   const navigate = useNavigate();
   // const toast = useToast();
   const pets = useSelector((s) => s.pets.allPets);
+  // console.log("PETS: ", pets);
   const [copiedPetId, setCopiedPetId] = useState(null);
   const [copiedUserRowId, setCopiedUserRowId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -115,6 +123,20 @@ export function PetsTable() {
       },
     },
     {
+      key: "name",
+      header: "Nombre",
+      initialWidth: 75,
+      renderCell: (value) => {
+        return value ? (
+          <Flex justify="center">
+            <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
+          </Flex>
+        ) : (
+          <Flex justify="center">-</Flex>
+        );
+      },
+    },
+    {
       key: "specie",
       header: "Especie",
       initialWidth: 75,
@@ -154,26 +176,27 @@ export function PetsTable() {
         </Flex>
       ),
     },
-    {
-      key: "status",
-      header: "Estado",
-      initialWidth: 75,
-      renderCell: (value) => (
-        <Flex justify="center">
-          <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
-        </Flex>
-      ),
-    },
-    {
-      key: "area",
-      header: "Ubicacion",
-      initialWidth: 75,
-      renderCell: (value) => (
-        <Flex>
-          <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
-        </Flex>
-      ),
-    },
+    // {
+    //   key: "status",
+    //   header: "Estado",
+    //   initialWidth: 75,
+    //   renderCell: (value) => (
+
+    //     <Flex justify="center">
+    //       <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
+    //     </Flex>
+    //   ),
+    // },
+    // {
+    //   key: "area",
+    //   header: "Ubicacion",
+    //   initialWidth: 75,
+    //   renderCell: (value) => (
+    //     <Flex>
+    //       <Text>{value.slice(0, 1).toUpperCase() + value.slice(1)}</Text>
+    //     </Flex>
+    //   ),
+    // },
     {
       key: "detail",
       header: "Detalles",
@@ -197,34 +220,31 @@ export function PetsTable() {
       initialWidth: 75,
       renderCell: (_, row) => {
         const user = row.user;
+        if (!user) return <Flex justify="center">-</Flex>;
 
         return (
-          <Flex align="center">
-            {user ? (
-              <>
-                <Tooltip
-                  label="Id Copiado"
-                  placement="left"
-                  hasArrow
-                  isOpen={copiedUserRowId === row.id}
-                  borderRadius="md"
-                >
-                  <CopyIcon
-                    cursor="pointer"
-                    mr={1}
-                    boxSize={4}
-                    color={copiedUserRowId === row.id ? "orange" : "black"}
-                    onClick={() => handleCopy(user.id, "user", row.id)}
-                  />
-                </Tooltip>
-                <Text>
-                  {user.first_name} {user.last_name}
-                </Text>
-              </>
-            ) : (
-              <Text>-</Text>
-            )}
-          </Flex>
+          <Box>
+            <Flex justify="center" align="center">
+              <Tooltip
+                label="Id Copiado"
+                placement="left"
+                hasArrow
+                isOpen={copiedUserRowId === row.id}
+                borderRadius="md"
+              >
+                <CopyIcon
+                  cursor="pointer"
+                  mr={1}
+                  boxSize={4}
+                  color={copiedUserRowId === row.id ? "orange" : "black"}
+                  onClick={() => handleCopy(user.id, "user", row.id)}
+                />
+              </Tooltip>
+              <Text>
+                {user.first_name} {user.last_name}
+              </Text>
+            </Flex>
+          </Box>
         );
       },
     },
