@@ -10,23 +10,24 @@ import {
 import { CheckIcon } from "@chakra-ui/icons";
 import { useDispatch } from "react-redux";
 import { postOrUpdateProduct } from "redux/actions/productActions";
+import { formatPrice, parsePriceToNumber } from "utils/formatPrice";
 
 function PriceCell({ row, userRole }) {
   const dispatch = useDispatch();
   const toast = useToast();
 
   const [status, setStatus] = useState("idle"); // idle | loading | success
-  const [price, setPrice] = useState(Math.round(row.price));
-  const [originalPrice, setOriginalPrice] = useState(Math.round(row.price));
+  const [price, setPrice] = useState(formatPrice(String(row.price ?? "")));
+  const [originalPrice, setOriginalPrice] = useState(formatPrice(String(row.price ?? "")));
 
   useEffect(() => {
-    const incoming = Math.round(row.price);
+    const incoming = formatPrice(String(row.price ?? ""));
     setOriginalPrice(incoming);
 
     if (status !== "loading") {
       setPrice(incoming);
     }
-  }, [row.price, row.id, status]);
+  }, [row.price, row.id]);
 
   const handleBlur = async () => {
     if (price !== originalPrice) {
@@ -43,7 +44,15 @@ function PriceCell({ row, userRole }) {
           });
         }
         setStatus("loading");
-        await dispatch(postOrUpdateProduct({ ...row, price }, price, row.id));
+
+        const numberPrice = parsePriceToNumber(price);
+        await dispatch(
+          postOrUpdateProduct(
+            { ...row, price: numberPrice },
+            "updateProduct",
+            row.id
+          )
+        );
         setStatus("success");
 
         setTimeout(() => setStatus("idle"), 1000);
@@ -60,10 +69,10 @@ function PriceCell({ row, userRole }) {
         $
       </InputLeftElement>
       <Input
-        type="number"
+        type="text"
         value={price}
         onBlur={handleBlur}
-        onChange={(e) => setPrice(Number(e.target.value))}
+        onChange={(e) => setPrice(formatPrice(e.target.value))}
         borderColor={status === "success" ? "green.400" : undefined}
         focusBorderColor={status === "loading" ? "orange.400" : "green.400"}
         pl="1.5rem"
