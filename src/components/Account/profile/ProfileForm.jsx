@@ -75,6 +75,7 @@ export default function ProfileForm({ user }) {
                   value={form.email}
                   onChange={handleChange}
                   error={errors.email}
+                  disabled={true}
                 />
                 <TextField
                   label="Teléfono/Celular"
