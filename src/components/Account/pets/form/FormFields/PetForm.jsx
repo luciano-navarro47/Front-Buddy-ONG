@@ -151,7 +151,6 @@ export default function PetForm({
 
       if (!isUpdateMode) {
         // create
-        console.log("INPUT", input);
         if(!input.name.trim()) input.name = null;
         if(!input.number.trim()) input.number = null;
 
