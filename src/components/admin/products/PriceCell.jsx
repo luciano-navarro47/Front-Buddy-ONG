@@ -18,7 +18,9 @@ function PriceCell({ row, userRole }) {
 
   const [status, setStatus] = useState("idle"); // idle | loading | success
   const [price, setPrice] = useState(formatPrice(String(row.price ?? "")));
-  const [originalPrice, setOriginalPrice] = useState(formatPrice(String(row.price ?? "")));
+  const [originalPrice, setOriginalPrice] = useState(
+    formatPrice(String(row.price ?? ""))
+  );
 
   useEffect(() => {
     const incoming = formatPrice(String(row.price ?? ""));
@@ -30,36 +32,41 @@ function PriceCell({ row, userRole }) {
   }, [row.price, row.id]);
 
   const handleBlur = async () => {
-    if (price !== originalPrice) {
-      try {
-        if (userRole !== "admin") {
-          setPrice(originalPrice);
-          return toast({
-            title: "INFO",
-            status: "info",
-            description:
-              "Modo demo-admin activado. No puedes cambiar el precio de los productos.",
-            duration: 2000,
-            isClosable: true,
-          });
-        }
-        setStatus("loading");
+    if (price === originalPrice) return;
 
-        const numberPrice = parsePriceToNumber(price);
-        await dispatch(
-          postOrUpdateProduct(
-            { ...row, price: numberPrice },
-            "updateProduct",
-            row.id
-          )
-        );
-        setStatus("success");
-
-        setTimeout(() => setStatus("idle"), 1000);
-      } catch (error) {
-        setStatus("idle");
-        console.error(error);
+    try {
+      if (userRole !== "admin") {
+        setPrice(originalPrice);
+        return toast({
+          title: "INFO",
+          status: "info",
+          description:
+            "Modo demo-admin activado. No puedes cambiar el precio de los productos.",
+          duration: 2000,
+          isClosable: true,
+        });
       }
+      setStatus("loading");
+
+      const numberPrice = parsePriceToNumber(price);
+      await dispatch(
+        postOrUpdateProduct(
+          { ...row, price: numberPrice },
+          "updateProduct",
+          row.id
+        )
+      );
+
+      const formatted = formatPrice(String(numberPrice));
+      setPrice(formatted);
+      setOriginalPrice(formatted);
+
+      setStatus("success");
+      setTimeout(() => setStatus("idle"), 1000);
+    } catch (error) {
+      console.error(error);
+      setStatus("idle");
+      setPrice(originalPrice);
     }
   };
 
@@ -68,11 +75,18 @@ function PriceCell({ row, userRole }) {
       <InputLeftElement pointerEvents="none" fontSize="xs" w="1.5rem">
         $
       </InputLeftElement>
+
       <Input
         type="text"
         value={price}
         onBlur={handleBlur}
-        onChange={(e) => setPrice(formatPrice(e.target.value))}
+        onFocus={() => {
+          setPrice((prev) => (prev ? String(prev).replace(/\./g, "") : prev));
+        }}
+        onChange={(e) => {
+          const v = e.target.value.replace(/[^\d.,]/g, "");
+          setPrice(v);
+        }}
         borderColor={status === "success" ? "green.400" : undefined}
         focusBorderColor={status === "loading" ? "orange.400" : "green.400"}
         pl="1.5rem"
