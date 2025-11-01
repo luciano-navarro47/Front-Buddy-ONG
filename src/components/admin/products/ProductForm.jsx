@@ -19,7 +19,11 @@ import {
 import DescriptionEditor from "components/commons/forms/DescriptionEditor";
 import UploadImages from "components/commons/inputs/UploadImages";
 import { CATEGORIES } from "utils/constants/categories";
-import { getProductDescription, postOrUpdateProduct } from "redux/actions/productActions";
+import {
+  getProductDescription,
+  postOrUpdateProduct,
+} from "redux/actions/productActions";
+import { formatPrice, parsePriceToNumber } from "utils/formatPrice";
 
 export default function ProductForm({
   productId,
@@ -29,7 +33,7 @@ export default function ProductForm({
   userRole,
 }) {
   const dispatch = useDispatch();
-  const toast = useToast(); 
+  const toast = useToast();
 
   const product = useSelector((state) => state.products.product);
   const [loadingProduct, setLoadingProduct] = useState(mode);
@@ -66,8 +70,8 @@ export default function ProductForm({
         name: product?.name || "",
         description: product?.description || "",
         category: product?.category || "",
-        images: product?.images || "",
-        price: Math.round(product?.price) || 0,
+        images: product?.images || [],
+        price: product?.price != null ? formatPrice(String(product.price)) : "",
         stock: product.stock ?? "",
       });
       setLoadingProduct(false);
@@ -88,12 +92,16 @@ export default function ProductForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const numberPrice = parsePriceToNumber(input.price);
+    const numberStock = Number(input.stock);
+
     if (
       !input.name ||
       !input.description ||
       !input.category ||
-      input.price < 0 ||
-      input.stock < 0
+      numberPrice < 0 ||
+      numberStock < 0
     ) {
       setIsIncomplete(true);
       return;
@@ -109,10 +117,16 @@ export default function ProductForm({
       });
     }
 
+    const payload = {
+      ...input,
+      price: numberPrice,
+      stock: numberStock,
+    };
+
     if (mode === "create") {
-      await dispatch(postOrUpdateProduct(input));
+      await dispatch(postOrUpdateProduct(payload));
     } else {
-      await dispatch(postOrUpdateProduct(input, "updateProduct", productId));
+      await dispatch(postOrUpdateProduct(payload, "updateProduct", productId));
     }
 
     toast({
@@ -174,6 +188,7 @@ export default function ProductForm({
               onChange={handleChange}
             />
           </FormControl>
+
           <FormControl id="price" isRequired>
             <FormLabel>Precio (ARS)</FormLabel>
             <InputGroup>
@@ -181,9 +196,28 @@ export default function ProductForm({
               <Input
                 placeholder="¿Cuánto cuesta?"
                 name="price"
-                type="number"
+                inputMode="decimal"
+                type="text"
                 value={input.price}
-                onChange={handleChange}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  const cleaned = v.replace(/[^\d.,]/g, "");
+                  setInput((prev) => ({ ...prev, price: cleaned }));
+                }}
+                onBlur={() => {
+                  setInput((prev) => {
+                    const formatted = formatPrice(prev.price);
+                    return { ...prev, price: formatted };
+                  });
+                }}
+                onFocus={() => {
+                  setInput((prev) => {
+                    const p = prev.price ?? "";
+                    if (p === "") return prev;
+                    const editable = String(p).replace(/\./g, "");
+                    return { ...prev, price: editable };
+                  });
+                }}
               />
             </InputGroup>
           </FormControl>
