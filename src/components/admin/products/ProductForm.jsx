@@ -92,10 +92,10 @@ export default function ProductForm({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const numberPrice = parsePriceToNumber(input.price);
     const numberStock = Number(input.stock);
-  
+
     if (
       !input.name ||
       !input.description ||
@@ -106,7 +106,7 @@ export default function ProductForm({
       setIsIncomplete(true);
       return;
     }
-  
+
     if (userRole !== "admin") {
       return toast({
         title: "Error",
@@ -116,26 +116,26 @@ export default function ProductForm({
         isClosable: true,
       });
     }
-  
+
     const payload = {
       ...input,
       price: numberPrice,
       stock: numberStock,
     };
-  
+
     if (mode === "create") {
       await dispatch(postOrUpdateProduct(payload));
     } else {
       await dispatch(postOrUpdateProduct(payload, "updateProduct", productId));
     }
-  
+
     toast({
       title: mode === "create" ? "Producto creado" : "Producto actualizado",
       status: "success",
       duration: 2000,
       isClosable: true,
     });
-  
+
     if (onSuccess) onSuccess();
   };
 

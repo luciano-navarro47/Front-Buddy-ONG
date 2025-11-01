@@ -29,7 +29,7 @@ function PriceCell({ row, userRole }) {
     if (status !== "loading") {
       setPrice(incoming);
     }
-  }, [row.price, row.id]);
+  }, [row.price, row.id, status]);
 
   const handleBlur = async () => {
     if (price === originalPrice) return;
@@ -84,7 +84,7 @@ function PriceCell({ row, userRole }) {
           setPrice((prev) => (prev ? String(prev).replace(/\./g, "") : prev));
         }}
         onChange={(e) => {
-          const v = e.target.value.replace(/[^\d.,]/g, "");
+          const v = e.target.value.replace(/[^\d,.]/g, "");
           setPrice(v);
         }}
         borderColor={status === "success" ? "green.400" : undefined}

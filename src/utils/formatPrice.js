@@ -10,7 +10,7 @@ export const formatPrice = (value) => {
   if (commaParts.length > 2) cleaned = commaParts[0] + "," + commaParts[1];
 
   // Separate integers and decimals
-  let [integer, decimal = ""] = cleaned.split(/[,\.]/);
+  let [integer, decimal = ""] = cleaned.split(/[,.]/);
 
   // Limit integers to 8 digits
   integer = integer.slice(0, 8);
