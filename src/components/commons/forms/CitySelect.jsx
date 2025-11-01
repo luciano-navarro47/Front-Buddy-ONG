@@ -15,6 +15,7 @@ export default function CitySelect({
   placeholder = "Seleccioná una ciudad (Provincia de Buenos Aires)",
   error, 
 }) {
+  // console.log("ON CHANGE", onChange);
   const [cities, setCities] = useState(null); // null = not fetched yet
   const [loading, setLoading] = useState(false);
   const CACHE_KEY = "georef_localidades_buenos_aires_v1";
@@ -84,6 +85,7 @@ export default function CitySelect({
 
   const handleChange = (e) => {
     if (!onChange) return;
+    console.log("ON CHANGE", e.target.value);
     onChange({ target: { name, value: e.target.value } });
   };
 

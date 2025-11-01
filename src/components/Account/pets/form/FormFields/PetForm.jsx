@@ -12,18 +12,18 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
+import UploadImages from "components/commons/inputs/UploadImages";
+import DescriptionEditor from "components/commons/forms/DescriptionEditor";
+import CitySelect from "components/commons/forms/CitySelect";
+import { SelectField, selectConfigs } from "./SelectField";
+import { InputField, inputConfigs } from "./InputField";
 import {
   getPetsByUser,
   postOrUpdatePet,
 } from "../../../../../redux/actions/petActions";
-import { SelectField, selectConfigs } from "./SelectField";
-import { InputField, inputConfigs } from "./InputField";
 import { validateForm } from "utils/formValidations/postOrUpdatePetForm";
 import { resetForm } from "utils/formValidations/profileForm";
 import { usePetForm } from "utils/hooks/pet/usePetForm";
-import UploadImages from "components/commons/inputs/UploadImages";
-import DescriptionEditor from "components/commons/forms/DescriptionEditor";
-import CitySelect from "components/commons/forms/CitySelect";
 
 /**
  * Props:
@@ -89,7 +89,7 @@ export default function PetForm({
   }, [images]);
 
   const handleChange = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     const { name, value } = e.target;
 
     if (name === "number") {
@@ -151,6 +151,10 @@ export default function PetForm({
 
       if (!isUpdateMode) {
         // create
+        console.log("INPUT", input);
+        if(!input.name.trim()) input.name = null;
+        if(!input.number.trim()) input.number = null;
+
         await dispatch(postOrUpdatePet(input));
       } else {
         const updateArg = isUpdating || "update";
