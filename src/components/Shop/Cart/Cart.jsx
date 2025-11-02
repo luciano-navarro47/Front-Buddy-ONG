@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import {
   Box,
   SimpleGrid,
   Button,
   HStack,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
   VStack,
+  Spinner,
 } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { readInitialCart } from "utils/shop/cart/cart";
@@ -24,14 +27,11 @@ export default function Cart() {
   const [cart, setCart] = useState(readInitialCart);
   const [loadingCheckout, setLoadingCheckout] = useState(false);
 
-  // controls whether the brick UI is rendered
   const [showBrick, setShowBrick] = useState(false);
   const [preferenceId, setPreferenceId] = useState(null);
-
   const [lastPayloadHash, setLastPayloadHash] = useState(null);
 
   const brickRef = useRef(null);
-
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -59,7 +59,7 @@ export default function Cart() {
     setCart((prev) =>
       prev.flatMap((p) => {
         if (p.id !== id) return p;
-        if (p.quantity <= 1) return []; // remove
+        if (p.quantity <= 1) return [];
         const q = p.quantity - 1;
         return {
           ...p,
@@ -121,12 +121,7 @@ export default function Cart() {
     const payloadHash = currentPayloadHash;
 
     if (preferenceId && showBrick && lastPayloadHash === payloadHash) {
-      setTimeout(() => {
-        brickRef.current?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }, 80);
+      brickRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
@@ -139,19 +134,9 @@ export default function Cart() {
         setLastPayloadHash(payloadHash);
 
         setShowBrick(false);
-        setTimeout(() => {
-          setShowBrick(true);
-          setTimeout(() => {
-            brickRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }, 160);
-        }, 60);
+        setTimeout(() => setShowBrick(true), 50);
       } else if (data?.init_point) {
         window.location.href = data.init_point;
-      } else {
-        // console.warn("createCheckout no devolvió preference_id ni init_point");
       }
     } catch (err) {
       // console.error("Error en createCheckout:", err);
@@ -160,15 +145,17 @@ export default function Cart() {
     }
   };
 
+  // Auto-scroll to brick
+  useLayoutEffect(() => {
+    if (showBrick && preferenceId && brickRef.current) {
+      brickRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [showBrick, preferenceId]);
+
   const handleBackToShop = () => {
     const query = searchParams.toString();
     navigate(`/shop${query ? `?${query}` : ""}`);
   };
-
-  const cartChangedSincePreference =
-    Boolean(lastPayloadHash) &&
-    Boolean(currentPayloadHash) &&
-    lastPayloadHash !== currentPayloadHash;
 
   return (
     <Box minH="80vh" pb={12}>
@@ -197,7 +184,7 @@ export default function Cart() {
             total={total}
             onContinue={handleContinue}
             loading={loadingCheckout}
-            disabled={cart.length === 0}
+            disabled={cart.length === 0 || (showBrick && preferenceId)}
           />
         </Box>
       </SimpleGrid>
@@ -211,28 +198,21 @@ export default function Cart() {
         >
           <Box gridColumn={{ md: "1 / span 2" }} px={0}>
             <VStack spacing={4} align="stretch">
-              {cartChangedSincePreference && (
-                <Alert status="warning" borderRadius="md" width="100%" px={4}>
-                  <AlertIcon />
-                  <Box>
-                    <AlertTitle>Pago desactualizado</AlertTitle>
-                    <AlertDescription display="block">
-                      Modificaste el carrito desde que generaste el pago. Para
-                      pagar con el monto actualizado, presioná{" "}
-                      <strong>Continuar</strong> otra vez para generar una nueva
-                      preferencia de pago.
-                    </AlertDescription>
+              <Box px={0} pt={0} width="100%">
+                {loadingCheckout && (
+                  <Box textAlign="center" py={6}>
+                    <Spinner size="xl" />
                   </Box>
-                </Alert>
-              )}
-
-              <Box px={0} pt={0}>
-                {showBrick && preferenceId && (
-                  <PaymentCheckout
-                    key={`${preferenceId}-${lastPayloadHash ?? ""}`}
-                    preferenceId={preferenceId}
-                    amount={total}
-                  />
+                )}
+                {showBrick && preferenceId && !loadingCheckout && (
+                  <div ref={brickRef}>
+                    <PaymentCheckout
+                      key={`${preferenceId}-${lastPayloadHash ?? ""}`}
+                      preferenceId={preferenceId}
+                      amount={total}
+                      loadingCheckout={loadingCheckout}
+                    />
+                  </div>
                 )}
               </Box>
             </VStack>
