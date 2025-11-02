@@ -36,7 +36,7 @@ export const userRoutes = ({ user, setUser, handleLogout }) => [
       { path: "myPets", element: <MyPetsList user={user} /> },
       {
         path: "myPets/:id",
-        element: <PetForm isUpdating={true} userRole={user?.role} />,
+        element: <PetForm mode="update" isUpdating={true} userRole={user?.role} />,
       },
       {
         path: "profile",

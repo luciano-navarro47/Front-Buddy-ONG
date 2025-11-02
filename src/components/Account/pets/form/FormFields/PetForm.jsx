@@ -80,6 +80,7 @@ export default function PetForm({
   useEffect(() => {
     if (isUpdateMode && input?.images) {
       setImages(Array.isArray(input.images) ? input.images : []);
+      setLoadingPet(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isUpdateMode]);
