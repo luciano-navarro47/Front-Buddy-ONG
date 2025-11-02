@@ -227,7 +227,7 @@ export function VeterinariesTable() {
           boxSize={5}
           color="blackAlpha.800"
           fontWeight="black"
-          onClick={() => navigate(`/veterinary/detail/${row.id}`)}
+          onClick={() => navigate(`/veterinary/${row.id}`)}
           _hover={{ color: "orange" }}
         />
       ),
@@ -245,7 +245,7 @@ export function VeterinariesTable() {
         onViewDetails={(index) => {
           onCloseImage();
           if (modalVeterinaryId)
-            navigate(`/veterinary/detail/${modalVeterinaryId}`);
+            navigate(`/veterinary/${modalVeterinaryId}`);
         }}
       />
       <SectionHeader
