@@ -41,7 +41,7 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ env.DOCKER_IMAGE }}:${{ steps.set_tag.outputs.tag }}
+            ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:latest
 
       # Authenticate to GCP using service account (optional if you want gcloud deploy)
@@ -58,7 +58,7 @@ jobs:
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE_FRONTEND }} \
-            --image ${{ env.DOCKER_IMAGE }}:${{ steps.set_tag.outputs.tag }} \
+            --image ${{ env.DOCKER_IMAGE }}:${{ env.TAG }} \
             --region ${{ secrets.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
