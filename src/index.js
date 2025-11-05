@@ -1,18 +1,15 @@
-import "./index.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { ChakraProvider } from "@chakra-ui/react";
-
-import reportWebVitals from "./reportWebVitals";
-import App from "./App";
-import { theme } from "./components/Theme";
-
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
-import { store } from "./redux/Store/Index";
-
+import { store } from "redux/store";
 import { Auth0Provider } from "@auth0/auth0-react";
+
+import { ChakraProvider } from "@chakra-ui/react";
+
+import App from "./App"
+import reportWebVitals from "./reportWebVitals";
+import { theme } from "components/commons/theme";
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
@@ -29,7 +26,7 @@ root.render(
     }}
     cacheLocation="localstorage"
     useRefreshTokens={true}
-    >
+  >
     <Provider store={store}>
       <BrowserRouter>
         <ChakraProvider theme={theme}>

@@ -1,424 +1,224 @@
-import React, { useState, useEffect } from "react";
-import CartCards from "./CartCards";
-import { Link } from "react-router-dom";
-import { MdArrowBackIosNew } from "react-icons/md";
-
-import axios from "axios";
-import { AiOutlineShoppingCart } from "react-icons/ai";
-
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import {
   Box,
-  Icon,
-  Text,
-  Center,
   SimpleGrid,
-  Stack,
   Button,
-  useColorModeValue as mode,
+  HStack,
+  VStack,
+  Spinner,
 } from "@chakra-ui/react";
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogContent,
-  AlertDialogOverlay,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import { readInitialCart } from "utils/shop/cart/cart";
+import CartList from "./CartList";
+import CartSummary from "./CartSummary";
+import PaymentCheckout from "./PaymentCheckout";
+import { useDispatch } from "react-redux";
+import { createCheckout } from "redux/actions/paymentsActions";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
-export default function Cart({ handleSetUserFlag }) {
-  const [cartFlag, setCartFlag] = useState(false);
-  const cart = JSON.parse(window.localStorage.getItem("cart"));
-console.log(cart);
-  const loggedUser = JSON.parse(localStorage.getItem("loggedUser"))
-  let isLogged = false
-  loggedUser?isLogged=true:isLogged=false
-console.log("loggedUser Cart: ",loggedUser);
-console.log("isLogged Cart: ",isLogged);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
-  const navigate = useNavigate()
-  function handleStateChange() {
-    if (cartFlag === true) {
-      setCartFlag(false);
-    } else {
-      setCartFlag(true);
-    }
-  }
+export default function Cart() {
+  const dispatch = useDispatch();
+  const [cart, setCart] = useState(readInitialCart);
+  const [loadingCheckout, setLoadingCheckout] = useState(false);
 
-  function handleRemoveItemCart(e, id) {
-    e.preventDefault();
+  const [showBrick, setShowBrick] = useState(false);
+  const [preferenceId, setPreferenceId] = useState(null);
+  const [lastPayloadHash, setLastPayloadHash] = useState(null);
+
+  const brickRef = useRef(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
     try {
-      let currentCart = JSON.parse(window.localStorage.getItem("cart"));
-      let index;
-      let saveProduct = currentCart.find((pr, i) => {
-        if (pr.id === id) {
-          index = i;
-          return true;
-        }
-      });
-      if (saveProduct.amount !== 1) {
-        saveProduct.amount -= 1;
-        saveProduct.total = saveProduct.price * saveProduct.amount;
-        window.localStorage.setItem("cart", JSON.stringify(currentCart));
-        return handleStateChange();
-        // return alert("Eliminaste 1 unidad de este producto de tu carrito");
-      }
-      if (saveProduct.amount === 1 && currentCart.length === 1) {
-        let emptyArray = [];
-        window.localStorage.setItem("cart", JSON.stringify(emptyArray));
-        return handleStateChange();
-        // return alert("Eliminaste este producto de tu carrito");
-      }
-      if (saveProduct.amount === 1 && currentCart.length === 2) {
-        if (index === 0) {
-          let arrayResult = [currentCart[1]];
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else {
-          let array = [currentCart[0]];
-          window.localStorage.setItem("cart", JSON.stringify(array));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        }
-      }
-      if (saveProduct.amount === 1 && currentCart.length > 2) {
-        if (index === 0) {
-          let arrayResult = currentCart.slice(1);
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else if (index === currentCart.length - 1) {
-          let arrayResult = currentCart.slice(0, -1);
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        } else {
-          let first = currentCart.slice(0, index);
-          let second = currentCart.slice(index + 1);
-          let arrayResult = [...first, ...second];
-          window.localStorage.setItem("cart", JSON.stringify(arrayResult));
-          return handleStateChange();
-          // return alert("Eliminaste este producto de tu carrito");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
+      window.localStorage.setItem("cart", JSON.stringify(cart));
+    } catch (e) {}
+  }, [cart]);
 
-  const handlerSetCart = (e, id, price, image, name, stock) => {
-    e.preventDefault();
-    try {
-      let product = {
-        name,
-        image,
-        price,
-        id,
-        stock,
-        amount: 1,
-      };
-      let oldCart = JSON.parse(window.localStorage.getItem("cart"));
-      if (oldCart) {
-        let index = false;
-        oldCart.forEach((pr, i) => {
-          if (pr.id === product.id) {
-            index = i;
-          }
-        });
-        if (index !== false) {
-          if (stock === 0 || stock === oldCart[index].amount) {
-            return alert("Se llegó al limite de stock actual");
-          } else {
-            oldCart[index].amount += 1;
-            oldCart[index].total = oldCart[index].price * oldCart[index].amount;
-            window.localStorage.setItem("cart", JSON.stringify([...oldCart]));
-            console.log(
-              "OLDCART AMOUNT: ",
-              oldCart[index].amount,
-              "--- STOCK: ",
-              stock
-            );
-            // alert(`Agregaste de nuevo el producto ${name}`);
-            return handleStateChange();
-          }
-        } else {
-          product.total = product.price;
-          window.localStorage.setItem(
-            "cart",
-            JSON.stringify([...oldCart, product])
-          );
-          // alert(`Agregaste el producto ${name}`);
-          return handleStateChange();
-        }
-      } else {
-        product.total = product.price;
-        window.localStorage.setItem("cart", JSON.stringify([product]));
-        // alert(`Agregaste el producto ${name}`);
-        return handleStateChange();
-      }
-
-      // handleStateChange();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  function isNotLogged(){
-    alert("Tenes que logearte")
-  }
-  const total = cart?.reduce((acc, el) => acc + el.total, 0);
-  const payMp = () => {
-    console.log("CART PAYMP: ",cart);
-    isLogged?
-    axios
-      .post(`http://localhost:3001/donation`, {
-        cart,
-      })
-      .then((response) => {
-        window.open(response.data, "_blank");
-      })
-      .catch((error) => {
-        console.error(error);
-      }):alert("Tenés que logearte")
+  const increase = (id) => {
+    setCart((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? {
+              ...p,
+              quantity: p.quantity + 1,
+              total: Math.round(p.unit_price * (p.quantity + 1) * 100) / 100,
+            }
+          : p
+      )
+    );
   };
 
-  useEffect(() => {}, [cartFlag]);
+  const decrease = (id) => {
+    setCart((prev) =>
+      prev.flatMap((p) => {
+        if (p.id !== id) return p;
+        if (p.quantity <= 1) return [];
+        const q = p.quantity - 1;
+        return {
+          ...p,
+          quantity: q,
+          total: Math.round(p.unit_price * q * 100) / 100,
+        };
+      })
+    );
+  };
+
+  const total = useMemo(
+    () => cart.reduce((acc, it) => acc + (it.total || 0), 0),
+    [cart]
+  );
+
+  const currentTransformed = useMemo(
+    () =>
+      cart.map((p) => ({
+        id: p.id,
+        name: p.name,
+        unit_price: p.unit_price,
+        quantity: p.quantity,
+        image: p.picture_url,
+      })),
+    [cart]
+  );
+
+  const currentPayloadHash = useMemo(() => {
+    try {
+      return JSON.stringify(currentTransformed);
+    } catch (e) {
+      return null;
+    }
+  }, [currentTransformed]);
+
+  useEffect(() => {
+    if (!showBrick) return;
+    if (
+      lastPayloadHash &&
+      currentPayloadHash &&
+      lastPayloadHash !== currentPayloadHash
+    ) {
+      setShowBrick(false);
+      setPreferenceId(null);
+    }
+  }, [cart, showBrick, lastPayloadHash, currentPayloadHash]);
+
+  const handleContinue = async () => {
+    if (loadingCheckout) return;
+
+    const payload = {
+      cart: currentTransformed,
+      userInfo: JSON.parse(localStorage.getItem("loggedUser")) || null,
+      currency_id: "ARS",
+      shipping_cost: 0,
+      metadata: {},
+    };
+
+    const payloadHash = currentPayloadHash;
+
+    if (preferenceId && showBrick && lastPayloadHash === payloadHash) {
+      brickRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+
+    setLoadingCheckout(true);
+    try {
+      const data = await dispatch(createCheckout(payload));
+
+      if (data?.preference_id) {
+        setPreferenceId(data.preference_id);
+        setLastPayloadHash(payloadHash);
+
+        setShowBrick(false);
+        setTimeout(() => setShowBrick(true), 50);
+      } else if (data?.init_point) {
+        window.location.href = data.init_point;
+      }
+    } catch (err) {
+      // console.error("Error en createCheckout:", err);
+    } finally {
+      setLoadingCheckout(false);
+    }
+  };
+
+  // Auto-scroll to brick
+  useLayoutEffect(() => {
+    if (showBrick && preferenceId && brickRef.current) {
+      brickRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [showBrick, preferenceId]);
+
+  const handleBackToShop = () => {
+    const query = searchParams.toString();
+    navigate(`/shop${query ? `?${query}` : ""}`);
+  };
 
   return (
-    <>
-      <Box minHeight={"90vh"} bg="brand.backgorund" paddingBottom={"3rem"}>
-        <Stack
-          direction={{
-            base: "column",
-            lg: "row",
-          }}
-          align={{
-            lg: "flex-start",
-          }}
-          spacing={{
-            base: "8",
-            md: "16",
-          }}
+    <Box minH="80vh" pb={12}>
+      <HStack px={{ base: 4, md: 12 }} pt={6} spacing={4} align="center">
+        <Button
+          leftIcon={<ArrowBackIcon />}
+          variant="ghost"
+          onClick={handleBackToShop}
         >
-          <Stack
-            spacing={{
-              base: "8",
-              md: "10",
-            }}
-            flex="2"
-          >
-            {/* <Heading fontSize="2xl" fontWeight="extrabold" py={6}>
-              Carrito
-            </Heading> */}
-            <Box padding={5} bg={"orange.300"}>
-              <Icon
-                as={AiOutlineShoppingCart}
-                w={10}
-                h={10}
-                color="brand.background"
-              />
-            </Box>
-            {!cart || cart.length === 0 ? (
-              <Center>
-                <Stack>
-                  <Text
-                    textAlign={"center"}
-                    fontSize={"4xl"}
-                    py={10}
-                    fontWeight={"bold"}
-                    color={"brand.darkBlue"}
-                    fontFamily={"heading"}
-                  >
-                    No hay productos en tu carrito
-                  </Text>
-                  <Link to={"/shop"}>
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      
-                      color="orange.400"
-                      boxSize={5}
-                      _hover={{
-                        color: "grey",
-                        boxSize: "7",
-                      }}
-                    />
-                    <Icon
-                      as={MdArrowBackIosNew}
-                      color="orange.400"
-                      boxSize={5}
-                      _hover={{
-                        color: "grey",
-                        boxSize: "7",
-                      }}
-                    />
-                    <Button
-                      fontFamily={"body"}
-                      bg="base.green.100"
-                      color={"grey"}
-                      _hover={{
-                        color: "orange.400",
-                      }}
-                      p="0"
-                      mr="1rem"
-                    >
-                      {" "}
-                      Volver a la tienda
-                    </Button>
-                  </Link>
-                </Stack>
-              </Center>
-            ) : (
-              <Stack spacing="10">
-                {cart.map((pr) => (
-                  <CartCards
-                    amount={pr.amount}
-                    id={pr.id}
-                    image={pr.image}
-                    name={pr.name}
-                    price={pr.price}
-                    total={pr.total}
-                    stock={pr.stock}
-                    handlerSetCart={handlerSetCart}
-                    handleRemoveItemCart={handleRemoveItemCart}
-                  />
-                ))}
-                <Center>
-                  <SimpleGrid>
-                    <Text
-                      textAlign={"center"}
-                      fontSize={"2xl"}
-                      py={10}
-                      fontWeight={"bold"}
-                      color={"brand.orange"}
-                      fontFamily={"heading"}
-                    >
-                      Total: $ {total}
-                    </Text>
-                <Box>
-                  <Button
-                    onClick={onOpen} 
-                    fontFamily={"body"}
-                    borderRadius={"full"}
-                    size="lg"
-                    bg={"brand.orange"}
-                    color={"white"}
-                    _hover={{
-                        transform: "translateY(2px)",
-                        boxShadow: "lg",
-                      }}
-                  >
-                    Ir a pagar
-                  </Button>
-                  <AlertDialog
-                    isOpen={isOpen}
-                    leastDestructiveRef={cancelRef}
-                    onClose={onClose}
-                  >
-                    <AlertDialogOverlay>
-                      <AlertDialogContent>
-                        {
-                          isLogged?
-                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                          El total actual del carrito es ${total}
-                        </AlertDialogHeader>
-                        :
-                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
-                         Necesitamos tus datos!
-                        </AlertDialogHeader>
-                        }
-                        {
-                          isLogged?
-                        <AlertDialogBody>
-                         Solo falta ir a pagar, si no necesitas nada más haz click en "Ir a pagar"
-                        </AlertDialogBody>
-                        :
-                        <AlertDialogBody>
-                           Para hacer la compra debes ingresar tu cuenta, si no tienes puedes crear una!
-                        </AlertDialogBody>
-                        }
-                        {
-                          isLogged?
-                          <AlertDialogFooter>
-                          <Button ref={cancelRef} onClick={onClose}>
-                            Volver al carrito
-                          </Button>
-                          <Button
-                            color={"white"}
-                            bg={"brand.orange"}
-                            onClick={(e) => {
-                              payMp()
-                              onClose();
-                            }}
-                            ml={3}
-                            >
-                            Ir a pagar
-                          </Button>
-                        </AlertDialogFooter>
-                        :
-                        <AlertDialogFooter>
-                          <Button ref={cancelRef} onClick={onClose}>
-                            Cancelar
-                          </Button>
-                          <Button
-                            color={"white"}
-                            bg={"brand.orange"}
-                            onClick={(e) => {
-                              onClose();
-                              navigate("/")
-                            }}
-                            ml={3}
-                            >
-                            Ingresar
-                          </Button>
-                        </AlertDialogFooter>
-                          }
-                      </AlertDialogContent>
-                    </AlertDialogOverlay>
-                  </AlertDialog>
-                </Box>
-                  </SimpleGrid>
-                </Center>
+          Volver a la tienda
+        </Button>
+      </HStack>
 
-                <Link to={"/shop"}>
-                  <Icon
-                    as={MdArrowBackIosNew}
-                    color="orange.400"
-                    boxSize={5}
-                    _hover={{
-                      color: "grey",
-                      boxSize: "7",
-                    }}
-                  />
-                  <Icon
-                    as={MdArrowBackIosNew}
-                    color="orange.400"
-                    boxSize={5}
-                    _hover={{
-                      color: "grey",
-                      boxSize: "7",
-                    }}
-                  />
-                  <Button
-                    fontFamily={"body"}
-                    bg="base.green.100"
-                    color={"grey"}
-                    _hover={{
-                      color: "orange.400",
-                    }}
-                    p="0"
-                    mr="1rem"
-                  >
-                    {" "}
-                    Seguir comprando
-                  </Button>
-                </Link>
-              </Stack>
-            )}
-          </Stack>
-        </Stack>
+      <SimpleGrid
+        columns={{ base: 1, md: 3 }}
+        spacing={6}
+        px={{ base: 4, md: 12 }}
+        py={8}
+      >
+        <Box gridColumn={{ md: "1 / span 2" }}>
+          <CartList items={cart} onIncrease={increase} onDecrease={decrease} />
+        </Box>
+
+        <Box>
+          <CartSummary
+            total={total}
+            onContinue={handleContinue}
+            loading={loadingCheckout}
+            disabled={cart.length === 0 || (showBrick && preferenceId)}
+          />
+        </Box>
+      </SimpleGrid>
+
+      <Box mt={4} px={{ base: 4, md: 12 }}>
+        <SimpleGrid
+          columns={{ base: 1, md: 3 }}
+          spacing={6}
+          width="100%"
+          alignItems="start"
+        >
+          <Box gridColumn={{ md: "1 / span 2" }} px={0}>
+            <VStack spacing={4} align="stretch">
+              <Box px={0} pt={0} width="100%">
+                {loadingCheckout && (
+                  <Box textAlign="center" py={6}>
+                    <Spinner size="xl" />
+                  </Box>
+                )}
+                {showBrick && preferenceId && !loadingCheckout && (
+                  <div ref={brickRef}>
+                    <PaymentCheckout
+                      key={`${preferenceId}-${lastPayloadHash ?? ""}`}
+                      preferenceId={preferenceId}
+                      amount={total}
+                      loadingCheckout={loadingCheckout}
+                    />
+                  </div>
+                )}
+              </Box>
+            </VStack>
+          </Box>
+        </SimpleGrid>
       </Box>
-    </>
+    </Box>
   );
 }

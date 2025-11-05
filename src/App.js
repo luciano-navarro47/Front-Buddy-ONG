@@ -1,30 +1,32 @@
 import { useState, useEffect, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Routes, Route } from "react-router-dom";
-import { setAccessToken } from "./redux/Actions/auth";
-import { logout as logoutAction } from "./redux/Actions/session";
+import { setAccessToken } from "./redux/actions/auth";
+import { logout as logoutAction } from "./redux/actions/session";
 import { authRoutes } from "./routes/authRoutes";
 import { userRoutes } from "./routes/userRoutes";
 import { adminRoutes } from "./routes/adminRoutes";
 import { publicRoutes } from "./routes/publicRoutes";
 import { normalizeAuth0User } from "./utils/normalizeAuth0User";
-import NotFound from "./components/NotFound/NotFound";
-import { Layout } from "./components/Layout";
-import EmailModal from "./components/Modal/EmailModal";
+import NotFound from "components/commons/not-found/NotFound";
+import Layout from "./components/layout/Layout";
+import EmailModal from "components/commons/modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
-  setUserState,
-} from "./redux/Actions/userActions";
+  setUserState, 
+} from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
+import { Center, Spinner, Text } from "@chakra-ui/react";
 
-export const App = () => {
+export default function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(null);
   const [isUserLoading, setIsUserLoading] = useState(true);
   const [isWaitingEmail, setIsWaitingEmail] = useState(false);
   const [pendingAuth0User, setPendingAuth0User] = useState(null);
+  const reduxUser = useSelector((state) => state.user);
 
   const {
     isLoading,
@@ -42,11 +44,9 @@ export const App = () => {
   const handleUserFlow = useCallback(
     async (normalizedUser) => {
       try {
-        // Try to find the user if exists
         const userDb = await dispatch(fetchAuth0User(normalizedUser.auth0Sub));
         setUser(userDb);
       } catch {
-        // User not exist. Create.
         const userDb = await dispatch(postUser(normalizedUser));
         setUser(userDb);
         localStorage.setItem("loggedUser", JSON.stringify(userDb));
@@ -54,17 +54,24 @@ export const App = () => {
         setIsUserLoading(false);
       }
 
-      // Token
       try {
         const token = await getAccessTokenSilently();
         dispatch(setAccessToken(token));
         localStorage.setItem("token", token);
       } catch (err) {
-        console.error(err);
+        // console.error(err);
       }
     },
     [dispatch, getAccessTokenSilently]
   );
+
+  useEffect(() => {
+    if (reduxUser && Object.keys(reduxUser).length > 0) {
+      setUser(reduxUser);
+    } else {
+      setUser(null);
+    }
+  }, [reduxUser]);
 
   useEffect(() => {
     const initFromStorage = async () => {
@@ -80,7 +87,7 @@ export const App = () => {
             return;
           }
         } catch (error) {
-          console.error("Invalid token in storage: ", error);
+          // console.error("Invalid token in storage: ", error);
           dispatch(logoutAction());
           return;
         }
@@ -127,7 +134,16 @@ export const App = () => {
     checkOrAskEmail();
   }, [auth0User, user, dispatch, handleUserFlow]);
 
-  if (isLoading || isUserLoading) return <div> Cargando usuario...</div>;
+  if (isLoading || isUserLoading) {
+    return (
+      <Center minH="100vh" flexDir="column">
+        <Spinner size="xl" thickness="4px" />
+        <Text mt={4} fontSize="lg">
+          Cargando...
+        </Text>
+      </Center>
+    );
+  }
   if (user?.status === "banned") return <p>User was banned from the app</p>;
 
   const routeProps = {
@@ -154,7 +170,7 @@ export const App = () => {
             setPendingAuth0User(null);
             setIsWaitingEmail(false);
           } catch (error) {
-            console.error("No se pudo completar el registro: ", error);
+            // console.error("No se pudo completar el registro: ", error);
           }
         }}
       />
@@ -182,6 +198,4 @@ export const App = () => {
       </Routes>
     </>
   );
-};
-
-export default App;
+}

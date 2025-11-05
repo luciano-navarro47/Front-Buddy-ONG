@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { checkUserPassword } from "redux/Actions/userActions";
+import { checkUserPassword } from "redux/actions/userActions";
 import TextField from "./TextField";
 
 export default function PasswordSection({

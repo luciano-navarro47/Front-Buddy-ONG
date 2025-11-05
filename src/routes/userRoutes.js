@@ -1,34 +1,22 @@
 import React from "react";
-import { PrivateRoute } from "../components/PrivateRoute/PrivateRoute";
-import FormPostPet from "../components/FormPostPet/FormPostPet";
-import FormPostUser from "../components/FormPostUser/FormPostUser";
+import { PrivateRoute } from "components/auth/private-route/PrivateRoute";
+import PetForm from "components/account/pets/form/formFields/PetForm";
 import MyPetsList from "components/account/pets/MyPetsList";
 import AccountLayout from "components/account/AccountLayout";
-import Veterinaries from "components/Veterinaries/Veterinaries";
+import Veterinaries from "components/veterinaries/VetsList";
 import ProfileForm from "components/account/profile/ProfileForm";
 
-export const userRoutes = ({
-  user,
-  setUser,
-  handleLogout,
-}) => [
+export const userRoutes = ({ user, setUser, handleLogout }) => [
   // Only to registered users
+  
   {
-    path: "/createPet",
+    path: "/publish-pet",
     element: (
       <PrivateRoute roles={["user", "admin"]}>
-        <FormPostPet />
+        <PetForm />
       </PrivateRoute>
     ),
   },
-  // {
-  //   path: "/updateUser",
-  //   element: (
-  //     <PrivateRoute roles={["user", "admin"]}>
-  //       <FormPostUser />
-  //     </PrivateRoute>
-  //   ),
-  // },
   {
     path: "/account",
     element: (
@@ -48,7 +36,7 @@ export const userRoutes = ({
       { path: "myPets", element: <MyPetsList user={user} /> },
       {
         path: "myPets/:id",
-        element: <FormPostPet isUpdating={true} userRole={user?.role} />,
+        element: <PetForm mode="update" isUpdating={true} userRole={user?.role} />,
       },
       {
         path: "profile",

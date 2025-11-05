@@ -4,9 +4,9 @@ import {
   GET_PRODUCT,
   POST_PRODUCT,
   UPDATE_PRODUCT,
-  SHOP_FILTER_VALUE,
-  SHOP_SEARCH_INPUT_NAME,
-} from "../../redux/ActionTypes";
+  FILTER_PRODUCTS,
+  SEARCH_PRODUCT_BY_NAME,
+} from "../actionTypes";
 import axios from "axios";
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -25,7 +25,7 @@ export function getAllProducts() {
       });
       return data;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -51,23 +51,7 @@ export function postOrUpdateProduct(formInput, value, id) {
         });
       }
     } catch (error) {
-      console.log(error);
-    }
-  };
-}
-
-export function getProductDetail(obj) {
-  return async function (dispatch) {
-    try {
-      const productDetail = await axios.get(`${API_URL}/products/${obj.id}`);
-      productDetail.data[0].handlerSetCart = obj.handlerSetCart;
-      productDetail.data[0].handleRemoveItemCart = obj.handleRemoveItemCart;
-      return dispatch({
-        type: GET_PRODUCT,
-        payload: productDetail.data,
-      });
-    } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -81,7 +65,7 @@ export function getProductDescription(id) {
         payload: data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       throw error;
     }
   };
@@ -108,24 +92,24 @@ export function shopSearchInputName(input) {
   return async function (dispatch) {
     try {
       return dispatch({
-        type: SHOP_SEARCH_INPUT_NAME,
+        type: SEARCH_PRODUCT_BY_NAME,
         payload: input,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
 
-export function shopFilterValue(value) {
+export function filterProducts(value) {
   return async function (dispatch) {
     try {
       dispatch({
-        type: SHOP_FILTER_VALUE,
+        type: FILTER_PRODUCTS,
         payload: value,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }

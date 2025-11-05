@@ -1,4 +1,4 @@
-import { GET_USER_ID, SET_USER } from "../ActionTypes";
+import { GET_USER_ID, SET_USER } from "../actionTypes";
 
 const initialState = {};
 

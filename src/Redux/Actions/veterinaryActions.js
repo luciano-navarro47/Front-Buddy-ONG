@@ -3,7 +3,7 @@ import {
   GET_DETAILS_VETERINARIES,
   POST_VET,
   UPDATE_VET,
-} from "../ActionTypes";
+} from "../actionTypes";
 import { 
   HOST,
 } from "../../utils";
@@ -18,7 +18,7 @@ export function getAllVeterinaries() {
         payload: response.data,
       });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }
@@ -38,7 +38,7 @@ export function postOrUpdateVet(formInput, value, id) {
         });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 }

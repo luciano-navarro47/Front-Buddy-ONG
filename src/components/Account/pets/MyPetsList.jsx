@@ -1,33 +1,46 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { Text, Box, SimpleGrid } from "@chakra-ui/react";
-import { getPetsByUser } from "redux/Actions/petActions";
+import { Text, Box, SimpleGrid, useDisclosure } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { getPetsByUser } from "redux/actions/petActions";
 import PetCard from "./PetCard";
-import Pagination from "components/Pagination/Pagination";
-import SectionHeader from "../common/SectionHeader";
+import Pagination from "components/commons/pagination/Pagination";
+import SectionHeader from "../../commons/display/SectionHeader";
+import ActionPill from "../../commons/buttons/ActionPill";
+import PetForm from "./form/formFields/PetForm";
+import ReusableFormModal from "../../commons/modal/ReusableFormModal";
 
 export default function MyPetsList({ user }) {
   const dispatch = useDispatch();
+  const userRole = user.role;
   const userPets = useSelector((state) => state.pets.userPets) || [];
+  const [formMode, setFormMode] = useState("create");
+  const {
+    isOpen: isFormOpen,
+    onOpen: onOpenForm,
+    onClose: onCloseForm,
+  } = useDisclosure();
 
-  // Use query-params ?page= to remember the page
   const [searchParams, setSearchParams] = useSearchParams();
   const pageParam = parseInt(searchParams.get("page")) || 1;
   const [currentPage, setCurrentPage] = useState(pageParam);
   const petsPerPage = 4;
 
-  // Calculate index per page
   const indexOfLast = currentPage * petsPerPage;
   const indexOfFirst = indexOfLast - petsPerPage;
   const currentPets = userPets.slice(indexOfFirst, indexOfLast);
 
-  // Fn to change page
   const paginate = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > Math.ceil(userPets.length / petsPerPage))
       return;
     setCurrentPage(pageNumber);
   };
+
+  const handleSuccess = useCallback(() => {
+    dispatch(getPetsByUser());
+    onCloseForm();
+  }, [dispatch, onCloseForm]);
 
   useEffect(() => {
     dispatch(getPetsByUser(user.id));
@@ -37,6 +50,8 @@ export default function MyPetsList({ user }) {
     setSearchParams({ page: currentPage });
   }, [currentPage, setSearchParams]);
 
+  // TO DO: show a SuccessAlertNotification when a pet is published correctly
+
   return (
     <Box>
       <SectionHeader
@@ -44,6 +59,38 @@ export default function MyPetsList({ user }) {
         subtitle="Editá la información de tus animales
           posteados o dejá de publicarlos."
       />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        pb={2}
+      >
+        <ActionPill
+          icon={<AddIcon boxSize={4} ml={0.5} color="blackAlpha.600" />}
+          onClick={() => {
+            // dispatch(clearProduct());
+            // setSelectedProductId(null);
+            setFormMode("create");
+            onOpenForm();
+          }}
+        ></ActionPill>
+      </Box>
+
+      <ReusableFormModal
+        isOpen={isFormOpen}
+        onClose={onCloseForm}
+        formMode={formMode}
+        header={
+          formMode === "create" ? "Publicar mascota" : "Editar mascota"
+        }
+      >
+        <PetForm
+          mode={formMode}
+          onSuccess={handleSuccess}
+          onCancel={onCloseForm}
+          userRole={userRole}
+        />
+      </ReusableFormModal>
 
       {userPets.length > 0 ? (
         <Box maxW="1200px" mx="auto" px="4">
@@ -64,10 +111,10 @@ export default function MyPetsList({ user }) {
           </SimpleGrid>
 
           <Pagination
-            petsPerPage={petsPerPage}
-            totalPets={userPets.length}
-            paginate={paginate}
+            itemsPerPage={petsPerPage}
+            totalItems={userPets.length}
             currentPage={currentPage}
+            onPageChange={(pageNumber) => setCurrentPage(pageNumber)}
           />
         </Box>
       ) : (

@@ -1,4 +1,4 @@
-import { GET_ALL_USERS } from "../../redux/ActionTypes";
+import { GET_ALL_USERS } from "../actionTypes";
 
 const initialState = [];
 

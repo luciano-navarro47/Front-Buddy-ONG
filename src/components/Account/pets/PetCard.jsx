@@ -19,8 +19,8 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { MdPlace } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { deletePet } from "redux/Actions/petActions";
-import ReusableAlertDialog from "components/account/common/ReusableAlertDialog";
+import { deletePet } from "redux/actions/petActions";
+import ReusableAlertDialog from "components/commons/alerts/ReusableAlertDialog";
 
 const PetCard = ({
   data: { id, img, sex, specie, age, area },
@@ -126,7 +126,7 @@ const PetCard = ({
             isOpen={isOpen}
             onClose={onClose}
             title="Eliminar Mascota"
-            message={`¿Está seguro/a de querer dejar de publicar la mascota ubicada en el área de "${area}"?\n\nEsta acción no se puede deshacer.`}
+            message={`¿Querés dejar de publicar la mascota ubicada en el área de "${area}"?\n\nEsta acción no se puede deshacer.`}
             onConfirm={() => handleDeletePet(id)}
           />
         </ButtonGroup>
