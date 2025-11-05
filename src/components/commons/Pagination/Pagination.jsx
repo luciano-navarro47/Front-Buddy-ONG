@@ -14,7 +14,7 @@ import { MdArrowBackIosNew, MdArrowForwardIos } from "react-icons/md";
  * Props:
  * - itemsPerPage: number
  * - totalItems: number
- * - currentPage: number (1-based)
+ * - currentPage: number (1-based) 
  * - onPageChange: function(pageNumber) => void
  * - maxButtons?: number (how many page number buttons to show, default 7)
  */

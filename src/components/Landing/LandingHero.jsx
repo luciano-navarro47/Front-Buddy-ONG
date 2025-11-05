@@ -9,7 +9,7 @@ import {
   Avatar,
   AvatarGroup,
   Flex,
-  useBreakpointValue,
+  useBreakpointValue, 
   Image,
 } from "@chakra-ui/react";
 import { GiSittingDog, GiCat } from "react-icons/gi";
