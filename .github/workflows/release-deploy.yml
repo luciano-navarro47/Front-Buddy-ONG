@@ -44,7 +44,7 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:latest
           build-args: |
-            REACT_APP_API_URL_BUILD=${{ secrets.REACT_APP_API_URL_BUILD }}
+            REACT_APP_API_URL_BUILD=${{ secrets.REACT_APP_API_URL }}
 
       # Authenticate to GCP using service account (optional if you want gcloud deploy)
       - name: Authenticate to GCP

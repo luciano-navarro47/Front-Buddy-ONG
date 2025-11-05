@@ -1,6 +1,6 @@
 FROM node:20-alpine AS build
 
-ARG REACT_APP_API_URL_BUILD
+ARG REACT_APP_API_URL
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY package*.json ./
 
 RUN npm ci
 
-RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL_BUILD" > .env.production
+RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env.production
 
 COPY . .
 
