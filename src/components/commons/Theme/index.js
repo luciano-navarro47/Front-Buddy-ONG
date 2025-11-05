@@ -21,7 +21,7 @@ export const theme = extendTheme({
    
   },
 
-  linkTheme: {
+  linkTheme: { 
     variant: {
       custom: {
         textDecoration: "none",

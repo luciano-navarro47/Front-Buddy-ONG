@@ -10,7 +10,7 @@ import {
 
 function AlertForm({ status = "info", title = "", description = "", onClose }) {
   const handleClose = () => {
-    if (typeof onClose === "function") onClose();
+    if (typeof onClose === "function") onClose(); 
   };
 
   return (

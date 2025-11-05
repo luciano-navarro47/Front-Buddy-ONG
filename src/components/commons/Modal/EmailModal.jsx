@@ -18,7 +18,7 @@ export default function EmailModal({ isOpen, onClose, onSave, title = "Falta tu 
   const [error, setError] = useState("");
   const toast = useToast();
 
-  useEffect(() => {
+  useEffect(() => { 
     if (isOpen) {
       setError("");
       setEmail("");

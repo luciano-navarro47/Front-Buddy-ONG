@@ -9,7 +9,7 @@ import {
   Text,
   Stack,
 } from "@chakra-ui/react";
-
+ 
 export default function VetCard({
   data: { image, name, phone, id, description },
 }) {
