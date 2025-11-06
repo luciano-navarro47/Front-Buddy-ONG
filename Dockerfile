@@ -9,12 +9,17 @@ COPY package*.json ./
 RUN npm ci
 
 RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env.production
+RUN echo "REACT_APP_CLOUDINARY_CLOUD_NAME=$REACT_APP_CLOUDINARY_CLOUD_NAME" >> .env.production
+RUN echo "REACT_APP_CLOUDINARY_UPLOAD_PRESET=$REACT_APP_CLOUDINARY_UPLOAD_PRESET" >> .env.production
+RUN echo "REACT_APP_AUTH0_DOMAIN=$REACT_APP_AUTH0_DOMAIN" >> .env.production
+RUN echo "REACT_APP_AUTH0_CLIENT_ID=$REACT_APP_AUTH0_CLIENT_ID" >> .env.production
+RUN echo "REACT_APP_MP_PUBLIC_KEY=$REACT_APP_MP_PUBLIC_KEY" >> .env.production
 
 COPY . .
 
 RUN npm run build
 
-FROM nginx:alpin
+FROM nginx:alpine
 
 COPY --from=build /app/build /usr/share/nginx/html
 
