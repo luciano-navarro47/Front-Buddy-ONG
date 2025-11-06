@@ -44,7 +44,12 @@ jobs:
             ${{ env.DOCKER_IMAGE }}:${{ env.TAG }}
             ${{ env.DOCKER_IMAGE }}:latest
           build-args: |
-            REACT_APP_API_URL_BUILD=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_API_URL=${{ secrets.REACT_APP_API_URL }}
+            REACT_APP_CLOUDINARY_CLOUD_NAME=${{ secrets.REACT_APP_CLOUDINARY_CLOUD_NAME }}
+            REACT_APP_CLOUDINARY_UPLOAD_PRESET=${{ secrets.REACT_APP_CLOUDINARY_UPLOAD_PRESET }}
+            REACT_APP_AUTH0_DOMAIN=${{ secrets.REACT_APP_AUTH0_DOMAIN }}
+            REACT_APP_AUTH0_CLIENT_ID=${{ secrets.REACT_APP_AUTH0_CLIENT_ID }}
+            REACT_APP_MP_PUBLIC_KEY=${{ secrets.REACT_APP_MP_PUBLIC_KEY }}
 
       # Authenticate to GCP using service account (optional if you want gcloud deploy)
       - name: Authenticate to GCP
