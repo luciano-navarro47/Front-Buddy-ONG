@@ -1,6 +1,11 @@
 FROM node:20-alpine AS build
 
 ARG REACT_APP_API_URL
+ARG REACT_APP_CLOUDINARY_CLOUD_NAME
+ARG REACT_APP_CLOUDINARY_UPLOAD_PRESET
+ARG REACT_APP_AUTH0_DOMAIN
+ARG REACT_APP_AUTH0_CLIENT_ID
+ARG REACT_APP_MP_PUBLIC_KEY
 
 WORKDIR /app
 
@@ -14,12 +19,13 @@ COPY . .
 
 RUN npm run build
 
+<<<<<<< Updated upstream
 FROM nginx:alpin
 
+=======
+FROM nginx:alpine
+>>>>>>> Stashed changes
 COPY --from=build /app/build /usr/share/nginx/html
-
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 EXPOSE 8080
-
 CMD ["nginx", "-g", "daemon off;"]
