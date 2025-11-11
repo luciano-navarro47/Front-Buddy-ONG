@@ -22,19 +22,21 @@ RUN npm ci
 
 COPY . .
 
-RUN echo "Checking environment variables..." \
- && if [ -z "$REACT_APP_AUTH0_CLIENT_ID" ]; then \
-      echo "❌ MISSING REACT_APP_AUTH0_CLIENT_ID"; \
-    else \
-      echo "✓ HAS REACT_APP_AUTH0_CLIENT_ID (length: ${#REACT_APP_AUTH0_CLIENT_ID})"; \
-    fi \
- && if [ -z "$REACT_APP_AUTH0_DOMAIN" ]; then \
-      echo "❌ MISSING REACT_APP_AUTH0_DOMAIN"; \
-    else \
-      echo "✓ HAS REACT_APP_AUTH0_DOMAIN: $REACT_APP_AUTH0_DOMAIN"; \
-    fi
+# CRÍTICO: Eliminar TODOS los archivos .env que pudieran haberse copiado
+RUN rm -f .env .env.local .env.development .env.production .env.production.local .env.development.local .env.test.local .env.test
+
+RUN echo "=== Checking environment variables ===" \
+ && echo "REACT_APP_AUTH0_DOMAIN: ${REACT_APP_AUTH0_DOMAIN}" \
+ && echo "REACT_APP_AUTH0_CLIENT_ID length: ${#REACT_APP_AUTH0_CLIENT_ID}" \
+ && echo "REACT_APP_API_URL: ${REACT_APP_API_URL}"
+
+RUN echo "=== Checking for .env files ===" \
+ && ls -la .env* 2>/dev/null || echo "✓ No .env files found"
 
 RUN npm run build
+
+RUN echo "=== Checking built index in main.js ===" \
+ && grep -A5 -B5 "Auth0Provider" build/static/js/main.*.js | head -20 || echo "Auth0Provider not found in expected format"
 
 FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
