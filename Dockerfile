@@ -13,14 +13,18 @@ COPY package*.json ./
 
 RUN npm ci
 
-RUN echo "REACT_APP_API_URL=$REACT_APP_API_URL" > .env.production
-RUN echo "REACT_APP_CLOUDINARY_CLOUD_NAME=$REACT_APP_CLOUDINARY_CLOUD_NAME" >> .env.production
-RUN echo "REACT_APP_CLOUDINARY_UPLOAD_PRESET=$REACT_APP_CLOUDINARY_UPLOAD_PRESET" >> .env.production
-RUN echo "REACT_APP_AUTH0_DOMAIN=$REACT_APP_AUTH0_DOMAIN" >> .env.production
-RUN echo "REACT_APP_AUTH0_CLIENT_ID=$REACT_APP_AUTH0_CLIENT_ID" >> .env.production
-RUN echo "REACT_APP_MP_PUBLIC_KEY=$REACT_APP_MP_PUBLIC_KEY" >> .env.production
-
 COPY . .
+
+RUN echo "REACT_APP_API_URL=${REACT_APP_API_URL:-}" > .env.production \
+ && echo "REACT_APP_CLOUDINARY_CLOUD_NAME=${REACT_APP_CLOUDINARY_CLOUD_NAME:-}" >> .env.production \
+ && echo "REACT_APP_CLOUDINARY_UPLOAD_PRESET=${REACT_APP_CLOUDINARY_UPLOAD_PRESET:-}" >> .env.production \
+ && echo "REACT_APP_AUTH0_DOMAIN=${REACT_APP_AUTH0_DOMAIN:-}" >> .env.production \
+ && echo "REACT_APP_AUTH0_CLIENT_ID=${REACT_APP_AUTH0_CLIENT_ID:-}" >> .env.production \
+ && echo "REACT_APP_MP_PUBLIC_KEY=${REACT_APP_MP_PUBLIC_KEY:-}" >> .env.production
+
+# DEBUG temporal: muestra si llegó el valor (NO imprime el secreto)
+RUN if [ -z "$REACT_APP_AUTH0_CLIENT_ID" ]; then echo "MISSING_REACT_APP_AUTH0_CLIENT_ID"; else echo "HAS_REACT_APP_AUTH0_CLIENT_ID"; fi \
+ && if [ -z "$REACT_APP_AUTH0_DOMAIN" ]; then echo "MISSING_REACT_APP_AUTH0_DOMAIN"; else echo "HAS_REACT_APP_AUTH0_DOMAIN"; fi
 
 RUN npm run build
 
