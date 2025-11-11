@@ -11,7 +11,7 @@ const Banned = ({ handleSetUserFlag }) => {
     localStorage.removeItem("loggedUser");
     // logout({ returnTo: "/" });
     handleSetUserFlag()
-    navigate("/")
+    navigate("/") 
   };
 
   return (

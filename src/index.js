@@ -9,7 +9,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 import App from "./App"
 import reportWebVitals from "./reportWebVitals";
-import { theme } from "components/commons/theme";
+import { theme } from "./components/commons/theme/index";
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
 const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
