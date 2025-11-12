@@ -21,6 +21,7 @@ import PaymentCheckout from "./PaymentCheckout";
 import { useDispatch } from "react-redux";
 import { createCheckout } from "redux/actions/paymentsActions";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { normalizeUserInfo } from "utils/normalizeUserInfo";
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -110,9 +111,12 @@ export default function Cart() {
   const handleContinue = async () => {
     if (loadingCheckout) return;
 
+    const rawUser = JSON.parse(localStorage.getItem("loggedUser")) || null
+    const userInfo = normalizeUserInfo(rawUser)
+
     const payload = {
       cart: currentTransformed,
-      userInfo: JSON.parse(localStorage.getItem("loggedUser")) || null,
+      userInfo,
       currency_id: "ARS",
       shipping_cost: 0,
       metadata: {},

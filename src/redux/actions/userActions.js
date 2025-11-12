@@ -29,13 +29,23 @@ export const fetchAuth0User = (auth0Sub) => {
   return async (dispatch) => {
     try {
       const response = await axios.get(
-        `${API_URL}/user/oauth-user?id=${auth0Sub}`
+        `${API_URL}/user/oauth-user?id=${encodeURIComponent(auth0Sub)}`
       );
       const existingUser = response.data.user;
-      dispatch({
-        type: SET_USER,
-        payload: existingUser,
-      });
+
+
+      if (existingUser) {
+        dispatch({
+          type: SET_USER,
+          payload: existingUser,
+        });
+        dispatch(setUserState(existingUser));
+        try {
+          localStorage.setItem("loggedUser", JSON.stringify(existingUser));
+        } catch (error) {
+          console.warn("Could not persist loggedUser to localStorage ", error);
+        }
+      }
       return existingUser;
     } catch (error) {
       throw error;
