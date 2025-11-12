@@ -15,7 +15,7 @@ import EmailModal from "components/commons/modal/EmailModal";
 import {
   fetchAuth0User,
   postUser,
-  setUserState, 
+  setUserState,
 } from "./redux/actions/userActions";
 import { isTokenValid } from "utils/auth";
 import { Center, Spinner, Text } from "@chakra-ui/react";
@@ -45,21 +45,52 @@ export default function App() {
     async (normalizedUser) => {
       try {
         const userDb = await dispatch(fetchAuth0User(normalizedUser.auth0Sub));
-        setUser(userDb);
-      } catch {
-        const userDb = await dispatch(postUser(normalizedUser));
-        setUser(userDb);
-        localStorage.setItem("loggedUser", JSON.stringify(userDb));
+
+        if (userDb) {
+          setUser(userDb);
+          dispatch(setUserState(userDb));
+          try {
+            localStorage.setItem("loggedUser", JSON.stringify(userDb));
+          } catch (e) {
+            console.warn("No se pudo persistir loggedUser en localStorage", e);
+          }
+        } else {
+          const created = await dispatch(postUser(normalizedUser));
+          setUser(created);
+          try {
+            localStorage.setItem("loggedUser", JSON.stringify(created));
+          } catch (e) {
+            console.warn("No se pudo persistir loggedUser en localStorage", e);
+          }
+        }
+      } catch (err) {
+        try {
+          const userDb = await dispatch(postUser(normalizedUser));
+          setUser(userDb);
+          try {
+            localStorage.setItem("loggedUser", JSON.stringify(userDb));
+          } catch (e) {
+            console.warn("No se pudo persistir loggedUser en localStorage", e);
+          }
+        } catch (err2) {
+          console.error("postUser fallback error:", err2);
+        }
       } finally {
         setIsUserLoading(false);
       }
 
       try {
         const token = await getAccessTokenSilently();
-        dispatch(setAccessToken(token));
-        localStorage.setItem("token", token);
+        if (token) {
+          dispatch(setAccessToken(token));
+          try {
+            localStorage.setItem("token", token);
+          } catch (e) {
+            console.warn("Could not persist token to localStorage", e);
+          }
+        }
       } catch (err) {
-        // console.error(err);
+        console.warn("getAccessTokenSilently failed:", err);
       }
     },
     [dispatch, getAccessTokenSilently]
