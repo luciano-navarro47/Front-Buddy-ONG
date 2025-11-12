@@ -6,7 +6,10 @@ import {
   postUser,
   checkUsernameAvailability,
 } from "../../../redux/actions/userActions";
-import { validateRegisterUserForm } from "../../../utils/formValidations/registerUserForm";
+import {
+  USERNAME_REGEX,
+  validateRegisterUserForm,
+} from "../../../utils/formValidations/registerUserForm";
 import AlertForm from "components/commons/alerts/alertForm/AlertForm";
 import PersonalInfoFields from "./fields/PersonalInfoFields";
 import AccountFields from "./fields/AccountFields";
@@ -17,6 +20,8 @@ export default function RegisterUserForm({ setUser }) {
   const navigate = useNavigate();
   const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState(null); // null = not checked, true/false = result
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
   const [usernameError, setUsernameError] = useState("");
   const [typingTimeout, setTypingTimeout] = useState(null);
   const [inputError, setInputError] = useState({});
@@ -54,6 +59,11 @@ export default function RegisterUserForm({ setUser }) {
       if (mapped.hasOwnProperty("email")) {
         mapped["email"] = "Este correo ya está en uso.";
       }
+      if (mapped.hasOwnProperty("username")) {
+        if (mapped.username === "Invalid value") {
+          mapped.username = "Nombre de usuario inválido";
+        }
+      }
       return mapped;
     }
 
@@ -62,7 +72,7 @@ export default function RegisterUserForm({ setUser }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const trimmedValue = value.trim();
+    const trimmedValue = value.replace(/^\s+/, "");
 
     if (name === "email") {
       setInputError((prev) => ({ ...prev, email: "" }));
@@ -75,18 +85,54 @@ export default function RegisterUserForm({ setUser }) {
     });
 
     if (name === "username") {
+      setIsUsernameAvailable(null);
+
       if (typingTimeout) clearTimeout(typingTimeout);
-      setTypingTimeout(setTimeout(() => checkUserName(trimmedValue), 500));
+      setTypingTimeout(
+        setTimeout(() => {
+          const u = trimmedValue;
+          console.log("u", u);
+          if (u.length < 3 || u.length > 10) {
+            setUsernameError("Ingresá entre 3 y 10 caracteres");
+            setIsUsernameAvailable(null);
+            return;
+          }
+          if (!USERNAME_REGEX.test(u)) {
+            setUsernameError(
+              "Solo se permiten letras, números y guiones bajos"
+            );
+            setIsUsernameAvailable(null);
+            return;
+          }
+
+          setUsernameError("");
+          checkUserName(u);
+        }, 500)
+      );
     }
   };
 
   const checkUserName = async (username) => {
-    if (username.length < 3) return;
+    if (!username || username.length < 3) return;
     try {
+      setIsCheckingUsername(true);
       const available = await dispatch(checkUsernameAvailability(username));
+
+      if (available === null) {
+        setUsernameError("");
+        setIsUsernameAvailable(null);
+        return;
+      }
+
+      setIsUsernameAvailable(available);
       setUsernameError(available ? "" : "Apodo no disponible.");
     } catch (error) {
-      console.log("Username verification error: ", error);
+      setIsCheckingUsername(false);
+
+      setIsUsernameAvailable(null);
+      setUsernameError("Ocurrió un error. Intentá nuevamente.");
+    } finally {
+      setIsCheckingUsername(false);
     }
   };
 
@@ -183,6 +229,8 @@ export default function RegisterUserForm({ setUser }) {
                 handleChange={handleChange}
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
+                isUsernameAvailable={isUsernameAvailable}
+                isCheckingUsername={isCheckingUsername}
               />
               <ContactField
                 input={input}
@@ -195,7 +243,7 @@ export default function RegisterUserForm({ setUser }) {
                 <Button
                   type="submit"
                   isLoading={isSubmitting}
-                  disabled={usernameError !== ""}
+                  disabled={usernameError !== "" || isUsernameAvailable === false || isSubmitting}
                   size="lg"
                   bg="orange.300"
                   color="white"
